@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import "dart:collection";
 import 'package:json_to_model/models/command.dart';
 import 'package:json_to_model/models/decorator.dart';
 import 'package:json_to_model/models/json_key.dart';
@@ -21,9 +21,28 @@ class DartDeclaration {
     this.name,
     this.assignment,
   }) {
-    keyComands = _keyComands;
-    valueCommands = _valueCommands;
+    keyComands = Commands.keyComands;
+    valueCommands = Commands.valueCommands;
     jsonKey = JsonKeyMutate();
+  }
+
+  @override
+  String toString() {
+    return ModelTemplates.indented(
+        '${stringifyDecorator(getDecorator())}$type $name${strigifyAssignment(assignment)};'
+            .trim());
+  }
+
+  void addImport(import) {
+    if (import == null && !import.isNotEmpty) {
+      return;
+    }
+    if (import is List) {
+      imports.addAll(import.map((e) => e));
+    }
+    if (import != null && import.isNotEmpty) imports.add(import);
+
+    imports = LinkedHashSet<String>.from(imports).toList();
   }
 
   String strigifyAssignment(value) {
@@ -38,14 +57,6 @@ class DartDeclaration {
     return decorators?.join('\n');
   }
 
-  void addImport(import) {
-    if (import == null && !import.isNotEmpty) return;
-    if (import is List) {
-      imports.addAll(import.map((e) => e));
-    }
-    if (import != null && import.isNotEmpty) imports.add(import);
-  }
-
   String getImportStrings() {
     return imports
         .where((element) => element != null && element.isNotEmpty)
@@ -53,130 +64,21 @@ class DartDeclaration {
         .join('\n');
   }
 
-  @override
-  String toString() {
-    return ModelTemplates.indented(
-        '${stringifyDecorator(getDecorator())}$type $name${strigifyAssignment(assignment)};'
-            .trim());
+  static String getTypeFromJsonKey(String theString) {
+    var declare = theString.split(')').last.trim().split(' ');
+    if (declare.isNotEmpty) return declare.first;
+    return null;
   }
 
-  static final List<Command> _keyComands = [
-    Command(
-      prefix: '\@',
-      command: 'JsonKey',
-      callback: (DartDeclaration self, String testSubject,
-          {String key, dynamic value}) {
-        var jsonKey = JsonKeyMutate.fromJsonKeyParamaString(testSubject);
-        self.jsonKey &= jsonKey;
-        var newDeclaration = fromCommand(_valueCommands, self,
-            testSubject: value, key: key, value: value);
+  static String getNameFromJsonKey(String theString) {
+    var declare = theString.split(')').last.trim().split(' ');
+    if (declare.length > 1) return declare.last;
+    return null;
+  }
 
-        self.decorators.replaceDecorator(Decorator(self.jsonKey.toString()));
-        self.type =
-            getTypeFromJsonKey(testSubject) ?? newDeclaration.type ?? self.type;
-        self.name =
-            getNameFromJsonKey(testSubject) ?? newDeclaration.name ?? self.name;
-        if (self.name == null) self.setName(value);
-        return self;
-      },
-    ),
-    Command(
-      prefix: '\@',
-      command: 'import',
-      callback: (DartDeclaration self, dynamic testSubject,
-          {String key, dynamic value}) {
-        self.addImport(value);
-        return self;
-      },
-    ),
-    Command(
-      prefix: '@',
-      command: '_',
-      callback: (DartDeclaration self, dynamic testSubject,
-          {String key, dynamic value}) {
-        self.type = key.substring(1);
-        self.name = value;
-        return self;
-      },
-    ),
-    Command(
-      prefix: '',
-      command: '',
-      callback: (DartDeclaration self, dynamic testSubject,
-          {String key, dynamic value}) {
-        self.setName(key);
-        if (value == null) {
-          self.type = 'dynamic';
-          return self;
-        }
-        if (value is Map) {
-          self.type = 'Map<String, dynamic>';
-          return self;
-        }
-        self.type = value.runtimeType.toString();
-        return self;
-      },
-    ),
-  ];
-  static final List<Command> _valueCommands = [
-    Command(
-      prefix: '\$',
-      command: '\[\]',
-      callback: (DartDeclaration self, String testSubject,
-          {String key, dynamic value}) {
-        var typeName = testSubject
-            .substring(3)
-            .split('/')
-            .last
-            .split('\\')
-            .last
-            .toCamelCase();
-        var toImport = testSubject.substring(3);
-        self.addImport(toImport);
-        self.type = 'List<${typeName.toTitleCase()}>';
-        return self;
-      },
-    ),
-    Command(
-      prefix: '\$',
-      command: '',
-      notprefix: '\$\[\]',
-      callback: (DartDeclaration self, String testSubject,
-          {String key, dynamic value}) {
-        self.setName(key);
-
-        var typeName = testSubject
-            .substring(1)
-            .split('/')
-            .last
-            .split('\\')
-            .last
-            .toCamelCase();
-        var type = typeName.toTitleCase();
-        self.type = type;
-
-        return self;
-      },
-    ),
-    Command(
-      type: dynamic,
-      callback: (DartDeclaration self, dynamic testSubject,
-          {String key, dynamic value}) {
-        self.setName(key);
-
-        if (value == null) {
-          self.type = 'dynamic';
-          return self;
-        }
-        if (value is Map) {
-          self.type = 'Map<String, dynamic>';
-          return self;
-        }
-        self.type = value.runtimeType.toString();
-        return self;
-      },
-    ),
-  ];
+  static String getParameterString(String theString) {
+    return theString.split('(')[1].split(')')[0];
+  }
 
   void setName(String newName) {
     name = newName;
@@ -189,10 +91,10 @@ class DartDeclaration {
 
   static DartDeclaration fromKeyValue(key, val) {
     var dartDeclaration = DartDeclaration();
-    dartDeclaration = fromCommand(_valueCommands, dartDeclaration,
+    dartDeclaration = fromCommand(Commands.valueCommands, dartDeclaration,
         testSubject: val, key: key, value: val);
 
-    dartDeclaration = fromCommand(_keyComands, dartDeclaration,
+    dartDeclaration = fromCommand(Commands.keyComands, dartDeclaration,
         testSubject: key, key: key, value: val);
     if (dartDeclaration.type == null || dartDeclaration.name == null) {
       exit(0);
@@ -228,21 +130,5 @@ class DartDeclaration {
       }
     }
     return newSelf;
-  }
-
-  static String getTypeFromJsonKey(String theString) {
-    var declare = theString.split(')').last.trim().split(' ');
-    if (declare.isNotEmpty) return declare.first;
-    return null;
-  }
-
-  static String getNameFromJsonKey(String theString) {
-    var declare = theString.split(')').last.trim().split(' ');
-    if (declare.length > 1) return declare.last;
-    return null;
-  }
-
-  static String getParameterString(String theString) {
-    return theString.split('(')[1].split(')')[0];
   }
 }

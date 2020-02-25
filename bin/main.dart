@@ -26,6 +26,6 @@ void main(List<String> arguments) {
 
   if (runner.run()) {
     // cleanup on success
-    runner.cleanup();
+    // runner.cleanup();
   }
 }
