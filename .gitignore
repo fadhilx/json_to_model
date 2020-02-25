@@ -11,3 +11,6 @@ build/
 doc/api/
 
 jsons/
+lib/models/components/
+lib/models/data/
+lib/models/index.dart
