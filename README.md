@@ -29,6 +29,7 @@ this package will read `.json` file, and generate `.dart` file, asign the `type 
 #### Example
 
 Source File
+
 `./jsons/user.json`
 
 ```json
@@ -40,6 +41,7 @@ Source File
 ```
 
 Generated
+
 `./lib/models/user.dart`
 
 ```dart
@@ -59,6 +61,7 @@ class User {
 ```
 
 After that, `json_serializable` will automatically genereate `.g.dart` files
+
 `./lib/models/user.g.dart`
 
 ```dart
@@ -82,6 +85,7 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
 you can use `$` to specify the value to be Type of variable
 
 Source File
+
 `./jsons/user.json`
 
 ```json
@@ -124,6 +128,7 @@ class User {
 you can use `$[]` to specify the value to be List of Type of variable
 
 Source File
+
 `./jsons/user.json`
 
 ```json
