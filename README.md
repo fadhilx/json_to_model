@@ -1,7 +1,8 @@
 # json_to_model
 
 Gernerating Dart model class(json_serializable) from Json file.
-inspired by json_model [json_model](https://github.com/flutterchina/json_model)
+
+partly inspired by json_model [json_model](https://github.com/flutterchina/json_model)
 
 ## instalation
 
@@ -166,7 +167,7 @@ you can use `@JsonKey` in `key` to specify @JsonKey
 
 `./jsons/cart.json`
 
-```json
+```js
 {
   "@JsonKey(ignore: true) dynamic": "md", //jsonKey alias
   "@JsonKey(name: '+1') int": "fsdafsfg", //jsonKey alias
@@ -209,3 +210,7 @@ class Cart {
 |           use `json_annotation` `@JsonKey`            | `{"@JsonKey(ignore: true) dynamic': 'val'}`                           |           `@JsonKey(ignore: true) dynamic val;`            |                         -                         |
 |    import other library(input value can be array)     | `{"@import':'package:otherlibrary/otherlibrary.dart'}`                |                             -                              | `import 'package:otherlibrary/otherlibrary.dart'` |
 |       write code independentally(experimental)        | `{"@\_ // any code her':',its like an escape to write yourown code'}` | `// any code her,its like an escape to write yourown code` |                         -                         |
+
+## Contribution
+
+i'm open contribution for documentation, bug report, code maintenance, etc. pPlease properly send a pull request. Thanks for your support.
