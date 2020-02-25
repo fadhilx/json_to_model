@@ -1,5 +1,5 @@
 import 'dart:io';
-import "dart:collection";
+import 'dart:collection';
 import 'package:json_to_model/models/command.dart';
 import 'package:json_to_model/models/decorator.dart';
 import 'package:json_to_model/models/json_key.dart';

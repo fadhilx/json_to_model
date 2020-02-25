@@ -99,8 +99,9 @@ class JsonKeyMutate {
         return theMap;
       },
     );
-    var newMap =
-        Map.fromIterable(newList, key: (v) => v[0], value: (v) => v[1]);
+    var newMap = {
+      for (var demo in newList) '${demo.first}': demo.last,
+    };
     return JsonKeyMutate(
       defaultValue: newMap['defaultValue'],
       disallowNullValue: newMap['disallowNullValue'],
