@@ -73,7 +73,7 @@ class JsonModelRunner {
           String fileName = basenameString.first;
           Map jsonMap = json.decode(file.readAsStringSync());
 
-          var jsonModel = JsonModel.jsonModelFromMap(jsonMap, fileName);
+          var jsonModel = JsonModel.fromMap(fileName, jsonMap);
           warningIfImportNotExists(jsonModel, f);
           if (!generateFileFromJson(dartPath, jsonModel, fileName)) {
             error.write('cant write $dartPath');

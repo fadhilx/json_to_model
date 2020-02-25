@@ -1,11 +1,18 @@
+import 'package:expressions/expressions.dart';
 import 'package:json_to_model/models/model_template.dart';
-
 import '../utils/extensions.dart';
 
-class Command {
+/*
+---------------
+DEPRECATED ----
+---------------
+*/
+class OldCommand {
+  String notprefix;
+  String prefix;
   String command;
   Function callback;
-  Command({this.command, this.callback});
+  OldCommand({this.prefix, this.notprefix, this.command, this.callback});
 }
 
 class JsonKeyModel {
@@ -16,16 +23,16 @@ class JsonKeyModel {
 
   static bool isFirst = true;
 
-  List<Command> commands = [
-    Command(
+  List<OldCommand> commands = [
+    OldCommand(
       command: '@JsonKey',
       callback: (type, key, value, self) {
         return ModelTemplates.indented(
-          JsonKeyModel.getKey(key, type, value, alternateKey: true),
+          JsonKeyModel.getKey(key, type, value, alternateKey: true) + ';',
         );
       },
     ),
-    Command(
+    OldCommand(
       command: '@import',
       callback: (type, key, value, JsonKeyModel self) {
         if (value is List) {
@@ -37,6 +44,7 @@ class JsonKeyModel {
       },
     )
   ];
+
   JsonKeyModel(this.key, this.value) {
     var typemap = getType(value);
     type = typemap['type'];
@@ -57,7 +65,7 @@ class JsonKeyModel {
     jsonKeyParemeters = "name: '$valueName'";
     // get parameter inside: @JsonKey
     var jsonkeystringlist = originalKey.split('@JsonKey');
-    var typeJsonkeyParams = jsonkeystringlist[1].split('(')[1].split(')')[0];
+    var typeJsonkeyParams = getParameterString(jsonkeystringlist[1]);
 
     // merge params if contains name:
     if (typeJsonkeyParams.replaceAll(' ', '').contains('name:')) {
@@ -76,6 +84,30 @@ class JsonKeyModel {
       'valueName': valueName,
       'jsonKeyParemeters': jsonKeyParemeters,
     };
+  }
+
+  static String getParameterString(string) {
+    return string.split('(')[1].split(')')[0];
+  }
+
+  static String mergeJsonKeyString(jsonkey1, jsonkey2) {
+    var jsonkeylist = [jsonkey1, jsonkey2]
+        .map((e) => getParameterString(jsonkey2))
+        .join(',')
+        .split(',')
+        .where((element) => element.contains(':'))
+        .toList();
+    var stringjsonkey = [];
+    jsonkeylist.asMap().forEach((i, e) {
+      var guessindex = stringjsonkey.indexWhere(
+          (element) => element.split(':')[0] == e.split(':')[0].trim());
+      if (guessindex != null && guessindex >= 0) {
+        stringjsonkey.replaceRange(guessindex, guessindex, [e]);
+      } else {
+        stringjsonkey.add(e);
+      }
+    });
+    return stringjsonkey.join(',');
   }
 
   static String getKey(String type, String key, dynamic value, {alternateKey}) {

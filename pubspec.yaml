@@ -12,6 +12,7 @@ dependencies:
   io: ^0.3.3
   logging: ^0.11.4
 
+  expressions: ^0.1.5
   build_runner: ^1.7.4
   json_serializable: ^3.2.5
   json_annotation: ^3.0.1

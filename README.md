@@ -28,7 +28,7 @@ this package will read `.json` file, and generate `.dart` file, asign the `type 
 
 #### Example
 
-_Source File_
+**Source File**
 
 `./jsons/user.json`
 
@@ -40,7 +40,7 @@ _Source File_
 }
 ```
 
-_Generated_
+**Generated**
 
 `./lib/models/user.dart`
 
@@ -84,7 +84,7 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
 
 you can use `$` to specify the value to be Type of variable
 
-_Source File_
+**Source File**
 
 `./jsons/user.json`
 
@@ -99,35 +99,32 @@ _Source File_
 
 In this case, `$address` is like telling the generator to import `address.dart` and asign the titled case `Address` as it is the type of the variable `addresses`.
 
-_Generated_
+**Generated**
 
 `./lib/models/user.dart`
 
 ```dart
 import 'package:json_annotation/json_annotation.dart';
-
-import 'address.dart'; // imported
-
+import 'address.dart';
 part 'user.g.dart';
 
 @JsonSerializable()
 class User {
-      User();
-
+  User();
   int id;
   String username;
   bool blocked;
-  Address addresses; // Asigned type
-
-  factory User.fromJson(Map<String,dynamic> json) => _$UserFromJson(json);
-
+  Address addresses;
+  factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
+  Map<String, dynamic> toJson() => _$UserToJson(this);
+}
 ```
 
 ### Asign List<Type> variable
 
 you can use `$[]` to specify the value to be List of Type of variable
 
-_Source File_
+**Source File**
 
 `./jsons/user.json`
 
@@ -136,30 +133,52 @@ _Source File_
   "id": 2,
   "username": "John Doe",
   "blocked": false,
-  "addresses": "$address" // prefix $
+  "addresses": "$[]address" // prefix $[]
 }
 ```
 
-_Generated_
+**Generated**
 
 `./lib/models/user.dart`
 
 ```dart
 import 'package:json_annotation/json_annotation.dart';
-
-import 'address.dart'; // imported
-
+import 'address.dart';
 part 'user.g.dart';
 
 @JsonSerializable()
 class User {
-      User();
-
+  User();
   int id;
   String username;
   bool blocked;
-  List<Address> addresses; // Asigned List<Type>
+  List<Address> addresses;
+  factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
+  Map<String, dynamic> toJson() => _$UserToJson(this);
+}
+```
 
-  factory User.fromJson(Map<String,dynamic> json) => _$UserFromJson(json);
+### json_serializable JsonKey
+
+you can use `@JsonKey` in `key` to specify @JsonKey
+
+**Source File**
+
+`./jsons/user.json`
+
+```json
+{
+  "@JsonKey(ignore: true) dynamic": "md",
+  "@JsonKey(name: '+1') int": "fsdafsfg",
+  "name": "wendux",
+  "age": 20
+}
+```
+
+**Generated**
+
+`./lib/models/user.dart`
+
+```dart
 
 ```

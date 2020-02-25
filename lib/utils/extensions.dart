@@ -1,4 +1,4 @@
-import 'package:json_to_model/models/json_key_map.dart';
+import 'package:json_to_model/models/dart_declaration.dart';
 
 extension StringExtension on String {
   String toTitleCase() {
@@ -28,9 +28,12 @@ extension StringExtension on String {
     var trimmed = trim();
     List<String> value;
 
-    value = trimmed.split(' ');
-    value = value.expand((e) => e.split('_')).toList();
-    value = value.expand((e) => e.split(RegExp(r'(?=[A-Z])'))).toList();
+    value = trimmed.split(RegExp(r'[_\W]'));
+    value = value.where((element) => element.isNotEmpty).toList();
+    value = value
+        .expand((e) => e.split(RegExp(r'(?=[A-Z])')))
+        .where((element) => element.isNotEmpty)
+        .toList();
 
     return value;
   }
@@ -50,23 +53,24 @@ extension StringExtension on String {
   }
 }
 
-extension JsonKeyModels on List<JsonKeyModel> {
+extension JsonKeyModels on List<DartDeclaration> {
   String toDeclarationStrings() {
-    return map((e) => e.toDeclarationString()).join('\n').trim();
+    return map((e) => e.toString()).join('\n').trim();
   }
 
   String toImportStrings() {
     return where(
-            (element) => element.import != null && element.import.isNotEmpty)
-        .map((e) => e.toImportString())
+            (element) => element.imports != null && element.imports.isNotEmpty)
+        .map((e) => e.getImportStrings())
         .where((element) => element != null && element.isNotEmpty)
         .join('\n');
   }
 
   List getImportRaw() {
     var imports_raw = [];
-    where((element) => element.import != null).forEach((element) {
-      imports_raw.addAll(element.import);
+    where((element) => element.imports != null && element.imports.isNotEmpty)
+        .forEach((element) {
+      imports_raw.addAll(element.imports);
     });
     imports_raw = imports_raw
         .where((element) => element != null && element.isNotEmpty)

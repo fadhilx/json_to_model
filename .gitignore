@@ -14,3 +14,5 @@ jsons/
 lib/models/components/
 lib/models/data/
 lib/models/index.dart
+
+.test.dart

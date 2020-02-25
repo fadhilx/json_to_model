@@ -1,6 +1,6 @@
-import '../utils/extensions.dart';
+import 'package:json_to_model/models/dart_declaration.dart';
 
-import '../models/json_key_map.dart';
+import '../utils/extensions.dart';
 
 class JsonModel {
   String fileName;
@@ -8,20 +8,24 @@ class JsonModel {
   String declaration;
   String imports;
   List imports_raw;
-  JsonModel(String fileName, List<JsonKeyModel> jsonKeyModel) {
+  JsonModel(String fileName, List<DartDeclaration> dartDeclarations) {
     this.fileName = fileName.toCamelCase();
     className = fileName.toTitleCase();
-    declaration = jsonKeyModel.toDeclarationStrings();
-    imports = jsonKeyModel.toImportStrings();
-    imports_raw = jsonKeyModel.getImportRaw();
+    declaration = dartDeclarations.toDeclarationStrings();
+    imports = dartDeclarations.toImportStrings();
+    imports_raw = dartDeclarations.getImportRaw();
   }
 
   // model string from json map
-  static JsonModel jsonModelFromMap(Map jsonMap, String fileName) {
-    var jsonKeyModel = <JsonKeyModel>[];
-    jsonMap.forEach((key, value) => jsonKeyModel.add(JsonKeyModel(key, value)));
+  static JsonModel fromMap(String fileName, Map jsonMap) {
+    var dartDeclarations = <DartDeclaration>[];
+    jsonMap.forEach((key, value) {
+      var declaration = DartDeclaration.fromKeyValue(key, value);
+
+      return dartDeclarations.add(declaration);
+    });
     // add key to templatestring
     // add valuetype to templatestring
-    return JsonModel(fileName, jsonKeyModel);
+    return JsonModel(fileName, dartDeclarations);
   }
 }
