@@ -1,0 +1,21 @@
+name: json_to_model
+description: A sample command-line application.
+version: 1.0.0
+# homepage: https://www.example.com
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  path: ^1.6.0
+
+  io: ^0.3.3
+  logging: ^0.11.4
+
+  build_runner: ^1.7.4
+  json_serializable: ^3.2.5
+  json_annotation: ^3.0.1
+
+dev_dependencies:
+  pedantic: ^1.8.0
+  test: ^1.6.0
