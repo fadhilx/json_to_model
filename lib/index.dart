@@ -105,7 +105,7 @@ class JsonModelRunner {
   }
 
   // generate models from the json file
-  bool generateFileFromJson(outputPath, jsonModel, name) {
+  bool generateFileFromJson(outputPath, JsonModel jsonModel, name) {
     try {
       File(outputPath)
         ..createSync(recursive: true)
