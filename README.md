@@ -28,11 +28,11 @@ this package will read `.json` file, and generate `.dart` file, asign the `type 
 
 #### Example
 
-Source File
+_Source File_
 
 `./jsons/user.json`
 
-```json
+```js
 {
   "id": 2,
   "username": "John Doe",
@@ -40,7 +40,7 @@ Source File
 }
 ```
 
-Generated
+_Generated_
 
 `./lib/models/user.dart`
 
@@ -84,11 +84,11 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
 
 you can use `$` to specify the value to be Type of variable
 
-Source File
+_Source File_
 
 `./jsons/user.json`
 
-```json
+```js
 {
   "id": 2,
   "username": "John Doe",
@@ -99,7 +99,7 @@ Source File
 
 In this case, `$address` is like telling the generator to import `address.dart` and asign the titled case `Address` as it is the type of the variable `addresses`.
 
-Generated
+_Generated_
 
 `./lib/models/user.dart`
 
@@ -127,11 +127,11 @@ class User {
 
 you can use `$[]` to specify the value to be List of Type of variable
 
-Source File
+_Source File_
 
 `./jsons/user.json`
 
-```json
+```js
 {
   "id": 2,
   "username": "John Doe",
@@ -140,7 +140,7 @@ Source File
 }
 ```
 
-Generated
+_Generated_
 
 `./lib/models/user.dart`
 
