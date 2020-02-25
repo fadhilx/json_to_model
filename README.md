@@ -164,12 +164,12 @@ you can use `@JsonKey` in `key` to specify @JsonKey
 
 **Source File**
 
-`./jsons/user.json`
+`./jsons/cart.json`
 
 ```json
 {
-  "@JsonKey(ignore: true) dynamic": "md",
-  "@JsonKey(name: '+1') int": "fsdafsfg",
+  "@JsonKey(ignore: true) dynamic": "md", //jsonKey alias
+  "@JsonKey(name: '+1') int": "fsdafsfg", //jsonKey alias
   "name": "wendux",
   "age": 20
 }
@@ -177,8 +177,35 @@ you can use `@JsonKey` in `key` to specify @JsonKey
 
 **Generated**
 
-`./lib/models/user.dart`
+`./lib/models/cart.dart`
 
 ```dart
+import 'package:json_annotation/json_annotation.dart';
+
+part 'cart.g.dart';
+
+@JsonSerializable()
+class Cart {
+      Cart();
+
+  @JsonKey(ignore: true) dynamic md; // jsonKey generated
+  @JsonKey(name: '+1') int loved; // jsonKey generated
+  String name;
+  int age;
+
+  factory Cart.fromJson(Map<String,dynamic> json) => _$CartFromJson(json);
+  Map<String, dynamic> toJson() => _$CartToJson(this);
+}
 
 ```
+
+## Default Feature
+
+|                      description                      | input                                                                 |                        declaration                         |                      import                       |
+| :---------------------------------------------------: | --------------------------------------------------------------------- | :--------------------------------------------------------: | :-----------------------------------------------: |
+|              import model and asign type              | `{"auth':'$user'}`                                                    |                        `User auth;`                        |               `import 'user.dart'`                |
+|                  import recursively                   | `{"price':'$../product/price'}`                                       |                       `Price price;`                       |         `import '../product/price.dart'`          |
+| asign list of type and import (can also be recursive) | `{"addreses':'$[]address'}`                                           |                 `List<Address> addreses;`                  |              `import 'address.dart'`              |
+|           use `json_annotation` `@JsonKey`            | `{"@JsonKey(ignore: true) dynamic': 'val'}`                           |           `@JsonKey(ignore: true) dynamic val;`            |                         -                         |
+|    import other library(input value can be array)     | `{"@import':'package:otherlibrary/otherlibrary.dart'}`                |                             -                              | `import 'package:otherlibrary/otherlibrary.dart'` |
+|       write code independentally(experimental)        | `{"@\_ // any code her':',its like an escape to write yourown code'}` | `// any code her,its like an escape to write yourown code` |                         -                         |

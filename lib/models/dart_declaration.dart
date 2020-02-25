@@ -33,18 +33,6 @@ class DartDeclaration {
             .trim());
   }
 
-  void addImport(import) {
-    if (import == null && !import.isNotEmpty) {
-      return;
-    }
-    if (import is List) {
-      imports.addAll(import.map((e) => e));
-    }
-    if (import != null && import.isNotEmpty) imports.add(import);
-
-    imports = LinkedHashSet<String>.from(imports).toList();
-  }
-
   String strigifyAssignment(value) {
     return value != null ? ' = $value' : '';
   }
@@ -87,6 +75,18 @@ class DartDeclaration {
       name = newName.toCamelCase();
       decorators.replaceDecorator(Decorator(jsonKey.toString()));
     }
+  }
+
+  void addImport(import) {
+    if (import == null && !import.isNotEmpty) {
+      return;
+    }
+    if (import is List) {
+      imports.addAll(import.map((e) => e));
+    }
+    if (import != null && import.isNotEmpty) imports.add(import);
+
+    imports = LinkedHashSet<String>.from(imports).toList();
   }
 
   static DartDeclaration fromKeyValue(key, val) {
