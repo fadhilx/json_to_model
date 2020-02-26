@@ -24,8 +24,10 @@ void main(List<String> arguments) {
   var runner = JsonModelRunner(source: source, output: output);
   runner..setup();
 
+  print('Start generating');
   if (runner.run()) {
     // cleanup on success
+    print('Cleanup');
     runner.cleanup();
   }
 }

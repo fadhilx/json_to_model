@@ -1,6 +1,7 @@
-# json_to_model
+# json_to_model [![Pub](https://img.shields.io/pub/v/json_to_model)](https://pub.dev/packages/json_to_model)
 
-Gernerating Dart model class(json\*serializable) from Json file.\
+Gernerating Dart model class (json_serializable) from Json file.
+
 _partly inspired by [json_model](https://github.com/flutterchina/json_model)._
 
 ## Instalation
@@ -212,6 +213,12 @@ class Cart {
 
 ```
 
-## Contribution
+## Support
 
-i'm open contribution for documentation, bug report, code maintenance, etc. pPlease properly send a pull request. Thanks for your support.
+I'm open contribution for documentation, bug report, code maintenance, etc. properly submit an issue or send a pull request.
+
+Or you can buy me a coffee:
+
+[![Donate Now](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=UNME938XE8XJC&source=url)
+
+Thanks for your support.
