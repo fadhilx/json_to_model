@@ -1,6 +1,6 @@
 name: json_to_model
 description: Gernerate model class from Json file. partly inspired by json_model.
-version: 1.0.0
+version: 1.0.1
 homepage: https://github.com/fadhilx/json_to_model
 
 environment:
@@ -25,4 +25,4 @@ dev_dependencies:
   test: ^1.6.0
 
 executables:
-  dartweather: main
+  json_to_model: main
