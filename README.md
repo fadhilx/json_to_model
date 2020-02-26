@@ -1,10 +1,9 @@
 # json_to_model
 
-Gernerating Dart model class(json_serializable) from Json file.
+Gernerating Dart model class(json\*serializable) from Json file.\
+_partly inspired by [json_model](https://github.com/flutterchina/json_model)._
 
-partly inspired by json_model [json_model](https://github.com/flutterchina/json_model)
-
-## instalation
+## Instalation
 
 on `pubspec.yaml`
 
@@ -13,7 +12,7 @@ dependencies:
   json_to_mobile: ^1.0.0
 ```
 
-install using `pub get` command or if you using dart vscode/android studio, you can use install option
+install using `pub get` command or if you using dart vscode/android studio, you can use install option.
 
 ## Getting started
 
@@ -27,14 +26,14 @@ this package will read `.json` file, and generate `.dart` file, asign the `type 
 
 ## Default Feature
 
-| Description                                           | Expression          | Input                                                                | Output(declaration)                                        | Output(import)                                    |
-| :---------------------------------------------------- | ------------------- | -------------------------------------------------------------------- | ---------------------------------------------------------- | ------------------------------------------------- |
-| import model and asign type                           | `...:$value`        | `{"auth':'$user'}`                                                   | `User auth;`                                               | `import 'user.dart'`                              |
-| import recursively                                    | `...:$../../value`  | `{"price':'$../product/price'}`                                      | `Price price;`                                             | `import '../product/price.dart'`                  |
-| asign list of type and import (can also be recursive) | `...:$[]value`      | `{"addreses':'$[]address'}`                                          | `List<Address> addreses;`                                  | `import 'address.dart'`                           |
-| use `json_annotation` `@JsonKey`                      | `@JsonKey(...):...` | `{"@JsonKey(ignore: true) dynamic': 'val'}`                          | `@JsonKey(ignore: true) dynamic val;`                      | -                                                 |
-| import other library(input value can be array)        | `@import:...`       | `{"@import':'package:otherlibrary/otherlibrary.dart'}`               | -                                                          | `import 'package:otherlibrary/otherlibrary.dart'` |
-| write code independentally(experimental)              | `@_...:`            | `{"@_ // any code her':',its like an escape to write yourown code'}` | `// any code her,its like an escape to write yourown code` | -                                                 |
+| Description                                           | Expression                   | Input                                                                | Output(declaration)                                        | Output(import)                                    |
+| :---------------------------------------------------- | ---------------------------- | -------------------------------------------------------------------- | ---------------------------------------------------------- | ------------------------------------------------- |
+| import model and asign type                           | {`...`:`'$value'`}           | `{"auth':'$user'}`                                                   | `User auth;`                                               | `import 'user.dart'`                              |
+| import recursively                                    | {`...`:`'$../pathto/value'`} | `{"price':'$../product/price'}`                                      | `Price price;`                                             | `import '../product/price.dart'`                  |
+| asign list of type and import (can also be recursive) | {`...`:`'$[]value'`}         | `{"addreses':'$[]address'}`                                          | `List<Address> addreses;`                                  | `import 'address.dart'`                           |
+| use `json_annotation` `@JsonKey`                      | {`'@JsonKey(...)'`:`...`}    | `{"@JsonKey(ignore: true) dynamic': 'val'}`                          | `@JsonKey(ignore: true) dynamic val;`                      | -                                                 |
+| import other library(input value can be array)        | {`'@import'`:`...`}          | `{"@import':'package:otherlibrary/otherlibrary.dart'}`               | -                                                          | `import 'package:otherlibrary/otherlibrary.dart'` |
+| write code independentally(experimental)              | {`'@_...'`:`...`}            | `{"@_ // any code her':',its like an escape to write yourown code'}` | `// any code her,its like an escape to write yourown code` | -                                                 |
 
 ## Examples
 
