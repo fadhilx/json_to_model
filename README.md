@@ -25,34 +25,6 @@ install using `pub get` command or if you using dart vscode/android studio, you 
 
 this package will read `.json` file, and generate `.dart` file, asign the `type of the value` as `variable type` and `key` as the `variable name`.
 
-## Feature
-
-Templates:
-
-```dart
-  String defaultTemplate({
-      imports,
-      fileName,
-      className,
-      declaration,
-    }) =>  """
-import 'package:json_annotation/json_annotation.dart';
-
-$imports
-
-part '$fileName.g.dart';
-
-@JsonSerializable()
-class $className {
-      $className();
-
-  $declaration
-
-  factory $className.fromJson(Map<String,dynamic> json) => _\$${className}FromJson(json);
-  Map<String, dynamic> toJson() => _\$${className}ToJson(this);
-}""";
-```
-
 | Description                                           | Expression                   | Input                                                                | Output(declaration)                                        | Output(import)                                    |
 | :---------------------------------------------------- | ---------------------------- | -------------------------------------------------------------------- | ---------------------------------------------------------- | ------------------------------------------------- |
 | declare type depends on the json value                | {`...`:`any type`}           | `{"id": 1, "message':'hello world'}`,                                | `int id;`<br>`String message;`                             | -                                                 |
@@ -238,6 +210,41 @@ class Cart {
   Map<String, dynamic> toJson() => _$CartToJson(this);
 }
 
+```
+
+## Glossary
+
+Entity:
+
+- `imports` import statement strings. Got from `.json` value with prefix `$`, suffixed it with `.dart` interpolate into `import '$import';\n`.
+- `fileName` file name. Got from `.json` value with prefix `$`, but the non-word caracter(`\W`) being removed, turn it in `toCamelCase()`
+- `className` class name. Basically `fileName` but turned in`toTitleCase()`.
+- `declarations` declaration statement strings. basically list of [DartDeclaration](lib/core/dart_declaration.dart) object and turned it in`toString()` .
+
+Templates:
+
+```dart
+String defaultTemplate({
+    imports,
+    fileName,
+    className,
+    declarations,
+  }) =>  """
+import 'package:json_annotation/json_annotation.dart';
+
+$imports
+
+part '$fileName.g.dart';
+
+@JsonSerializable()
+class $className {
+      $className();
+
+  $declarations
+
+  factory $className.fromJson(Map<String,dynamic> json) => _\$${className}FromJson(json);
+  Map<String, dynamic> toJson() => _\$${className}ToJson(this);
+}""";
 ```
 
 ## Support
