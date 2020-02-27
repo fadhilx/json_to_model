@@ -1,4 +1,4 @@
-import 'package:json_to_model/models/dart_declaration.dart';
+import 'package:json_to_model/core/dart_declaration.dart';
 
 extension StringExtension on String {
   String toTitleCase() {

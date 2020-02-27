@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'dart:collection';
-import 'package:json_to_model/models/command.dart';
-import 'package:json_to_model/models/decorator.dart';
-import 'package:json_to_model/models/json_key.dart';
-import 'package:json_to_model/models/model_template.dart';
+import 'package:json_to_model/core/command.dart';
+import 'package:json_to_model/core/decorator.dart';
+import 'package:json_to_model/core/json_key.dart';
+import 'package:json_to_model/core/model_template.dart';
 import '../utils/extensions.dart';
 
 class DartDeclaration {

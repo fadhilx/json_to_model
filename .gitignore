@@ -11,8 +11,5 @@ build/
 doc/api/
 
 jsons/
-lib/models/components/
-lib/models/data/
-lib/models/index.dart
-
+lib/models/
 .test.dart

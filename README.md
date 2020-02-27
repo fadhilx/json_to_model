@@ -1,10 +1,10 @@
 # json_to_model [![Pub](https://img.shields.io/pub/v/json_to_model)](https://pub.dev/packages/json_to_model)
 
-Gernerating Dart model class (json_serializable) from Json file.
+Generating Dart model class (json_serializable) from Json file.
 
 _partly inspired by [json_model](https://github.com/flutterchina/json_model)._
 
-## Instalation
+## Installation
 
 on `pubspec.yaml`
 
@@ -25,10 +25,37 @@ install using `pub get` command or if you using dart vscode/android studio, you 
 
 this package will read `.json` file, and generate `.dart` file, asign the `type of the value` as `variable type` and `key` as the `variable name`.
 
-## Default Feature
+## Feature
+
+Templates:
+
+```dart
+  String defaultTemplate({
+      imports,
+      fileName,
+      className,
+      declaration,
+    }) =>  """
+import 'package:json_annotation/json_annotation.dart';
+
+$imports
+
+part '$fileName.g.dart';
+
+@JsonSerializable()
+class $className {
+      $className();
+
+  $declaration
+
+  factory $className.fromJson(Map<String,dynamic> json) => _\$${className}FromJson(json);
+  Map<String, dynamic> toJson() => _\$${className}ToJson(this);
+}""";
+```
 
 | Description                                           | Expression                   | Input                                                                | Output(declaration)                                        | Output(import)                                    |
 | :---------------------------------------------------- | ---------------------------- | -------------------------------------------------------------------- | ---------------------------------------------------------- | ------------------------------------------------- |
+| declare type depends on the json value                | {`...`:`any type`}           | `{"id": 1, "message':'hello world'}`,                                | `int id;`<br>`String message;`                             | -                                                 |
 | import model and asign type                           | {`...`:`'$value'`}           | `{"auth':'$user'}`                                                   | `User auth;`                                               | `import 'user.dart'`                              |
 | import recursively                                    | {`...`:`'$../pathto/value'`} | `{"price':'$../product/price'}`                                      | `Price price;`                                             | `import '../product/price.dart'`                  |
 | asign list of type and import (can also be recursive) | {`...`:`'$[]value'`}         | `{"addreses':'$[]address'}`                                          | `List<Address> addreses;`                                  | `import 'address.dart'`                           |

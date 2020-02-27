@@ -1,5 +1,5 @@
-import 'package:json_to_model/models/decorator.dart';
-import 'package:json_to_model/models/json_key.dart';
+import 'package:json_to_model/core/decorator.dart';
+import 'package:json_to_model/core/json_key.dart';
 
 import 'dart_declaration.dart';
 import '../utils/extensions.dart';

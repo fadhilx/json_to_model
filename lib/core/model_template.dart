@@ -1,4 +1,4 @@
-import 'package:json_to_model/models/json_model.dart';
+import 'package:json_to_model/core/json_model.dart';
 
 class ModelTemplates {
   static String Function(JsonModel) fromJsonModel =
@@ -20,7 +20,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 ${imports ?? '/*TODO: imports*/'}
 
-part '${fileName ?? '/*TODO: fileName*/'}.g.dart';
+${fileName != null ? "part '$fileName.g.dart';" : "/*TODO: fileName*/"}
 
 @JsonSerializable()
 class ${className ?? '/*TODO: className*/'} {
@@ -30,8 +30,7 @@ class ${className ?? '/*TODO: className*/'} {
 
   factory ${className ?? '/*TODO: className*/'}.fromJson(Map<String,dynamic> json) => _\$${className ?? '/*TODO: className*/'}FromJson(json);
   Map<String, dynamic> toJson() => _\$${className ?? '/*TODO: className*/'}ToJson(this);
-}
-    """;
+}""";
 
   static String indented(String content, {int indent}) {
     indent = indent ?? 1;
