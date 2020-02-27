@@ -1,10 +1,71 @@
 # json_to_model [![Pub Version](https://img.shields.io/pub/v/json_to_model?color=%2335d9ba&style=flat-square)](https://pub.dev/packages/json_to_model)<!-- omit in toc -->
 
-Generating Dart model class (json_serializable) from Json file.
+Command line tool for generating Dart models (json_serializable) from Json file.
 
 _partly inspired by [json_model](https://github.com/flutterchina/json_model)._
 
+## What?, Why?, How?
+### What
+Command line tool to convert `.json` files into `.dart` model files and finally will generate `.g.dart` file(json_serializable)
+### Why
+#### Problem
+you might have a system or back-end REST app, and you want to build a dart app. you may be will start to make model for your data. but to convert from Dart `Map` need extra work, so you can use `json_serializable`, but it just to let you handle data conversion, you still need to type it model by model, what if you have huge system that require huge amount of models. to write it all up might distress you.
+
+#### Solution
+this command line tool let your convert your existing `.json` file(that you might have) into dart(json_serializable) files
+
+#### Why just not use existing command line library `json_model` instead
+ the `json_model` is great, cool structure, but it doesnt have *recursive import* which the feature that i want, and i want it automatically change variable to camelCase, i could write an issue and PR, but its hard to make a changes as it dont really have a clean code scalable structure, and have comments that i dont understand, and last active is in June, i dont think i could wait any longer, so i made new one, some of it have the same core feature, but (may be) have a better structure. 
+
+### How
+Create/copy `.json` files into `./jsons/`(default) on root of your project, and run `pub run json_to_model`.
+
+#### Example
+```json
+{
+  "id": 2,
+  "title": "Hello Guys!",
+  "content": "$content",
+  "tags": "$[]tag",
+  "user": "$../user/user",
+  "published": true
+}
+```
+**Output**
+```dart
+import 'package:json_annotation/json_annotation.dart';
+
+import 'content.dart';
+import 'tag.dart';
+import '../user/user.dart';
+
+part 'examples.g.dart';
+
+@JsonSerializable()
+class Examples {
+      Examples();
+
+  int id;
+  String title;
+  Content content;
+  List<Tag> tags;
+  User user;
+  bool published;
+
+  factory Examples.fromJson(Map<String,dynamic> json) => _$ExamplesFromJson(json);
+  Map<String, dynamic> toJson() => _$ExamplesToJson(this);
+}
+```
+
 # Contents <!-- omit in toc -->
+- [What?, Why?, How?](#what-why-how)
+  - [What](#what)
+  - [Why](#why)
+    - [Problem](#problem)
+    - [Solution](#solution)
+    - [Why just not use existing command line library `json_model` instead](#why-just-not-use-existing-command-line-library-json_model-instead)
+  - [How](#how)
+    - [Example](#example)
 - [Installation](#installation)
 - [Getting started](#getting-started)
 - [Usage](#usage)
@@ -25,6 +86,10 @@ _partly inspired by [json_model](https://github.com/flutterchina/json_model)._
     - [Entities:](#entities)
     - [Template:](#template)
 - [Support](#support)
+  - [Documentation](#documentation)
+  - [Bug/Error](#bugerror)
+  - [Feature request](#feature-request)
+  - [OR](#or)
 
 ## Installation
 
@@ -32,7 +97,7 @@ on `pubspec.yaml`
 
 ```yaml
 dependencies:
-  json_to_mobile: ^1.1.0
+  json_to_mobile: ^1.2.2
 ```
 
 install using `pub get` command or if you using dart vscode/android studio, you can use install option.
@@ -271,9 +336,16 @@ class $className {
 
 ## Support
 
+### Documentation
+any typos, grammar error, unintended word, or ambiguous meaning. you can PR. *or maybe create an issue*. **this is the one i really need your help**
 I'm open contribution for documentation, bug report, code maintenance, etc. properly submit an issue or send a pull request.
+### Bug/Error
+any bugs, unintended word comments, confusing variable naming. you can create an issue, *but also a PR really appreciated*.
+### Feature request
+any missing feature, cool feature, like prefix json key command, or dynamic changing. you can create an issue, or *write a dart extension for it*.
 
-Or you can buy me a coffee:
+### OR
+you can buy me a coffee:
 
 [![Donate Now](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=UNME938XE8XJC&source=url)
 
