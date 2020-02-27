@@ -214,14 +214,14 @@ class Cart {
 
 ## Glossary
 
-Entity:
+**Entities**:
 
 - `imports` import statement strings. Got from `.json` value with prefix `$`, suffixed it with `.dart` interpolate into `import '$import';\n`.
 - `fileName` file name. Got from `.json` value with prefix `$`, but the non-word caracter(`\W`) being removed, turn it in `toCamelCase()`
 - `className` class name. Basically `fileName` but turned in`toTitleCase()`.
 - `declarations` declaration statement strings. basically list of [DartDeclaration](lib/core/dart_declaration.dart) object and turned it in`toString()` .
 
-Templates:
+#### Template:
 
 ```dart
 String defaultTemplate({
