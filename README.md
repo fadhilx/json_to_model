@@ -14,7 +14,7 @@ You might have a system or back-end REST app, and you want to build a dart app. 
 #### Solution
 This command line tool let your convert your existing `.json` files(that you might have) into dart(json_serializable) files
 
-#### Why just not use existing command line library `json_model` instead
+#### Why not just use the existing command line library `json_model` instead
 The `json_model` is great, cool structure, but it doesnt have *recursive import* which the feature that i want, and i want it automatically change variable to camelCase, i could write an issue and PR, but its hard to make a changes as it dont really have a clean code scalable structure, and have comments that i dont understand, and contributors last active on that repo is in June, i dont think i could wait any longer, so i made new one, some of core feature remain the same, but (may be) have a better structure. 
 
 ### How
@@ -64,7 +64,7 @@ class Examples {
   - [Why](#why)
     - [Problem](#problem)
     - [Solution](#solution)
-    - [Why just not use existing command line library `json_model` instead](#why-just-not-use-existing-command-line-library-json_model-instead)
+    - [Why not just use the existing command line library `json_model` instead](#why-not-just-use-the-existing-command-line-library-json_model-instead)
   - [How](#how)
     - [Example](#example)
 - [Installation](#installation)
@@ -337,12 +337,14 @@ class $className {
 *for more info read [model_template.dart](/lib/core/model_template.dart)*
 
 ## Support
+I'm open contribution for documentation, bug report, code maintenance, etc. properly submit an issue or send a pull request.
 
 ### Documentation
 any typos, grammar error, unintended word, or ambiguous meaning. you can PR. *or maybe create an issue*. **this is the one i really need your help**
-I'm open contribution for documentation, bug report, code maintenance, etc. properly submit an issue or send a pull request.
+
 ### Bug/Error
 any bugs, unintended word comments, confusing variable naming. you can create an issue, *but also a PR really appreciated*.
+
 ### Feature request
 any missing feature, cool feature, like prefix json key command, or dynamic changing. you can create an issue, or *write a dart extension for it*.
 
