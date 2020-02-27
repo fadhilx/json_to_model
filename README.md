@@ -1,8 +1,30 @@
-# json_to_model [![Pub](https://img.shields.io/pub/v/json_to_model)](https://pub.dev/packages/json_to_model)
+# json_to_model [![Pub Version](https://img.shields.io/pub/v/json_to_model?color=%2335d9ba&style=flat-square)](https://pub.dev/packages/json_to_model)<!-- omit in toc -->
 
 Generating Dart model class (json_serializable) from Json file.
 
 _partly inspired by [json_model](https://github.com/flutterchina/json_model)._
+
+# Contents <!-- omit in toc -->
+- [Installation](#installation)
+- [Getting started](#getting-started)
+- [Usage](#usage)
+- [Examples](#examples)
+  - [Basic](#basic)
+    - [Source File](#source-file)
+    - [Generated](#generated)
+  - [Asign Type variable](#asign-type-variable)
+    - [Source File](#source-file-1)
+    - [Generated](#generated-1)
+  - [Asign List<Type> variable](#asign-listtype-variable)
+    - [Source File](#source-file-2)
+    - [Generated](#generated-2)
+  - [json_serializable JsonKey](#json_serializable-jsonkey)
+    - [Source File](#source-file-3)
+    - [Generated](#generated-3)
+- [Glossary](#glossary)
+    - [Entities:](#entities)
+    - [Template:](#template)
+- [Support](#support)
 
 ## Installation
 
@@ -41,7 +63,7 @@ you can copy json below and generate using `pub run json_to_model` command
 
 ### Basic
 
-**Source File**
+#### Source File
 
 `./jsons/user.json`
 
@@ -53,7 +75,7 @@ you can copy json below and generate using `pub run json_to_model` command
 }
 ```
 
-**Generated**
+#### Generated
 
 `./lib/models/user.dart`
 
@@ -97,7 +119,7 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
 
 you can use `$` to specify the value to be Type of variable
 
-**Source File**
+#### Source File
 
 `./jsons/user.json`
 
@@ -112,7 +134,7 @@ you can use `$` to specify the value to be Type of variable
 
 In this case, `$address` is like telling the generator to import `address.dart` and asign the titled case `Address` as it is the type of the variable `addresses`.
 
-**Generated**
+#### Generated
 
 `./lib/models/user.dart`
 
@@ -137,7 +159,7 @@ class User {
 
 you can use `$[]` to specify the value to be List of Type of variable
 
-**Source File**
+#### Source File
 
 `./jsons/user.json`
 
@@ -150,7 +172,7 @@ you can use `$[]` to specify the value to be List of Type of variable
 }
 ```
 
-**Generated**
+#### Generated
 
 `./lib/models/user.dart`
 
@@ -175,7 +197,7 @@ class User {
 
 you can use `@JsonKey` in `key` to specify @JsonKey
 
-**Source File**
+#### Source File
 
 `./jsons/cart.json`
 
@@ -188,7 +210,7 @@ you can use `@JsonKey` in `key` to specify @JsonKey
 }
 ```
 
-**Generated**
+#### Generated
 
 `./lib/models/cart.dart`
 
@@ -214,12 +236,12 @@ class Cart {
 
 ## Glossary
 
-**Entities**:
+#### Entities:
 
 - `imports` import statement strings. Got from `.json` value with prefix `$`, suffixed it with `.dart` interpolate into `import '$import';\n`.
-- `fileName` file name. Got from `.json` value with prefix `$`, but the non-word caracter(`\W`) being removed, turn it in `toCamelCase()`
+- `fileName` file name. Got from `.json` value with prefix `$`, but the non-word caracter(`\W`) being removed, turn it in`toCamelCase()`
 - `className` class name. Basically `fileName` but turned in`toTitleCase()`.
-- `declarations` declaration statement strings. basically list of [DartDeclaration](lib/core/dart_declaration.dart) object and turned it in`toString()` .
+- `declarations` declaration statement strings. basically list of [`DartDeclaration`](lib/core/dart_declaration.dart) object and turned it in`toString()` .
 
 #### Template:
 
