@@ -270,7 +270,7 @@ you can use `@JsonKey` in `key` to specify @JsonKey
 ```js
 {
   "@JsonKey(ignore: true) dynamic": "md", //jsonKey alias
-  "@JsonKey(name: '+1') int": "fsdafsfg", //jsonKey alias
+  "@JsonKey(name: '+1') int": "loved", //jsonKey alias
   "name": "wendux",
   "age": 20
 }
