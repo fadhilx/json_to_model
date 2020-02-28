@@ -90,6 +90,7 @@ class Examples {
   - [Documentation](#documentation)
   - [Bug/Error](#bugerror)
   - [Feature request](#feature-request)
+  - [Contribute](#contribute)
   - [Or](#or)
 
 ## Installation
@@ -347,6 +348,9 @@ any bugs, unintended word comments, confusing variable naming. you can create an
 
 ### Feature request
 any missing feature, cool feature, like prefix json key command, or dynamic changing. you can create an issue, or *write a dart extension for it*.
+
+### Contribute
+if you want to help maintain this library, kindly read [Contributing.md](CONTRIBUTING.md).
 
 ### Or
 you can buy me a coffee:
