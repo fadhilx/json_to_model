@@ -1,6 +1,6 @@
 name: json_to_model
 description: Gernerate model class from Json file. partly inspired by json_model.
-version: 1.2.4
+version: 1.2.5
 homepage: https://github.com/fadhilx/json_to_model
 
 environment:
