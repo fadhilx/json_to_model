@@ -90,7 +90,7 @@ class Examples {
   - [Documentation](#documentation)
   - [Bug/Error](#bugerror)
   - [Feature request](#feature-request)
-  - [OR](#or)
+  - [Or](#or)
 
 ## Installation
 
@@ -98,14 +98,14 @@ on `pubspec.yaml`
 
 ```yaml
 dependencies:
-  json_to_mobile: ^1.2.3
+  json_to_mobile: ^1.2.4
 ```
 
 install using `pub get` command or if you using dart vscode/android studio, you can use install option.
 
 ## Getting started
 
-1. Create a `jsons`(default) directory in the root of your project
+1. Create a  directory `jsons`(default) at root of your project
 2. Put all or Create json files inside `jsons` directory
 3. run `pub run json_to_model`. or `flutter pub run json_to_model` flutter project
 
@@ -113,15 +113,15 @@ install using `pub get` command or if you using dart vscode/android studio, you 
 
 this package will read `.json` file, and generate `.dart` file, asign the `type of the value` as `variable type` and `key` as the `variable name`.
 
-| Description                                           | Expression                   | Input                                                                | Output(declaration)                                        | Output(import)                                    |
-| :---------------------------------------------------- | ---------------------------- | -------------------------------------------------------------------- | ---------------------------------------------------------- | ------------------------------------------------- |
-| declare type depends on the json value                | {`...`:`any type`}           | `{"id": 1, "message':'hello world'}`,                                | `int id;`<br>`String message;`                             | -                                                 |
-| import model and asign type                           | {`...`:`'$value'`}           | `{"auth':'$user'}`                                                   | `User auth;`                                               | `import 'user.dart'`                              |
-| import recursively                                    | {`...`:`'$../pathto/value'`} | `{"price':'$../product/price'}`                                      | `Price price;`                                             | `import '../product/price.dart'`                  |
-| asign list of type and import (can also be recursive) | {`...`:`'$[]value'`}         | `{"addreses':'$[]address'}`                                          | `List<Address> addreses;`                                  | `import 'address.dart'`                           |
-| use `json_annotation` `@JsonKey`                      | {`'@JsonKey(...)'`:`...`}    | `{"@JsonKey(ignore: true) dynamic': 'val'}`                          | `@JsonKey(ignore: true) dynamic val;`                      | -                                                 |
-| import other library(input value can be array)        | {`'@import'`:`...`}          | `{"@import':'package:otherlibrary/otherlibrary.dart'}`               | -                                                          | `import 'package:otherlibrary/otherlibrary.dart'` |
-| write code independentally(experimental)              | {`'@_...'`:`...`}            | `{"@_ // any code her':',its like an escape to write yourown code'}` | `// any code her,its like an escape to write yourown code` | -                                                 |
+| Description                                           | Expression                   | Input                                                                 | Output(declaration)                                         | Output(import)                                    |
+| :---------------------------------------------------- | ---------------------------- | --------------------------------------------------------------------- | ----------------------------------------------------------- | ------------------------------------------------- |
+| declare type depends on the json value                | {`...`:`any type`}           | `{"id": 1, "message':'hello world'}`,                                 | `int id;`<br>`String message;`                              | -                                                 |
+| import model and asign type                           | {`...`:`'$value'`}           | `{"auth':'$user'}`                                                    | `User auth;`                                                | `import 'user.dart'`                              |
+| import recursively                                    | {`...`:`'$../pathto/value'`} | `{"price':'$../product/price'}`                                       | `Price price;`                                              | `import '../product/price.dart'`                  |
+| asign list of type and import (can also be recursive) | {`...`:`'$[]value'`}         | `{"addreses':'$[]address'}`                                           | `List<Address> addreses;`                                   | `import 'address.dart'`                           |
+| use `json_annotation` `@JsonKey`                      | {`'@JsonKey(...)'`:`...`}    | `{"@JsonKey(ignore: true) dynamic': 'val'}`                           | `@JsonKey(ignore: true) dynamic val;`                       | -                                                 |
+| import other library(input value can be array)        | {`'@import'`:`...`}          | `{"@import':'package:otherlibrary/otherlibrary.dart'}`                | -                                                           | `import 'package:otherlibrary/otherlibrary.dart'` |
+| write code independentally(experimental)              | {`'@_...'`:`...`}            | `{"@_ // any code here':',its like an escape to write yourown code'}` | `// any code here,its like an escape to write yourown code` | -                                                 |
 
 ## Examples
 
@@ -348,9 +348,9 @@ any bugs, unintended word comments, confusing variable naming. you can create an
 ### Feature request
 any missing feature, cool feature, like prefix json key command, or dynamic changing. you can create an issue, or *write a dart extension for it*.
 
-### OR
+### Or
 you can buy me a coffee:
 
-[![Donate Now](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=UNME938XE8XJC&source=url)
-
+[![Donate Now](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=UNME938XE8XJC&source=url)<br>
+[<img src='https://www.iklanlah.com/images/toyyibpay-widget-sm-p.png' alt='ToyyibPay' height='60'/>](https://toyyibpay.com/fadhilx-open-source)<br>
 Thanks for your support.
