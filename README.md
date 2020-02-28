@@ -207,7 +207,7 @@ In this case, `$address` is like telling the generator to import `address.dart` 
 
 ```dart
 import 'package:json_annotation/json_annotation.dart';
-import 'address.dart';
+import 'address.dart';  // automatic import
 part 'user.g.dart';
 
 @JsonSerializable()
@@ -216,7 +216,7 @@ class User {
   int id;
   String username;
   bool blocked;
-  Address addresses;
+  Address addresses;  // $address converted to Address as type 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
   Map<String, dynamic> toJson() => _$UserToJson(this);
 }
@@ -245,7 +245,7 @@ you can use `$[]` to specify the value to be List of Type of variable
 
 ```dart
 import 'package:json_annotation/json_annotation.dart';
-import 'address.dart';
+import 'address.dart'; // write address as import
 part 'user.g.dart';
 
 @JsonSerializable()
@@ -254,7 +254,7 @@ class User {
   int id;
   String username;
   bool blocked;
-  List<Address> addresses;
+  List<Address> addresses; // List of Type 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
   Map<String, dynamic> toJson() => _$UserToJson(this);
 }
