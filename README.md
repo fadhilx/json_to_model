@@ -1,4 +1,4 @@
-# json_to_model [![Pub Version](https://img.shields.io/pub/v/json_to_model?color=%2335d9ba&style=flat-square)](https://pub.dev/packages/json_to_model)<!-- omit in toc -->
+# json_to_model [![Pub Version](https://img.shields.io/pub/v/json_to_model?color=%2335d9ba&style=flat-square)](https://pub.dev/packages/json_to_model)
 
 Command line tool for generating Dart models (json_serializable) from Json file.
 
@@ -58,7 +58,7 @@ class Examples {
 }
 ```
 
-# Contents <!-- omit in toc -->
+# Contents 
 - [What?, Why?, How?](#what-why-how)
   - [What](#what)
   - [Why](#why)
@@ -99,7 +99,7 @@ on `pubspec.yaml`
 
 ```yaml
 dependencies:
-  json_to_mobile: ^1.2.5
+  json_to_mobile: ^1.2.6
 ```
 
 install using `pub get` command or if you using dart vscode/android studio, you can use install option.
