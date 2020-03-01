@@ -99,7 +99,7 @@ on `pubspec.yaml`
 
 ```yaml
 dependencies:
-  json_to_mobile: ^1.2.6
+  json_to_mobile: ^1.2.7
 ```
 
 install using `pub get` command or if you using dart vscode/android studio, you can use install option.
@@ -108,7 +108,7 @@ install using `pub get` command or if you using dart vscode/android studio, you 
 
 1. Create a  directory `jsons`(default) at root of your project
 2. Put all or Create json files inside `jsons` directory
-3. run `pub run json_to_model`. or `flutter pub run json_to_model` flutter project
+3. run `pub run json_to_model`. or `flutter packages pub run json_to_model` flutter project
 
 ## Usage
 
