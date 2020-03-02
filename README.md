@@ -101,7 +101,15 @@ on `pubspec.yaml`
 dependencies:
   json_to_mobile: ^1.3.7
 ```
+or if you already have json_serializable dependancy
+```yaml
+dependencies:
+  json_to_mobile: ^1.3.7
+  build_runner: ^1.7.4
+  json_serializable: ^3.2.5
+  json_annotation: ^3.0.1
 
+```
 install using `pub get` command or if you using dart vscode/android studio, you can use install option.
 
 ## Getting started
