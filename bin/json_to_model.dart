@@ -3,6 +3,7 @@ import 'package:args/args.dart';
 
 void main(List<String> arguments) {
   var source = '';
+  String onlyFile;
   var output = '';
   var argParser = ArgParser();
   argParser
@@ -20,8 +21,16 @@ void main(List<String> arguments) {
       callback: (v) => output = v,
       help: 'Specify models directory',
     )
+    ..addOption(
+      'onlyFile',
+      abbr: 'f',
+      defaultsTo: null,
+      callback: (v) => onlyFile = v,
+      help: 'Specify models directory',
+    )
     ..parse(arguments);
-  var runner = JsonModelRunner(source: source, output: output);
+  var runner =
+      JsonModelRunner(source: source, output: output, onlyFile: onlyFile);
   runner..setup();
 
   print('Start generating');

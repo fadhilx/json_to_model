@@ -99,7 +99,7 @@ on `pubspec.yaml`
 
 ```yaml
 dependencies:
-  json_to_mobile: ^1.2.7
+  json_to_mobile: ^1.3.7
 ```
 
 install using `pub get` command or if you using dart vscode/android studio, you can use install option.

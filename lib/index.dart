@@ -10,11 +10,13 @@ import './core/json_model.dart';
 class JsonModelRunner {
   String srcDir = './jsons/';
   String distDir = './lib/models/';
+  String onlyFile = './lib/models/';
   List<FileSystemEntity> list = [];
 
-  JsonModelRunner({String source, String output})
+  JsonModelRunner({String source, String output, String onlyFile})
       : srcDir = source,
-        distDir = output;
+        distDir = output,
+        onlyFile = onlyFile;
 
   void setup() {
     if (srcDir.endsWith('/')) srcDir = srcDir.substring(0, srcDir.length - 1);
@@ -26,7 +28,9 @@ class JsonModelRunner {
   bool run({command}) {
     // run
     // get all json files ./jsons
-    list = getAllJsonFiles();
+    list = onlyFile == null
+        ? getAllJsonFiles()
+        : [File(path.join(srcDir, onlyFile))];
     if (!generateModelsDirectory()) return false;
     if (!iterateJsonFile()) return false;
 
