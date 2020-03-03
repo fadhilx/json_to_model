@@ -43,8 +43,7 @@ class JsonModelRunner {
     // build
     if (onlyFile == null) {
       await BuildScript(['build', '--delete-conflicting-outputs']).build();
-    }
-    {
+    } else {
       var dotSplit = path.join(srcDir, onlyFile).split('.');
       await BuildScript(['run', (dotSplit..removeLast()).join('.') + '.dart'])
           .build();

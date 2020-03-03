@@ -101,6 +101,8 @@ on `pubspec.yaml`
 ```yaml
 dependencies:
   json_to_model: ^1.3.8
+  json_serializable: ^3.2.5
+
 ```
 or if you already have json_serializable dependancy
 ```yaml
