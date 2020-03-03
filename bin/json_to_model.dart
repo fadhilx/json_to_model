@@ -26,7 +26,7 @@ void main(List<String> arguments) {
       abbr: 'f',
       defaultsTo: null,
       callback: (v) => onlyFile = v,
-      help: 'Specify models directory',
+      help: 'Specify file to read',
     )
     ..parse(arguments);
   var runner =

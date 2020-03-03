@@ -58,40 +58,41 @@ class Examples {
 }
 ```
 
-# Contents 
-- [What?, Why?, How?](#what-why-how)
-  - [What](#what)
-  - [Why](#why)
-    - [Problem](#problem)
-    - [Solution](#solution)
-    - [Why not just use the existing command line library `json_model` instead](#why-not-just-use-the-existing-command-line-library-json_model-instead)
-  - [How](#how)
-    - [Example](#example)
-- [Installation](#installation)
-- [Getting started](#getting-started)
-- [Usage](#usage)
-- [Examples](#examples)
-  - [Basic](#basic)
-    - [Source File](#source-file)
-    - [Generated](#generated)
-  - [Asign Type variable](#asign-type-variable)
-    - [Source File](#source-file-1)
-    - [Generated](#generated-1)
-  - [Asign List<Type> variable](#asign-listtype-variable)
-    - [Source File](#source-file-2)
-    - [Generated](#generated-2)
-  - [json_serializable JsonKey](#json_serializable-jsonkey)
-    - [Source File](#source-file-3)
-    - [Generated](#generated-3)
-- [Glossary](#glossary)
-    - [Entities:](#entities)
-    - [Template:](#template)
-- [Support](#support)
-  - [Documentation](#documentation)
-  - [Bug/Error](#bugerror)
-  - [Feature request](#feature-request)
-  - [Contribute](#contribute)
-  - [Or](#or)
+## Contents 
+  - [What?, Why?, How?](#what-why-how)
+    - [What](#what)
+    - [Why](#why)
+      - [Problem](#problem)
+      - [Solution](#solution)
+      - [Why not just use the existing command line library `json_model` instead](#why-not-just-use-the-existing-command-line-library-json_model-instead)
+    - [How](#how)
+      - [Example](#example)
+  - [Contents](#contents)
+  - [Installation](#installation)
+  - [Getting started](#getting-started)
+  - [Usage](#usage)
+  - [Examples](#examples)
+    - [Basic](#basic)
+      - [Source File](#source-file)
+      - [Generated](#generated)
+    - [Asign Type variable](#asign-type-variable)
+      - [Source File](#source-file-1)
+      - [Generated](#generated-1)
+    - [Asign List<Type> variable](#asign-listtype-variable)
+      - [Source File](#source-file-2)
+      - [Generated](#generated-2)
+    - [json_serializable JsonKey](#json_serializable-jsonkey)
+      - [Source File](#source-file-3)
+      - [Generated](#generated-3)
+  - [Glossary](#glossary)
+      - [Entities:](#entities)
+      - [Template:](#template)
+  - [Support](#support)
+    - [Documentation](#documentation)
+    - [Bug/Error](#bugerror)
+    - [Feature request](#feature-request)
+    - [Contribute](#contribute)
+    - [Or](#or)
 
 ## Installation
 
@@ -99,12 +100,12 @@ on `pubspec.yaml`
 
 ```yaml
 dependencies:
-  json_to_mobile: ^1.3.7
+  json_to_model: ^1.3.8
 ```
 or if you already have json_serializable dependancy
 ```yaml
 dependencies:
-  json_to_mobile: ^1.3.7
+  json_to_model: ^1.3.8
   build_runner: ^1.7.4
   json_serializable: ^3.2.5
   json_annotation: ^3.0.1
