@@ -4,6 +4,27 @@ Command line tool for generating Dart models (json_serializable) from Json file.
 
 _partly inspired by [json_model](https://github.com/flutterchina/json_model)._
 
+## Installation
+
+on `pubspec.yaml`
+
+```yaml
+dependencies:
+  json_to_model: ^1.3.10
+  json_serializable: ^3.2.5
+
+```
+or if you already have json_serializable dependancy
+```yaml
+dependencies:
+  json_to_model: ^1.3.10
+  build_runner: ^1.7.4
+  json_serializable: ^3.2.5
+  json_annotation: ^3.0.1
+
+```
+install using `pub get` command or if you using dart vscode/android studio, you can use install option.
+
 ## What?, Why?, How?
 ### What
 Command line tool to convert `.json` files into `.dart` model files and finally will generate `.g.dart` file(json_serializable)
@@ -93,27 +114,6 @@ class Examples {
     - [Feature request](#feature-request)
     - [Contribute](#contribute)
     - [Or](#or)
-
-## Installation
-
-on `pubspec.yaml`
-
-```yaml
-dependencies:
-  json_to_model: ^1.3.8
-  json_serializable: ^3.2.5
-
-```
-or if you already have json_serializable dependancy
-```yaml
-dependencies:
-  json_to_model: ^1.3.8
-  build_runner: ^1.7.4
-  json_serializable: ^3.2.5
-  json_annotation: ^3.0.1
-
-```
-install using `pub get` command or if you using dart vscode/android studio, you can use install option.
 
 ## Getting started
 
