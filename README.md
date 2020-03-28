@@ -10,39 +10,49 @@ on `pubspec.yaml`
 
 ```yaml
 dependencies:
-  json_to_model: ^1.3.10
+  json_to_model: ^1.3.11
   json_serializable: ^3.2.5
-
 ```
+
 or if you already have json_serializable dependancy
+
 ```yaml
 dependencies:
-  json_to_model: ^1.3.10
+  json_to_model: ^1.3.11
   build_runner: ^1.7.4
   json_serializable: ^3.2.5
   json_annotation: ^3.0.1
-
 ```
+
 install using `pub get` command or if you using dart vscode/android studio, you can use install option.
 
 ## What?, Why?, How?
+
 ### What
+
 Command line tool to convert `.json` files into `.dart` model files and finally will generate `.g.dart` file(json_serializable)
+
 ### Why
+
 #### Problem
+
 You might have a system or back-end REST app, and you want to build a dart app. you may start create models for your data. but to convert from Dart `Map` need extra work, so you can use `json_serializable`, but it just to let you handle data conversion, you still need to type it model by model, what if you have huge system that require huge amount of models. to write it all up might distress you.
 
 #### Solution
+
 This command line tool let your convert your existing `.json` files(that you might have) into dart(json_serializable) files
 
 #### Why not just use the existing command line library `json_model` instead
-The `json_model` is great, cool structure, but it doesnt have *recursive import* which the feature that i want, and i want it automatically change variable to camelCase, i could write an issue and PR, but its hard to make a changes as it dont really have a clean code scalable structure, and have comments that i dont understand, and contributors last active on that repo is in June, i dont think i could wait any longer, so i made new one, some of core feature remain the same, but (may be) have a better structure. 
+
+The `json_model` is great, cool structure, but it doesnt have _recursive import_ which the feature that i want, and i want it automatically change variable to camelCase, i could write an issue and PR, but its hard to make a changes as it dont really have a clean code scalable structure, and have comments that i dont understand, and contributors last active on that repo is in June, i dont think i could wait any longer, so i made new one, some of core feature remain the same, but (may be) have a better structure.
 
 ### How
+
 it run through your json file and find possible type, variable name, import uri, decorator and class name, and will write it into the templates.
 Create/copy `.json` files into `./jsons/`(default) on root of your project, and run `pub run json_to_model`.
 
 #### Example
+
 ```json
 {
   "id": 2,
@@ -53,7 +63,9 @@ Create/copy `.json` files into `./jsons/`(default) on root of your project, and 
   "published": true
 }
 ```
+
 **Output**
+
 ```dart
 import 'package:json_annotation/json_annotation.dart';
 
@@ -79,7 +91,10 @@ class Examples {
 }
 ```
 
-## Contents 
+## Contents
+
+- [json_to_model ![Pub Version](https://pub.dev/packages/json_to_model)](#json_to_model-img-srchttpspubdevpackagesjson_to_model-altpub-version)
+  - [Installation](#installation)
   - [What?, Why?, How?](#what-why-how)
     - [What](#what)
     - [Why](#why)
@@ -89,7 +104,6 @@ class Examples {
     - [How](#how)
       - [Example](#example)
   - [Contents](#contents)
-  - [Installation](#installation)
   - [Getting started](#getting-started)
   - [Usage](#usage)
   - [Examples](#examples)
@@ -117,7 +131,7 @@ class Examples {
 
 ## Getting started
 
-1. Create a  directory `jsons`(default) at root of your project
+1. Create a directory `jsons`(default) at root of your project
 2. Put all or Create json files inside `jsons` directory
 3. run `pub run json_to_model`. or `flutter packages pub run json_to_model` flutter project
 
@@ -227,7 +241,7 @@ class User {
   int id;
   String username;
   bool blocked;
-  Address addresses;  // $address converted to Address as type 
+  Address addresses;  // $address converted to Address as type
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
   Map<String, dynamic> toJson() => _$UserToJson(this);
 }
@@ -265,7 +279,7 @@ class User {
   int id;
   String username;
   bool blocked;
-  List<Address> addresses; // List of Type 
+  List<Address> addresses; // List of Type
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
   Map<String, dynamic> toJson() => _$UserToJson(this);
 }
@@ -346,24 +360,31 @@ class $className {
   Map<String, dynamic> toJson() => _\$${className}ToJson(this);
 }""";
 ```
-*for more info read [model_template.dart](/lib/core/model_template.dart)*
+
+_for more info read [model_template.dart](/lib/core/model_template.dart)_
 
 ## Support
+
 I'm open contribution for documentation, bug report, code maintenance, etc. properly submit an issue or send a pull request.
 
 ### Documentation
-any typos, grammar error, unintended word, or ambiguous meaning. you can PR. *or maybe create an issue*. **this is the one i really need your help**
+
+any typos, grammar error, unintended word, or ambiguous meaning. you can PR. _or maybe create an issue_. **this is the one i really need your help**
 
 ### Bug/Error
-any bugs, unintended word comments, confusing variable naming. you can create an issue, *but also a PR really appreciated*.
+
+any bugs, unintended word comments, confusing variable naming. you can create an issue, _but also a PR really appreciated_.
 
 ### Feature request
-any missing feature, cool feature, like prefix json key command, or dynamic changing. you can create an issue, or *write a dart extension for it*.
+
+any missing feature, cool feature, like prefix json key command, or dynamic changing. you can create an issue, or _write a dart extension for it_.
 
 ### Contribute
+
 if you want to help maintain this library, kindly read [Contributing.md](CONTRIBUTING.md).
 
 ### Or
+
 you can buy me a coffee:
 
 [![Donate Now](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=UNME938XE8XJC&source=url)<br>

@@ -5,3 +5,7 @@
 ## 1.2.0
 
 - rename directory `models` to `core
+
+## 1.3.11
+
+- fix TitleCase error on className

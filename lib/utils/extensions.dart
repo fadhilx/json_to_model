@@ -2,13 +2,8 @@ import 'package:json_to_model/core/dart_declaration.dart';
 
 extension StringExtension on String {
   String toTitleCase() {
-    var words = getWords();
-    var firstWord = words[0];
-    if (firstWord.isNotEmpty) {
-      firstWord =
-          '${firstWord.substring(0, 1).toUpperCase()}${firstWord.substring(1)}';
-    }
-    return "${firstWord}${words.getRange(1, words.length).join('')}";
+    var firstWord = toCamelCase();
+    return '${firstWord.substring(0, 1).toUpperCase()}${firstWord.substring(1)}';
   }
 
   String toCamelCase() {
