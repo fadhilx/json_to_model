@@ -9,3 +9,7 @@
 ## 1.3.11
 
 - fix TitleCase error on className
+
+## 1.3.12
+
+- fix file .g.dart not generated

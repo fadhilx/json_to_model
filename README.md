@@ -10,7 +10,7 @@ on `pubspec.yaml`
 
 ```yaml
 dependencies:
-  json_to_model: ^1.3.11
+  json_to_model: ^1.3.12
   json_serializable: ^3.2.5
 ```
 
@@ -18,7 +18,7 @@ or if you already have json_serializable dependancy
 
 ```yaml
 dependencies:
-  json_to_model: ^1.3.11
+  json_to_model: ^1.3.12
   build_runner: ^1.7.4
   json_serializable: ^3.2.5
   json_annotation: ^3.0.1
