@@ -9,7 +9,7 @@ class JsonModel {
   String imports;
   List imports_raw;
   JsonModel(String fileName, List<DartDeclaration> dartDeclarations) {
-    this.fileName = fileName.toCamelCase();
+    this.fileName = fileName;
     className = fileName.toTitleCase();
     declaration = dartDeclarations.toDeclarationStrings();
     imports = dartDeclarations.toImportStrings();
