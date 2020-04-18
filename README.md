@@ -10,15 +10,7 @@ on `pubspec.yaml`
 
 ```yaml
 dependencies:
-  json_to_model: ^1.3.12
-  json_serializable: ^3.2.5
-```
-
-or if you already have json_serializable dependancy
-
-```yaml
-dependencies:
-  json_to_model: ^1.3.12
+  json_to_model: ^1.3.13
   build_runner: ^1.7.4
   json_serializable: ^3.2.5
   json_annotation: ^3.0.1
@@ -64,6 +56,14 @@ Create/copy `.json` files into `./jsons/`(default) on root of your project, and 
 }
 ```
 
+#### Command:
+
+> `pub run json_to_model`
+
+or
+
+> `flutter pub run json_to_model`
+
 **Output**
 
 ```dart
@@ -103,6 +103,7 @@ class Examples {
       - [Why not just use the existing command line library `json_model` instead](#why-not-just-use-the-existing-command-line-library-json_model-instead)
     - [How](#how)
       - [Example](#example)
+      - [Command:](#command)
   - [Contents](#contents)
   - [Getting started](#getting-started)
   - [Usage](#usage)

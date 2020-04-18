@@ -13,3 +13,7 @@
 ## 1.3.12
 
 - fix file .g.dart not generated
+
+## 1.3.13
+
+- Better usage peek on doc
