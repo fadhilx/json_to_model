@@ -1,6 +1,7 @@
 import 'package:build_runner/src/entrypoint/runner.dart';
 import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
+import 'package:build_runner_core/build_runner_core.dart';
 import 'package:json_to_model/utils/commands/clean.dart';
 import 'package:json_to_model/utils/commands/generate_build_script.dart';
 import 'dart:io';
@@ -12,8 +13,9 @@ import 'package:build_runner/src/logging/std_io_logging.dart';
 
 class BuildScript {
   BuildScript(this.args);
-  var commandRunner = BuildCommandRunner([]);
   var localCommands = [CleanCommand(), GenerateBuildScript()];
+  
+  BuildCommandRunner commandRunner;
   List<String> args;
 
   ArgResults parsedArgs;
@@ -22,6 +24,7 @@ class BuildScript {
 
     ArgResults parsedArgs;
     try {
+      commandRunner = BuildCommandRunner([], await PackageGraph.forThisPackage());
       parsedArgs = commandRunner.parse(args);
     } on UsageException catch (e) {
       print(red.wrap(e.message));
