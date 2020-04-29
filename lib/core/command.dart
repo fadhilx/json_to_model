@@ -131,9 +131,18 @@ class Commands {
       },
     ),
     Command(
+      prefix: '\@',
+      command: '',
+      notprefix: '\$\[\]',
+      callback: (DartDeclaration self, String testSubject, {String key, dynamic value}) {
+        self.setName(key);
+        self.type = 'DateTime';
+        return self;
+      },
+    ),
+    Command(
       type: dynamic,
-      callback: (DartDeclaration self, dynamic testSubject,
-          {String key, dynamic value}) {
+      callback: (DartDeclaration self, dynamic testSubject, {String key, dynamic value}) {
         self.setName(key);
 
         if (value == null) {
