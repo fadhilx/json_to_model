@@ -131,7 +131,7 @@ class Commands {
       },
     ),
     Command(
-      prefix: '\@',
+      prefix: '\@datetime',
       command: '',
       notprefix: '\$\[\]',
       callback: (DartDeclaration self, String testSubject, {String key, dynamic value}) {
