@@ -168,7 +168,7 @@ $enumName
 
   String toConverter() {
    return ModelTemplates.indented('''
-$enumName _typeEnumFromString(String input) {
+$enumName _${enumName.toCamelCase()}FromString(String input) {
   return $enumName.values.firstWhere(
     (e) => _stringFrom$enumName(e) == input.toLowerCase(),
     orElse: () => null,
