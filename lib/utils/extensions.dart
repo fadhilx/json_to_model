@@ -1,6 +1,7 @@
 import 'package:json_to_model/core/dart_declaration.dart';
 
 extension StringExtension on String {
+
   String toTitleCase() {
     var firstWord = toCamelCase();
     return '${firstWord.substring(0, 1).toUpperCase()}${firstWord.substring(1)}';
@@ -57,6 +58,20 @@ extension JsonKeyModels on List<DartDeclaration> {
     return where(
             (element) => element.imports != null && element.imports.isNotEmpty)
         .map((e) => e.getImportStrings())
+        .where((element) => element != null && element.isNotEmpty)
+        .join('\n');
+  }
+
+  String getEnums() {
+    return where((element) => element.isEnum)
+        .map((e) => e.getEnum().toTemplateString())
+        .where((element) => element != null && element.isNotEmpty)
+        .join('\n');;
+  }
+
+  String getEnumConverters() {
+    return where((element) => element.isEnum)
+        .map((e) => e.getEnum().toConverter())
         .where((element) => element != null && element.isNotEmpty)
         .join('\n');
   }
