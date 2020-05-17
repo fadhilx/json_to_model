@@ -169,7 +169,7 @@ $enumName _${enumName.toCamelCase()}FromString(String input){
   return $enumName.values.firstWhere(
       (e) {
         final element = e.toString().toLowerCase().substring(e.toString().indexOf('.') + 1);
-        return element == input;
+        return element == input.toLowerCase();
       },
       orElse: () => null,
     );
