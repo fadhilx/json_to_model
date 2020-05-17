@@ -51,6 +51,7 @@ Create/copy `.json` files into `./jsons/`(default) on root of your project, and 
   "title": "Hello Guys!",
   "content": "$content",
   "tags": "$[]tag",
+  "user_type": "@enum:admin,app_user,normal",
   "user": "$../user/user",
   "published": true
 }
@@ -83,12 +84,26 @@ class Examples {
   String title;
   Content content;
   List<Tag> tags;
+  String userType;
+  UserTypeEnum get userTypeEnum => _userTypeEnumFromString(userType);
   User user;
   bool published;
 
   factory Examples.fromJson(Map<String,dynamic> json) => _$ExamplesFromJson(json);
   Map<String, dynamic> toJson() => _$ExamplesToJson(this);
+  
+  UserTypeEnum _UserTypeEnumFromString(String input){
+    return UserTypeEnum.values.firstWhere(
+        (e) {
+          final element = e.toString().toLowerCase().substring(e.toString().indexOf('.') + 1);
+          return element == input;
+        },
+        orElse: () => null,
+      );
+  }
 }
+
+enum UserTypeEnum { Admin, AppUser, Normal }
 ```
 
 ## Contents
