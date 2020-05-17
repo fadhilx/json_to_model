@@ -160,19 +160,23 @@ class Enum{
   }
 
   String toImport() {
-    return '$enumName get ${enumName.toCamelCase()} => _${enumName.toCamelCase()}FromString($name);';
+    return '''
+$enumName 
+  get ${enumName.toCamelCase()} => _${enumName.toCamelCase()}FromString($name);
+  set ${enumName.toCamelCase()}($enumName value) => $name = _stringFrom$enumName(value);''';
   }
 
   String toConverter() {
    return ModelTemplates.indented('''
-$enumName _${enumName.toCamelCase()}FromString(String input){
+$enumName _typeEnumFromString(String input) {
   return $enumName.values.firstWhere(
-      (e) {
-        final element = e.toString().toLowerCase().substring(e.toString().indexOf('.') + 1);
-        return element == input.toLowerCase();
-      },
-      orElse: () => null,
-    );
+    (e) => _stringFrom$enumName(e) == input.toLowerCase(),
+    orElse: () => null,
+  );
+}
+
+String _stringFrom$enumName($enumName input) {
+  return input.toString().substring(input.toString().indexOf('.') + 1).toLowerCase();
 }''');
   }
 }
