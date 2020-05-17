@@ -7,6 +7,8 @@ class JsonModel {
   String className;
   String declaration;
   String imports;
+  String enums;
+  String enumConverters;
   List imports_raw;
   JsonModel(String fileName, List<DartDeclaration> dartDeclarations) {
     this.fileName = fileName;
@@ -14,6 +16,8 @@ class JsonModel {
     declaration = dartDeclarations.toDeclarationStrings();
     imports = dartDeclarations.toImportStrings();
     imports_raw = dartDeclarations.getImportRaw();
+    enums = dartDeclarations.getEnums();
+    enumConverters = dartDeclarations.getEnumConverters();
   }
 
   // model string from json map
