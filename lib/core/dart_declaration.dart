@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:json_to_model/core/command.dart';
 import 'package:json_to_model/core/decorator.dart';
 import 'package:json_to_model/core/json_key.dart';
+import 'package:json_to_model/core/json_model.dart';
 import 'package:json_to_model/core/model_template.dart';
 import '../utils/extensions.dart';
 
@@ -16,6 +17,7 @@ class DartDeclaration {
   List<Command> keyComands = [];
   List<Command> valueCommands = [];
   List<String> enumValues = [];
+  List<JsonModel> nestedClasses = [];
   bool get isEnum => enumValues.isNotEmpty;
   
   DartDeclaration({
