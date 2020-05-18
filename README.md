@@ -51,6 +51,7 @@ Create/copy `.json` files into `./jsons/`(default) on root of your project, and 
   "title": "Hello Guys!",
   "content": "$content",
   "tags": "$[]tag",
+  "user_type": "@enum:admin,app_user,normal",
   "user": "$../user/user",
   "published": true
 }
@@ -83,12 +84,26 @@ class Examples {
   String title;
   Content content;
   List<Tag> tags;
+  String userType;
+  UserTypeEnum get userTypeEnum => _userTypeEnumFromString(userType);
   User user;
   bool published;
 
   factory Examples.fromJson(Map<String,dynamic> json) => _$ExamplesFromJson(json);
   Map<String, dynamic> toJson() => _$ExamplesToJson(this);
+  
+  UserTypeEnum _UserTypeEnumFromString(String input){
+    return UserTypeEnum.values.firstWhere(
+        (e) {
+          final element = e.toString().toLowerCase().substring(e.toString().indexOf('.') + 1);
+          return element == input;
+        },
+        orElse: () => null,
+      );
+  }
 }
+
+enum UserTypeEnum { Admin, AppUser, Normal }
 ```
 
 ## Contents
@@ -335,8 +350,10 @@ class Cart {
 - `fileName` file name. Got from `.json` value with prefix `$`, but the non-word caracter(`\W`) being removed, turn it in`toCamelCase()`
 - `className` class name. Basically `fileName` but turned in`toTitleCase()`.
 - `declarations` declaration statement strings. basically list of [`DartDeclaration`](lib/core/dart_declaration.dart) object and turned it in`toString()` .
-
-#### Template:
+- `enums` any statements annotated as `@enum` will be parsed an added to the generated dart statements.
+- `enumConverters` to automatically bind the enum string value to the actual enum using a converter
+#
+### Template:
 
 ```dart
 String defaultTemplate({
@@ -344,6 +361,8 @@ String defaultTemplate({
     fileName,
     className,
     declarations,
+    enums,
+    enumConverters,
   }) =>  """
 import 'package:json_annotation/json_annotation.dart';
 
@@ -359,7 +378,12 @@ class $className {
 
   factory $className.fromJson(Map<String,dynamic> json) => _\$${className}FromJson(json);
   Map<String, dynamic> toJson() => _\$${className}ToJson(this);
-}""";
+  
+  $enumConverters
+}
+
+$enums
+""";
 ```
 
 _for more info read [model_template.dart](/lib/core/model_template.dart)_

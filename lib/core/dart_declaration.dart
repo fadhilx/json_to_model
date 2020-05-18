@@ -15,6 +15,9 @@ class DartDeclaration {
   String assignment;
   List<Command> keyComands = [];
   List<Command> valueCommands = [];
+  List<String> enumValues = [];
+  bool get isEnum => enumValues.isNotEmpty;
+  
   DartDeclaration({
     this.jsonKey,
     this.type,
@@ -28,12 +31,15 @@ class DartDeclaration {
 
   @override
   String toString() {
-    return ModelTemplates.indented(
-        '${stringifyDecorator(getDecorator())}$type $name${strigifyAssignment(assignment)};'
-            .trim());
+    var declaration = '${stringifyDecorator(getDecorator())}$type $name${stringifyAssignment(assignment)};'.trim();
+    if(isEnum) {
+      declaration = '$declaration\n${getEnum().toImport()}';
+    }
+    
+    return ModelTemplates.indented(declaration);
   }
 
-  String strigifyAssignment(value) {
+  String stringifyAssignment(value) {
     return value != null ? ' = $value' : '';
   }
 
@@ -77,6 +83,14 @@ class DartDeclaration {
     }
   }
 
+  void setEnumValues(List<String> values) {
+    enumValues = values;
+  }
+
+  Enum getEnum() {
+    return Enum(name, enumValues);
+  }
+
   void addImport(import) {
     if (import == null && !import.isNotEmpty) {
       return;
@@ -92,7 +106,7 @@ class DartDeclaration {
   static DartDeclaration fromKeyValue(key, val) {
     var dartDeclaration = DartDeclaration();
     dartDeclaration = fromCommand(Commands.valueCommands, dartDeclaration,
-        testSubject: val, key: key, value: val);
+        testSubject: val, key: key, value: val,);
 
     dartDeclaration = fromCommand(Commands.keyComands, dartDeclaration,
         testSubject: key, key: key, value: val);
@@ -130,5 +144,39 @@ class DartDeclaration {
       }
     }
     return newSelf;
+  }
+}
+
+class Enum{
+  final String name;
+  final List<String> values;
+
+  String get enumName => '${name.toTitleCase()}Enum';
+
+  Enum(this.name, this.values);
+
+  String toTemplateString() {
+    return 'enum $enumName { ${values.map((e) => e.toTitleCase()).toList().join(', ')} }';
+  }
+
+  String toImport() {
+    return '''
+$enumName 
+  get ${enumName.toCamelCase()} => _${enumName.toCamelCase()}FromString($name);
+  set ${enumName.toCamelCase()}($enumName value) => $name = _stringFrom$enumName(value);''';
+  }
+
+  String toConverter() {
+   return ModelTemplates.indented('''
+$enumName _${enumName.toCamelCase()}FromString(String input) {
+  return $enumName.values.firstWhere(
+    (e) => _stringFrom$enumName(e) == input.toLowerCase(),
+    orElse: () => null,
+  );
+}
+
+String _stringFrom$enumName($enumName input) {
+  return input.toString().substring(input.toString().indexOf('.') + 1).toLowerCase();
+}''');
   }
 }
