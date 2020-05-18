@@ -137,7 +137,7 @@ enum UserTypeEnum { Admin, AppUser, Normal }
       - [Generated](#generated-3)
   - [Glossary](#glossary)
       - [Entities:](#entities)
-      - [Template:](#template)
+    - [Template:](#template)
   - [Support](#support)
     - [Documentation](#documentation)
     - [Bug/Error](#bugerror)
@@ -155,15 +155,17 @@ enum UserTypeEnum { Admin, AppUser, Normal }
 
 this package will read `.json` file, and generate `.dart` file, asign the `type of the value` as `variable type` and `key` as the `variable name`.
 
-| Description                                           | Expression                   | Input                                                                  | Output(declaration)                                          | Output(import)                                    |
-| :---------------------------------------------------- | ---------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------- |
-| declare type depends on the json value                | {`...`:`any type`}           | `{"id": 1, "message':'hello world'}`,                                  | `int id;`<br>`String message;`                               | -                                                 |
-| import model and asign type                           | {`...`:`'$value'`}           | `{"auth':'$user'}`                                                     | `User auth;`                                                 | `import 'user.dart'`                              |
-| import recursively                                    | {`...`:`'$../pathto/value'`} | `{"price':'$../product/price'}`                                        | `Price price;`                                               | `import '../product/price.dart'`                  |
-| asign list of type and import (can also be recursive) | {`...`:`'$[]value'`}         | `{"addreses':'$[]address'}`                                            | `List<Address> addreses;`                                    | `import 'address.dart'`                           |
-| use `json_annotation` `@JsonKey`                      | {`'@JsonKey(...)'`:`...`}    | `{"@JsonKey(ignore: true) dynamic': 'val'}`                            | `@JsonKey(ignore: true) dynamic val;`                        | -                                                 |
-| import other library(input value can be array)        | {`'@import'`:`...`}          | `{"@import':'package:otherlibrary/otherlibrary.dart'}`                 | -                                                            | `import 'package:otherlibrary/otherlibrary.dart'` |
-| write code independentally(experimental)              | {`'@_...'`:`...`}            | `{"@_ // any code here':',its like an escape to write your own code'}` | `// any code here,its like an escape to write your own code` | -                                                 |
+| Description                                           | Expression                                           | Input (Example)                                                        | Output(declaration)                                                          | Output(import)                                    |
+| :---------------------------------------------------- | ---------------------------------------------------- | ---------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------- |
+| declare type depends on the json value                | {`...`:`any type`}                                   | `{"id": 1, "message":"hello world"}`,                                  | `int id;`<br>`String message;`                                               | -                                                 |
+| import model and asign type                           | {`...`:`"$value"`}                                   | `{"auth":"$user"}`                                                     | `User auth;`                                                                 | `import 'user.dart'`                              |
+| import recursively                                    | {`...`:`"$../pathto/value"`}                         | `{"price":"$../product/price"}`                                        | `Price price;`                                                               | `import '../product/price.dart'`                  |
+| asign list of type and import (can also be recursive) | {`...`:`"$[]value"`}                                 | `{"addreses":"$[]address"}`                                            | `List<Address> addreses;`                                                    | `import 'address.dart'`                           |
+| use `json_annotation` `@JsonKey`                      | {`"@JsonKey(...)"`:`...`}                            | `{"@JsonKey(ignore: true) dynamic": "val"}`                            | `@JsonKey(ignore: true) dynamic val;`                                        | -                                                 |
+| import other library(input value can be array)        | {`"@import"`:`...`}                                  | `{"@import":"package:otherlibrary/otherlibrary.dart"}`                 | -                                                                            | `import 'package:otherlibrary/otherlibrary.dart'` |
+| Datetime type                                         | {`...`:`"@datetime"`}                                | `{"createdAt": "@datetime:2020-02-15T15:47:51.742Z"}`                  | `DateTime createdAt;`                                                        | -                                                 |
+| Enum type                                             | {`...`:`"@enum:(folowed by enum separated by ',')"`} | `{"@import":"@enum:admin,app_user,normal"}`                            | `enum UserTypeEnum { Admin, AppUser, Normal }`(include variable declaration) | -                                                 |
+| write code independentally(experimental)              | {`"@_..."`:`...`}                                    | `{"@_ // any code here":",its like an escape to write your own code"}` | `// any code here,its like an escape to write your own code`                 | -                                                 |
 
 ## Examples
 
