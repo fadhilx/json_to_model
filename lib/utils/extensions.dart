@@ -66,7 +66,7 @@ extension JsonKeyModels on List<DartDeclaration> {
     return where((element) => element.isEnum)
         .map((e) => e.getEnum().toTemplateString())
         .where((element) => element != null && element.isNotEmpty)
-        .join('\n');;
+        .join('\n');
   }
 
   String getEnumConverters() {
