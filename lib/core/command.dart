@@ -1,6 +1,5 @@
 import 'package:json_to_model/core/decorator.dart';
 import 'package:json_to_model/core/json_key.dart';
-import 'package:json_to_model/core/json_model.dart';
 
 import 'dart_declaration.dart';
 import '../utils/extensions.dart';
@@ -77,8 +76,7 @@ class Commands {
           return self;
         }
         if (value is Map) {
-          self.type = key.toTitleCase();
-          self.nestedClasses.add(JsonModel.fromMap(key, value));
+          self.type = 'Map<String, dynamic>';
           return self;
         }
         var newDeclaration = DartDeclaration.fromCommand(valueCommands, self,
@@ -163,8 +161,7 @@ class Commands {
           return self;
         }
         if (value is Map) {
-          self.type = key.toTitleCase();
-          self.nestedClasses.add(JsonModel.fromMap('nested', value));
+          self.type = 'Map<String, dynamic>';
           return self;
         }
         self.type = value.runtimeType.toString();

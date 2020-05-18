@@ -7,11 +7,9 @@ class JsonModel {
   String className;
   String declaration;
   String imports;
-  List<String> imports_raw;
   String enums;
   String enumConverters;
-  String nestedClasses;
-
+  List imports_raw;
   JsonModel(String fileName, List<DartDeclaration> dartDeclarations) {
     this.fileName = fileName;
     className = fileName.toTitleCase();
@@ -20,7 +18,6 @@ class JsonModel {
     imports_raw = dartDeclarations.getImportRaw();
     enums = dartDeclarations.getEnums();
     enumConverters = dartDeclarations.getEnumConverters();
-    nestedClasses = dartDeclarations.getNestedClasses();
   }
 
   // model string from json map
