@@ -33,14 +33,11 @@ class DartDeclaration {
 
   @override
   String toString() {
-    var declaration = '';
-
+    var declaration = '${stringifyDecorator(getDecorator())}$type $name${stringifyAssignment(assignment)};'.trim();
     if(isEnum) {
-      declaration += '${getEnum().toImport()}\n';
+      declaration = '$declaration\n${getEnum().toImport()}';
     }
-
-    declaration += '${stringifyDecorator(getDecorator())}$type $name${stringifyAssignment(assignment)};'.trim();
-
+    
     return ModelTemplates.indented(declaration);
   }
 
