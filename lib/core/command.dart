@@ -144,10 +144,10 @@ class Commands {
     ),
     Command(
       prefix: '\@enum',
-      command: '',
+      command: ':',
       notprefix: '\$\[\]',
       callback: (DartDeclaration self, String testSubject, {String key, dynamic value}) {
-        self.setEnumValues((value as String).substring('@enum'.length).split(','));
+        self.setEnumValues((value as String).substring('@enum:'.length).split(','));
         self.setName(key);
         self.type = 'String';
         return self;
