@@ -55,8 +55,8 @@ class DartDeclaration {
     return decorators?.join('\n');
   }
 
-  String getImportStrings() {
-    return imports.where((element) => element != null && element.isNotEmpty).map((e) => "import '$e.dart';").join('\n');
+  List<String> getImportStrings() {
+    return imports.where((element) => element != null && element.isNotEmpty).map((e) => "import '$e.dart';").toList();
   }
 
   static String getTypeFromJsonKey(String theString) {

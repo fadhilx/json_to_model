@@ -63,10 +63,18 @@ extension JsonKeyModels on List<DartDeclaration> {
   }
 
   String toImportStrings() {
-    return where((element) => element.imports != null && element.imports.isNotEmpty)
+    var imports = where((element) => element.imports != null && element.imports.isNotEmpty)
         .map((e) => e.getImportStrings())
         .where((element) => element != null && element.isNotEmpty)
-        .join('\n');
+        .fold<List<String>>(<String>[], (prev, current) => prev..addAll(current));
+
+    var nestedImports = where((element) => element.nestedClasses.isNotEmpty)
+        .map((e) => e.nestedClasses.map((jsonModel) => jsonModel.imports).toList())
+        .fold<List<String>>(<String>[], (prev, current) => prev..addAll(current));
+
+    imports.addAll(nestedImports);
+
+    return imports.join('\n');
   }
 
   String getEnums(String className) {
