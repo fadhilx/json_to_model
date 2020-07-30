@@ -10,9 +10,9 @@ on `pubspec.yaml`
 
 ```yaml
 dependencies:
-  json_to_model: ^1.3.13
-  build_runner: ^1.7.4
-  json_serializable: ^3.2.5
+  json_to_model: ^1.4.1
+  build_runner: ^1.9.0
+  json_serializable: ^3.3.0
   json_annotation: ^3.0.1
 ```
 
