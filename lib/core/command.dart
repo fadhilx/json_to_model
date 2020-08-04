@@ -5,9 +5,7 @@ import 'package:json_to_model/core/json_model.dart';
 import 'dart_declaration.dart';
 import '../utils/extensions.dart';
 
-typedef Callback = DartDeclaration Function(
-    DartDeclaration self, String testSubject,
-    {String key, dynamic value});
+typedef Callback = DartDeclaration Function(DartDeclaration self, String testSubject, {String key, dynamic value});
 
 class Command {
   Type type = String;
@@ -29,20 +27,15 @@ class Commands {
     Command(
       prefix: '\@',
       command: 'JsonKey',
-      callback: (DartDeclaration self, String testSubject,
-          {String key, dynamic value}) {
+      callback: (DartDeclaration self, String testSubject, {String key, dynamic value}) {
         var jsonKey = JsonKeyMutate.fromJsonKeyParamaString(testSubject);
         self.jsonKey &= jsonKey;
-        var newDeclaration = DartDeclaration.fromCommand(valueCommands, self,
-            testSubject: value, key: key, value: value);
+        var newDeclaration =
+            DartDeclaration.fromCommand(valueCommands, self, testSubject: value, key: key, value: value);
 
         self.decorators.replaceDecorator(Decorator(self.jsonKey.toString()));
-        self.type = DartDeclaration.getTypeFromJsonKey(testSubject) ??
-            newDeclaration.type ??
-            self.type;
-        self.name = DartDeclaration.getNameFromJsonKey(testSubject) ??
-            newDeclaration.name ??
-            self.name;
+        self.type = DartDeclaration.getTypeFromJsonKey(testSubject) ?? newDeclaration.type ?? self.type;
+        self.name = DartDeclaration.getNameFromJsonKey(testSubject) ?? newDeclaration.name ?? self.name;
         if (self.name == null) self.setName(value);
         return self;
       },
@@ -50,8 +43,7 @@ class Commands {
     Command(
       prefix: '\@',
       command: 'import',
-      callback: (DartDeclaration self, dynamic testSubject,
-          {String key, dynamic value}) {
+      callback: (DartDeclaration self, dynamic testSubject, {String key, dynamic value}) {
         self.addImport(value);
         return self;
       },
@@ -59,8 +51,7 @@ class Commands {
     Command(
       prefix: '@',
       command: '_',
-      callback: (DartDeclaration self, dynamic testSubject,
-          {String key, dynamic value}) {
+      callback: (DartDeclaration self, dynamic testSubject, {String key, dynamic value}) {
         self.type = key.substring(1);
         self.name = value;
         return self;
@@ -69,21 +60,52 @@ class Commands {
     Command(
       prefix: '',
       command: '',
-      callback: (DartDeclaration self, dynamic testSubject,
-          {String key, dynamic value}) {
+      callback: (DartDeclaration self, dynamic testSubject, {String key, dynamic value}) {
         self.setName(key);
+
         if (value == null) {
           self.type = 'dynamic';
           return self;
         }
+
         if (value is Map) {
           self.type = key.toTitleCase();
           self.nestedClasses.add(JsonModel.fromMap(key, value));
           return self;
         }
-        var newDeclaration = DartDeclaration.fromCommand(valueCommands, self,
-            testSubject: value, key: key, value: value);
+
+        if (value is List && value.isNotEmpty) {
+          final firstListValue = value.first;
+          if (firstListValue is List) {
+            final nestedFirst = firstListValue.first;
+            if (nestedFirst is Map) {
+              final key = nestedFirst['\$key'];
+              nestedFirst.remove('\$key');
+              self.type = 'List<List<$key>>';
+              self.nestedClasses.add(JsonModel.fromMap(key, nestedFirst));
+            }
+          } else if (firstListValue is Map) {
+            final key = firstListValue['\$key'];
+            firstListValue.remove('\$key');
+            self.type = 'List<$key>';
+            self.nestedClasses.add(JsonModel.fromMap(key, firstListValue));
+          } else {
+            final listValueType = firstListValue.runtimeType.toString();
+            self.type = 'List<$listValueType>';
+          }
+          return self;
+        }
+
+        var newDeclaration = DartDeclaration.fromCommand(
+          valueCommands,
+          self,
+          testSubject: value,
+          key: key,
+          value: value,
+        );
+
         self.type = newDeclaration.type ?? value.runtimeType.toString();
+
         return self;
       },
     ),
@@ -92,15 +114,8 @@ class Commands {
     Command(
       prefix: '\$',
       command: '\[\]',
-      callback: (DartDeclaration self, String testSubject,
-          {String key, dynamic value}) {
-        var typeName = testSubject
-            .substring(3)
-            .split('/')
-            .last
-            .split('\\')
-            .last
-            .toCamelCase();
+      callback: (DartDeclaration self, String testSubject, {String key, dynamic value}) {
+        var typeName = testSubject.substring(3).split('/').last.split('\\').last.toCamelCase();
         var toImport = testSubject.substring(3);
         self.addImport(toImport);
         self.type = 'List<${typeName.toTitleCase()}>';
@@ -111,17 +126,10 @@ class Commands {
       prefix: '\$',
       command: '',
       notprefix: '\$\[\]',
-      callback: (DartDeclaration self, String testSubject,
-          {String key, dynamic value}) {
+      callback: (DartDeclaration self, String testSubject, {String key, dynamic value}) {
         self.setName(key);
 
-        var typeName = testSubject
-            .substring(1)
-            .split('/')
-            .last
-            .split('\\')
-            .last
-            .toCamelCase();
+        var typeName = testSubject.substring(1).split('/').last.split('\\').last.toCamelCase();
 
         var toImport = testSubject.substring(1);
         self.addImport(toImport);
