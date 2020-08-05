@@ -10,9 +10,9 @@ on `pubspec.yaml`
 
 ```yaml
 dependencies:
-  json_to_model: ^1.3.13
-  build_runner: ^1.7.4
-  json_serializable: ^3.2.5
+  json_to_model: ^1.4.1
+  build_runner: ^1.9.0
+  json_serializable: ^3.3.0
   json_annotation: ^3.0.1
 ```
 
@@ -52,6 +52,7 @@ Create/copy `.json` files into `./jsons/`(default) on root of your project, and 
   "content": "$content",
   "tags": "$[]tag",
   "user_type": "@enum:admin,app_user,normal",
+  "auth_state": "@enum:verified(2),authenticated(1),guest(0)",
   "user": "$../user/user",
   "published": true
 }
@@ -69,7 +70,6 @@ or
 
 ```dart
 import 'package:json_annotation/json_annotation.dart';
-
 import 'content.dart';
 import 'tag.dart';
 import '../user/user.dart';
@@ -84,26 +84,54 @@ class Examples {
   String title;
   Content content;
   List<Tag> tags;
-  String userType;
-  UserTypeEnum get userTypeEnum => _userTypeEnumFromString(userType);
+  ExamplesUserTypeEnum 
+    get examplesUserTypeEnum => _examplesUserTypeEnumValues.map[userType];
+    set examplesUserTypeEnum(ExamplesUserTypeEnum value) => userType = _examplesUserTypeEnumValues.reverse[value];
+  @JsonKey(name: 'user_type') String userType;
+  ExamplesAuthStateEnum 
+    get examplesAuthStateEnum => _examplesAuthStateEnumValues.map[authState];
+    set examplesAuthStateEnum(ExamplesAuthStateEnum value) => authState = _examplesAuthStateEnumValues.reverse[value];
+  @JsonKey(name: 'auth_state') int authState;
   User user;
   bool published;
 
   factory Examples.fromJson(Map<String,dynamic> json) => _$ExamplesFromJson(json);
   Map<String, dynamic> toJson() => _$ExamplesToJson(this);
-  
-  UserTypeEnum _UserTypeEnumFromString(String input){
-    return UserTypeEnum.values.firstWhere(
-        (e) {
-          final element = e.toString().toLowerCase().substring(e.toString().indexOf('.') + 1);
-          return element == input;
-        },
-        orElse: () => null,
-      );
-  }
 }
 
-enum UserTypeEnum { Admin, AppUser, Normal }
+enum ExamplesUserTypeEnum { Admin, AppUser, Normal }
+enum ExamplesAuthStateEnum { Verified, Authenticated, Guest }
+
+final _examplesUserTypeEnumValues = _ExamplesUserTypeEnumConverter({
+  'admin': ExamplesUserTypeEnum.Admin,
+  'app_user': ExamplesUserTypeEnum.AppUser,
+  'normal': ExamplesUserTypeEnum.Normal,
+});
+
+
+final _examplesAuthStateEnumValues = _ExamplesAuthStateEnumConverter({
+  2: ExamplesAuthStateEnum.Verified,
+  1: ExamplesAuthStateEnum.Authenticated,
+  0: ExamplesAuthStateEnum.Guest,
+});
+
+class _ExamplesUserTypeEnumConverter<String, O> {
+  Map<String, O> map;
+  Map<O, String> reverseMap;
+
+  _ExamplesUserTypeEnumConverter(this.map);
+
+  Map<O, String> get reverse => reverseMap ??= map.map((k, v) => MapEntry(v, k));
+}
+
+class _ExamplesAuthStateEnumConverter<int, O> {
+  Map<int, O> map;
+  Map<O, int> reverseMap;
+
+  _ExamplesAuthStateEnumConverter(this.map);
+
+  Map<O, int> get reverse => reverseMap ??= map.map((k, v) => MapEntry(v, k));
+}
 ```
 
 ## Contents
@@ -164,7 +192,8 @@ this package will read `.json` file, and generate `.dart` file, asign the `type 
 | use `json_annotation` `@JsonKey`                      | {`"@JsonKey(...)"`:`...`}                            | `{"@JsonKey(ignore: true) dynamic": "val"}`                            | `@JsonKey(ignore: true) dynamic val;`                                        | -                                                 |
 | import other library(input value can be array)        | {`"@import"`:`...`}                                  | `{"@import":"package:otherlibrary/otherlibrary.dart"}`                 | -                                                                            | `import 'package:otherlibrary/otherlibrary.dart'` |
 | Datetime type                                         | {`...`:`"@datetime"`}                                | `{"createdAt": "@datetime:2020-02-15T15:47:51.742Z"}`                  | `DateTime createdAt;`                                                        | -                                                 |
-| Enum type                                             | {`...`:`"@enum:(folowed by enum separated by ',')"`} | `{"@import":"@enum:admin,app_user,normal"}`                            | `enum UserTypeEnum { Admin, AppUser, Normal }`(include variable declaration) | -                                                 |
+| Enum type                                             | {`...`:`"@enum:(folowed by enum separated by ',')"`} | `{"@import":"@enum:admin,app_user,normal"}`                            | `enum UserTypeEnum { Admin, AppUser, Normal }`(include variable declaration) | -             
+| Enum type with values                                 | {`...`:`"@enum:(folowed by enum separated by ',')"`} | `{"@import":"@enum:admin(0),app_user(1),normal(2)"}`                            | `enum UserTypeEnum { Admin, AppUser, Normal }`(include variable declaration) | -                                        |
 | write code independentally(experimental)              | {`"@_..."`:`...`}                                    | `{"@_ // any code here":",its like an escape to write your own code"}` | `// any code here,its like an escape to write your own code`                 | -                                                 |
 
 ## Examples
@@ -364,7 +393,6 @@ String defaultTemplate({
     className,
     declarations,
     enums,
-    enumConverters,
   }) =>  """
 import 'package:json_annotation/json_annotation.dart';
 
@@ -380,8 +408,7 @@ class $className {
 
   factory $className.fromJson(Map<String,dynamic> json) => _\$${className}FromJson(json);
   Map<String, dynamic> toJson() => _\$${className}ToJson(this);
-  
-  $enumConverters
+
 }
 
 $enums

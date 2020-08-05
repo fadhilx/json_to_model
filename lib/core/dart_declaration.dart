@@ -19,7 +19,7 @@ class DartDeclaration {
   List<String> enumValues = [];
   List<JsonModel> nestedClasses = [];
   bool get isEnum => enumValues.isNotEmpty;
-  
+
   DartDeclaration({
     this.jsonKey,
     this.type,
@@ -31,12 +31,11 @@ class DartDeclaration {
     jsonKey = JsonKeyMutate();
   }
 
-  @override
-  String toString() {
+  String toDeclaration(String className) {
     var declaration = '';
 
-    if(isEnum) {
-      declaration += '${getEnum().toImport()}\n';
+    if (isEnum) {
+      declaration += '${getEnum(className).toImport()}\n';
     }
 
     declaration += '${stringifyDecorator(getDecorator())}$type $name${stringifyAssignment(assignment)};'.trim();
@@ -56,11 +55,8 @@ class DartDeclaration {
     return decorators?.join('\n');
   }
 
-  String getImportStrings() {
-    return imports
-        .where((element) => element != null && element.isNotEmpty)
-        .map((e) => "import '$e.dart';")
-        .join('\n');
+  List<String> getImportStrings() {
+    return imports.where((element) => element != null && element.isNotEmpty).map((e) => "import '$e.dart';").toList();
   }
 
   static String getTypeFromJsonKey(String theString) {
@@ -90,10 +86,11 @@ class DartDeclaration {
 
   void setEnumValues(List<String> values) {
     enumValues = values;
+    type = _detectType(values.first);
   }
 
-  Enum getEnum() {
-    return Enum(name, enumValues);
+  Enum getEnum(String className) {
+    return Enum(className, name, enumValues);
   }
 
   void addImport(import) {
@@ -110,11 +107,15 @@ class DartDeclaration {
 
   static DartDeclaration fromKeyValue(key, val) {
     var dartDeclaration = DartDeclaration();
-    dartDeclaration = fromCommand(Commands.valueCommands, dartDeclaration,
-        testSubject: val, key: key, value: val,);
+    dartDeclaration = fromCommand(
+      Commands.valueCommands,
+      dartDeclaration,
+      testSubject: val,
+      key: key,
+      value: val,
+    );
 
-    dartDeclaration = fromCommand(Commands.keyComands, dartDeclaration,
-        testSubject: key, key: key, value: val);
+    dartDeclaration = fromCommand(Commands.keyComands, dartDeclaration, testSubject: key, key: key, value: val);
     if (dartDeclaration.type == null || dartDeclaration.name == null) {
       exit(0);
     }
@@ -126,18 +127,13 @@ class DartDeclaration {
     var newSelf = self;
     for (var command in commandList) {
       if (testSubject is String) {
-        if ((command.prefix != null &&
-            testSubject.startsWith(command.prefix))) {
+        if ((command.prefix != null && testSubject.startsWith(command.prefix))) {
           if ((command.prefix != null &&
                   command.command != null &&
                   testSubject.startsWith(command.prefix + command.command)) ||
-              (command.command != null &&
-                  testSubject.startsWith(command.command))) {
-            if (command.notprefix != null &&
-                    !testSubject.startsWith(command.notprefix) ||
-                command.notprefix == null) {
-              newSelf =
-                  command.callback(self, testSubject, key: key, value: value);
+              (command.command != null && testSubject.startsWith(command.command))) {
+            if (command.notprefix != null && !testSubject.startsWith(command.notprefix) || command.notprefix == null) {
+              newSelf = command.callback(self, testSubject, key: key, value: value);
               break;
             }
           }
@@ -152,36 +148,76 @@ class DartDeclaration {
   }
 }
 
-class Enum{
+class Enum {
+  final String className;
   final String name;
   final List<String> values;
 
-  String get enumName => '${name.toTitleCase()}Enum';
+  var valueType = 'String';
 
-  Enum(this.name, this.values);
+  String get enumName => '$className${name.toTitleCase()}Enum';
+  String get converterName => '_${enumName.toTitleCase()}Converter';
+  String get enumValuesMapName => '_${enumName.toCamelCase()}Values';
+
+  Enum(this.className, this.name, this.values) {
+    valueType = _detectType(values.first);
+  }
+
+  String valueName(String input) {
+    if (input.contains('(')) {
+      return input.substring(0, input.indexOf('(')).toTitleCase();
+    } else {
+      return input.toTitleCase();
+    }
+  }
+
+  String valuesForTemplate() {
+    return values.map((e) {
+      final value = e.between('(', ')');
+      if (value != null) {
+        return '  $value: $enumName.${valueName(e)},';
+      } else {
+        return '  \'$e\': $enumName.${valueName(e)},';
+      }
+    }).join('\n');
+  }
 
   String toTemplateString() {
-    return 'enum $enumName { ${values.map((e) => e.toTitleCase()).toList().join(', ')} }';
+    return '''
+enum $enumName { ${values.map((e) => valueName(e)).toList().join(', ')} }
+
+
+final $enumValuesMapName = $converterName({
+${valuesForTemplate()}
+});
+
+
+class $converterName<$valueType, O> {
+  Map<$valueType, O> map;
+  Map<O, $valueType> reverseMap;
+
+  $converterName(this.map);
+
+  Map<O, $valueType> get reverse => reverseMap ??= map.map((k, v) => MapEntry(v, k));
+}
+''';
   }
 
   String toImport() {
     return '''
 $enumName 
-  get ${enumName.toCamelCase()} => _${enumName.toCamelCase()}FromString($name);
-  set ${enumName.toCamelCase()}($enumName value) => $name = _stringFrom$enumName(value);''';
+  get ${enumName.toCamelCase()} => $enumValuesMapName.map[$name];
+  set ${enumName.toCamelCase()}($enumName value) => $name = $enumValuesMapName.reverse[value];''';
   }
-
-  String toConverter() {
-   return ModelTemplates.indented('''
-$enumName _${enumName.toCamelCase()}FromString(String input) {
-  return $enumName.values.firstWhere(
-    (e) => _stringFrom$enumName(e) == input.toLowerCase(),
-    orElse: () => null,
-  );
 }
 
-String _stringFrom$enumName($enumName input) {
-  return input.toString().substring(input.toString().indexOf('.') + 1).toLowerCase();
-}''');
+String _detectType(String value) {
+  final firstValue = value.between('(', ')');
+  if (firstValue != null) {
+    final isInt = (int.tryParse(firstValue) ?? '') is int;
+    if (isInt) {
+      return 'int';
+    }
   }
+  return 'String';
 }

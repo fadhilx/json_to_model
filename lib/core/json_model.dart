@@ -15,11 +15,10 @@ class JsonModel {
   JsonModel(String fileName, List<DartDeclaration> dartDeclarations) {
     this.fileName = fileName;
     className = fileName.toTitleCase();
-    declaration = dartDeclarations.toDeclarationStrings();
+    declaration = dartDeclarations.toDeclarationStrings(className);
     imports = dartDeclarations.toImportStrings();
     imports_raw = dartDeclarations.getImportRaw();
-    enums = dartDeclarations.getEnums();
-    enumConverters = dartDeclarations.getEnumConverters();
+    enums = dartDeclarations.getEnums(className);
     nestedClasses = dartDeclarations.getNestedClasses();
   }
 

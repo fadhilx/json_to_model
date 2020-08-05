@@ -21,6 +21,16 @@ extension StringExtension on String {
     return '$leadingWord';
   }
 
+  String between(String start, String end) {
+    final startIndex = indexOf(start);
+    final endIndex = indexOf(end);
+    if (startIndex == -1) return null;
+    if (endIndex == -1) return null;
+    if (endIndex <= startIndex) return null;
+
+    return substring(startIndex + start.length, endIndex).trim();
+  }
+
   List<String> getWords() {
     var trimmed = trim();
     List<String> value;
@@ -48,27 +58,28 @@ extension StringExtension on String {
 }
 
 extension JsonKeyModels on List<DartDeclaration> {
-  String toDeclarationStrings() {
-    return map((e) => e.toString()).join('\n').trim();
+  String toDeclarationStrings(String className) {
+    return map((e) => e.toDeclaration(className)).join('\n').trim();
   }
 
   String toImportStrings() {
-    return where((element) => element.imports != null && element.imports.isNotEmpty)
+    var imports = where((element) => element.imports != null && element.imports.isNotEmpty)
         .map((e) => e.getImportStrings())
         .where((element) => element != null && element.isNotEmpty)
-        .join('\n');
+        .fold<List<String>>(<String>[], (prev, current) => prev..addAll(current));
+
+    var nestedImports = where((element) => element.nestedClasses.isNotEmpty)
+        .map((e) => e.nestedClasses.map((jsonModel) => jsonModel.imports).toList())
+        .fold<List<String>>(<String>[], (prev, current) => prev..addAll(current));
+
+    imports.addAll(nestedImports);
+
+    return imports.join('\n');
   }
 
-  String getEnums() {
+  String getEnums(String className) {
     return where((element) => element.isEnum)
-        .map((e) => e.getEnum().toTemplateString())
-        .where((element) => element != null && element.isNotEmpty)
-        .join('\n');
-  }
-
-  String getEnumConverters() {
-    return where((element) => element.isEnum)
-        .map((e) => e.getEnum().toConverter())
+        .map((e) => e.getEnum(className).toTemplateString())
         .where((element) => element != null && element.isNotEmpty)
         .join('\n');
   }
@@ -88,7 +99,8 @@ extension JsonKeyModels on List<DartDeclaration> {
     where((element) => element.imports != null && element.imports.isNotEmpty).forEach((element) {
       imports_raw.addAll(element.imports);
       if (element.nestedClasses.isNotEmpty) {
-        imports_raw.addAll(element.nestedClasses.map((e) => e.imports_raw).reduce((value, element) => value..addAll(element)));
+        imports_raw
+            .addAll(element.nestedClasses.map((e) => e.imports_raw).reduce((value, element) => value..addAll(element)));
       }
     });
     imports_raw = imports_raw.where((element) => element != null && element.isNotEmpty).toList();
