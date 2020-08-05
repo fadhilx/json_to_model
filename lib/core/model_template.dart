@@ -8,6 +8,7 @@ class ModelTemplates {
         imports: data.imports,
         fileName: data.fileName,
         className: data.className,
+        extendsClass: data.extendsClass,
         declaration: data.declaration,
         enums: data.enums,
         enumConverters: data.enumConverters,
@@ -19,6 +20,7 @@ class ModelTemplates {
     String imports,
     String fileName,
     String className,
+    String extendsClass,
     String declaration,
     String enums,
     String enumConverters,
@@ -38,7 +40,7 @@ part '$fileName.g.dart';
 
     template += '''
 @JsonSerializable()
-class ${className ?? '/*TODO: className*/'} {
+class ${className ?? '/*TODO: className*/'} ${extendsClass != null ? 'extends $extendsClass' : ''} {
       ${className ?? '/*TODO: className*/'}();
 
   ${declaration ?? '/*TODO: declaration*/'}

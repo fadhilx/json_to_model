@@ -59,7 +59,7 @@ extension StringExtension on String {
 
 extension JsonKeyModels on List<DartDeclaration> {
   String toDeclarationStrings(String className) {
-    return map((e) => e.toDeclaration(className)).join('\n').trim();
+    return where((e) => e.name != null).map((e) => e.toDeclaration(className)).join('\n').trim();
   }
 
   String toImportStrings() {

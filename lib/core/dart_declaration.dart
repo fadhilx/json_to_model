@@ -14,6 +14,7 @@ class DartDeclaration {
   String type;
   String name;
   String assignment;
+  String extendsClass;
   List<Command> keyComands = [];
   List<Command> valueCommands = [];
   List<String> enumValues = [];
@@ -105,6 +106,10 @@ class DartDeclaration {
     imports = LinkedHashSet<String>.from(imports).toList();
   }
 
+  void setExtends(String extendsClass) {
+    this.extendsClass = extendsClass;
+  }
+
   static DartDeclaration fromKeyValue(key, val) {
     var dartDeclaration = DartDeclaration();
     dartDeclaration = fromCommand(
@@ -115,24 +120,33 @@ class DartDeclaration {
       value: val,
     );
 
-    dartDeclaration = fromCommand(Commands.keyComands, dartDeclaration, testSubject: key, key: key, value: val);
-    if (dartDeclaration.type == null || dartDeclaration.name == null) {
-      exit(0);
-    }
+    dartDeclaration = fromCommand(
+      Commands.keyComands,
+      dartDeclaration,
+      testSubject: key,
+      key: key,
+      value: val,
+    );
+
     return dartDeclaration;
   }
 
   static DartDeclaration fromCommand(List<Command> commandList, self,
       {dynamic testSubject, String key, dynamic value}) {
     var newSelf = self;
+
     for (var command in commandList) {
       if (testSubject is String) {
         if ((command.prefix != null && testSubject.startsWith(command.prefix))) {
-          if ((command.prefix != null &&
-                  command.command != null &&
-                  testSubject.startsWith(command.prefix + command.command)) ||
-              (command.command != null && testSubject.startsWith(command.command))) {
-            if (command.notprefix != null && !testSubject.startsWith(command.notprefix) || command.notprefix == null) {
+          final commandPrefixMatch = command.prefix != null &&
+              command.command != null &&
+              testSubject.startsWith(command.prefix + command.command);
+          final commandMatch = command.command != null && testSubject.startsWith(command.command);
+          if (commandPrefixMatch || commandMatch) {
+            final notprefix = command.notprefix != null && !testSubject.startsWith(command.notprefix);
+            final prefixnull = command.notprefix == null;
+
+            if (notprefix || prefixnull) {
               newSelf = command.callback(self, testSubject, key: key, value: value);
               break;
             }

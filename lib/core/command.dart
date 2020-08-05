@@ -49,6 +49,14 @@ class Commands {
       },
     ),
     Command(
+      prefix: '\@',
+      command: 'extends',
+      callback: (DartDeclaration self, dynamic testSubject, {String key, dynamic value}) {
+        self.setExtends(value);
+        return self;
+      },
+    ),
+    Command(
       prefix: '@',
       command: '_',
       callback: (DartDeclaration self, dynamic testSubject, {String key, dynamic value}) {

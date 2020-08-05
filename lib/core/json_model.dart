@@ -5,6 +5,7 @@ import '../utils/extensions.dart';
 class JsonModel {
   String fileName;
   String className;
+  String extendsClass;
   String declaration;
   String imports;
   List<String> imports_raw;
@@ -15,6 +16,7 @@ class JsonModel {
   JsonModel(String fileName, List<DartDeclaration> dartDeclarations) {
     this.fileName = fileName;
     className = fileName.toTitleCase();
+    extendsClass = dartDeclarations.firstWhere((element) => element.extendsClass != null, orElse: () => null)?.extendsClass;
     declaration = dartDeclarations.toDeclarationStrings(className);
     imports = dartDeclarations.toImportStrings();
     imports_raw = dartDeclarations.getImportRaw();
