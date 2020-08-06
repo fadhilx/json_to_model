@@ -55,6 +55,10 @@ extension StringExtension on String {
     }
     return firstLetter.toUpperCase() == substring(0, 1);
   }
+
+  String cleaned() {
+    return replaceAll('@override', '').trim();
+  }
 }
 
 extension JsonKeyModels on List<DartDeclaration> {

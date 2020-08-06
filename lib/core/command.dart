@@ -23,52 +23,9 @@ class Command {
 }
 
 class Commands {
-  static final List<Command> keyComands = [
-    Command(
-      prefix: '\@',
-      command: 'JsonKey',
-      callback: (DartDeclaration self, String testSubject, {String key, dynamic value}) {
-        var jsonKey = JsonKeyMutate.fromJsonKeyParamaString(testSubject);
-        self.jsonKey &= jsonKey;
-        var newDeclaration =
-            DartDeclaration.fromCommand(valueCommands, self, testSubject: value, key: key, value: value);
 
-        self.decorators.replaceDecorator(Decorator(self.jsonKey.toString()));
-        self.type = DartDeclaration.getTypeFromJsonKey(testSubject) ?? newDeclaration.type ?? self.type;
-        self.name = DartDeclaration.getNameFromJsonKey(testSubject) ?? newDeclaration.name ?? self.name;
-        if (self.name == null) self.setName(value);
-        return self;
-      },
-    ),
-    Command(
-      prefix: '\@',
-      command: 'import',
-      callback: (DartDeclaration self, dynamic testSubject, {String key, dynamic value}) {
-        self.addImport(value);
-        return self;
-      },
-    ),
-    Command(
-      prefix: '\@',
-      command: 'extends',
-      callback: (DartDeclaration self, dynamic testSubject, {String key, dynamic value}) {
-        self.setExtends(value);
-        return self;
-      },
-    ),
-    Command(
-      prefix: '@',
-      command: '_',
-      callback: (DartDeclaration self, dynamic testSubject, {String key, dynamic value}) {
-        self.type = key.substring(1);
-        self.name = value;
-        return self;
-      },
-    ),
-    Command(
-      prefix: '',
-      command: '',
-      callback: (DartDeclaration self, dynamic testSubject, {String key, dynamic value}) {
+  static Callback defaultCommandCallback = (DartDeclaration self, dynamic testSubject, {String key, dynamic value}) {
+
         self.setName(key);
 
         if (value == null) {
@@ -115,9 +72,68 @@ class Commands {
         self.type = newDeclaration.type ?? value.runtimeType.toString();
 
         return self;
+      };
+
+  static final List<Command> keyComands = [
+    Command(
+      prefix: '\@',
+      command: 'JsonKey',
+      callback: (DartDeclaration self, String testSubject, {String key, dynamic value}) {
+        var jsonKey = JsonKeyMutate.fromJsonKeyParamaString(testSubject);
+        self.jsonKey &= jsonKey;
+        var newDeclaration =
+            DartDeclaration.fromCommand(valueCommands, self, testSubject: value, key: key, value: value);
+
+        self.decorators.replaceDecorator(Decorator(self.jsonKey.toString()));
+        self.type = DartDeclaration.getTypeFromJsonKey(testSubject) ?? newDeclaration.type ?? self.type;
+        self.name = DartDeclaration.getNameFromJsonKey(testSubject) ?? newDeclaration.name ?? self.name;
+        if (self.name == null) self.setName(value);
+        return self;
       },
     ),
+    Command(
+      prefix: '\@',
+      command: 'import',
+      callback: (DartDeclaration self, dynamic testSubject, {String key, dynamic value}) {
+        self.addImport(value);
+        return self;
+      },
+    ),
+    Command(
+      prefix: '\@',
+      command: 'extends',
+      callback: (DartDeclaration self, dynamic testSubject, {String key, dynamic value}) {
+        self.setExtends(value);
+        return self;
+      },
+    ),
+    Command(
+      prefix: '\@',
+      command: 'override',
+      callback: (DartDeclaration self, dynamic testSubject, {String key, dynamic value}) {
+        self.enableOverridden();
+
+        key = key.cleaned();
+        print('Override found for key $testSubject -> cleaned $key');
+        return defaultCommandCallback(self, key, key: key, value: value);
+      },
+    ),
+    Command(
+      prefix: '@',
+      command: '_',
+      callback: (DartDeclaration self, dynamic testSubject, {String key, dynamic value}) {
+        self.type = key.substring(1);
+        self.name = value;
+        return self;
+      },
+    ),
+    Command(
+      prefix: '',
+      command: '',
+      callback: defaultCommandCallback,
+    ),
   ];
+
   static final List<Command> valueCommands = [
     Command(
       prefix: '\$',
