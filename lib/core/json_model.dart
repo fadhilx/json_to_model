@@ -8,6 +8,8 @@ class JsonModel {
   String extendsClass;
   String mixinClass;
   String declaration;
+  String hashDeclarations;
+  String equalsDeclarations;
   String imports;
   List<String> imports_raw;
   String enums;
@@ -20,6 +22,8 @@ class JsonModel {
     extendsClass = dartDeclarations.firstWhere((element) => element.extendsClass != null, orElse: () => null)?.extendsClass;
     mixinClass = dartDeclarations.where((element) => element.mixinClass != null).map((element) => element.mixinClass).join(', ');
     declaration = dartDeclarations.toDeclarationStrings(className);
+    equalsDeclarations = dartDeclarations.toEqualsDeclarationString();
+    hashDeclarations = dartDeclarations.toHashDeclarationString();
     imports = dartDeclarations.toImportStrings();
     imports_raw = dartDeclarations.getImportRaw();
     enums = dartDeclarations.getEnums(className);

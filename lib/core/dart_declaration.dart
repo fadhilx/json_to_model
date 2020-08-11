@@ -47,6 +47,14 @@ class DartDeclaration {
     return ModelTemplates.indented(declaration);
   }
 
+  String toEquals(){
+    return '$name == other.$name';
+  }
+
+  String toHash() {
+    return '$name.hashCode';
+  }
+
   String stringifyAssignment(value) {
     return value != null ? ' = $value' : '';
   }

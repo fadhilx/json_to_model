@@ -1,6 +1,6 @@
 name: json_to_model
 description: Generate model class from Json file. partly inspired by json_model.
-version: 1.4.1
+version: 1.5.0
 homepage: https://github.com/fadhilx/json_to_model
 
 environment:

@@ -10,6 +10,8 @@ class ModelTemplates {
         className: data.className,
         extendsClass: data.extendsClass,
         mixinClass: data.mixinClass,
+        equalsDeclarations: data.equalsDeclarations,
+        hashDeclarations: data.hashDeclarations,
         declaration: data.declaration,
         enums: data.enums,
         enumConverters: data.enumConverters,
@@ -23,6 +25,8 @@ class ModelTemplates {
     String className,
     String extendsClass,
     String mixinClass,
+    String equalsDeclarations,
+    String hashDeclarations,
     String declaration,
     String enums,
     String enumConverters,
@@ -42,8 +46,9 @@ part '$fileName.g.dart';
 
     template += '''
 @JsonSerializable()
-class ${className ?? '/*TODO: className*/'} ${extendsClass != null ? 'extends $extendsClass' : ''} ${mixinClass.isNotEmpty ? 'with $mixinClass' : ''} {
-      ${className ?? '/*TODO: className*/'}();
+class ${className ?? '/*TODO: className*/'}${extendsClass != null ? ' extends $extendsClass ' : ''}${mixinClass.isNotEmpty ? ' with $mixinClass' : ''} {
+  
+  ${className ?? '/*TODO: className*/'}();
 
   ${declaration ?? '/*TODO: declaration*/'}
 
@@ -54,6 +59,17 @@ class ${className ?? '/*TODO: className*/'} ${extendsClass != null ? 'extends $e
     if ((enumConverters?.length ?? 0) > 0) {
       template += '\n$enumConverters';
     }
+
+    template += '''
+
+  @override
+  bool operator ==(Object other) => identical(this, other) 
+    || other is $className && $equalsDeclarations;
+
+  @override
+  int get hashCode => $hashDeclarations;
+''';
+    
 
     template += '}\n';
 

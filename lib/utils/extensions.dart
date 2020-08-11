@@ -66,6 +66,14 @@ extension JsonKeyModels on List<DartDeclaration> {
     return where((e) => e.name != null).map((e) => e.toDeclaration(className)).join('\n').trim();
   }
 
+  String toEqualsDeclarationString() {
+    return where((e) => e.name != null).map((e) => e.toEquals()).join(' && ').trim();
+  }
+
+  String toHashDeclarationString() {
+    return where((e) => e.name != null).map((e) => e.toHash()).join(' ^ ').trim();
+  }
+
   String toImportStrings() {
     var imports = where((element) => element.imports != null && element.imports.isNotEmpty)
         .map((e) => e.getImportStrings())
