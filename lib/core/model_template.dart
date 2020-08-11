@@ -9,6 +9,7 @@ class ModelTemplates {
         fileName: data.fileName,
         className: data.className,
         extendsClass: data.extendsClass,
+        mixinClass: data.mixinClass,
         declaration: data.declaration,
         enums: data.enums,
         enumConverters: data.enumConverters,
@@ -21,6 +22,7 @@ class ModelTemplates {
     String fileName,
     String className,
     String extendsClass,
+    String mixinClass,
     String declaration,
     String enums,
     String enumConverters,
@@ -40,7 +42,7 @@ part '$fileName.g.dart';
 
     template += '''
 @JsonSerializable()
-class ${className ?? '/*TODO: className*/'} ${extendsClass != null ? 'extends $extendsClass' : ''} {
+class ${className ?? '/*TODO: className*/'} ${extendsClass != null ? 'extends $extendsClass' : ''} ${mixinClass.isNotEmpty ? 'with $mixinClass' : ''} {
       ${className ?? '/*TODO: className*/'}();
 
   ${declaration ?? '/*TODO: declaration*/'}

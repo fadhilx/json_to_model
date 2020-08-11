@@ -14,6 +14,7 @@ class DartDeclaration {
   String name;
   String assignment;
   String extendsClass;
+  String mixinClass;
   List<Command> keyComands = [];
   List<Command> valueCommands = [];
   List<String> enumValues = [];
@@ -110,6 +111,10 @@ class DartDeclaration {
 
   void setExtends(String extendsClass) {
     this.extendsClass = extendsClass;
+  }
+
+  void setMixin(String mixinClass) {
+    this.mixinClass = mixinClass;
   }
 
   void enableOverridden(){

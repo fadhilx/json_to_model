@@ -23,56 +23,54 @@ class Command {
 }
 
 class Commands {
-
   static Callback defaultCommandCallback = (DartDeclaration self, dynamic testSubject, {String key, dynamic value}) {
+    self.setName(key);
 
-        self.setName(key);
+    if (value == null) {
+      self.type = 'dynamic';
+      return self;
+    }
 
-        if (value == null) {
-          self.type = 'dynamic';
-          return self;
+    if (value is Map) {
+      self.type = key.toTitleCase();
+      self.nestedClasses.add(JsonModel.fromMap(key, value));
+      return self;
+    }
+
+    if (value is List && value.isNotEmpty) {
+      final firstListValue = value.first;
+      if (firstListValue is List) {
+        final nestedFirst = firstListValue.first;
+        if (nestedFirst is Map) {
+          final key = nestedFirst['\$key'];
+          nestedFirst.remove('\$key');
+          self.type = 'List<List<$key>>';
+          self.nestedClasses.add(JsonModel.fromMap(key, nestedFirst));
         }
+      } else if (firstListValue is Map) {
+        final key = firstListValue['\$key'];
+        firstListValue.remove('\$key');
+        self.type = 'List<$key>';
+        self.nestedClasses.add(JsonModel.fromMap(key, firstListValue));
+      } else {
+        final listValueType = firstListValue.runtimeType.toString();
+        self.type = 'List<$listValueType>';
+      }
+      return self;
+    }
 
-        if (value is Map) {
-          self.type = key.toTitleCase();
-          self.nestedClasses.add(JsonModel.fromMap(key, value));
-          return self;
-        }
+    var newDeclaration = DartDeclaration.fromCommand(
+      valueCommands,
+      self,
+      testSubject: value,
+      key: key,
+      value: value,
+    );
 
-        if (value is List && value.isNotEmpty) {
-          final firstListValue = value.first;
-          if (firstListValue is List) {
-            final nestedFirst = firstListValue.first;
-            if (nestedFirst is Map) {
-              final key = nestedFirst['\$key'];
-              nestedFirst.remove('\$key');
-              self.type = 'List<List<$key>>';
-              self.nestedClasses.add(JsonModel.fromMap(key, nestedFirst));
-            }
-          } else if (firstListValue is Map) {
-            final key = firstListValue['\$key'];
-            firstListValue.remove('\$key');
-            self.type = 'List<$key>';
-            self.nestedClasses.add(JsonModel.fromMap(key, firstListValue));
-          } else {
-            final listValueType = firstListValue.runtimeType.toString();
-            self.type = 'List<$listValueType>';
-          }
-          return self;
-        }
+    self.type = newDeclaration.type ?? value.runtimeType.toString();
 
-        var newDeclaration = DartDeclaration.fromCommand(
-          valueCommands,
-          self,
-          testSubject: value,
-          key: key,
-          value: value,
-        );
-
-        self.type = newDeclaration.type ?? value.runtimeType.toString();
-
-        return self;
-      };
+    return self;
+  };
 
   static final List<Command> keyComands = [
     Command(
@@ -104,6 +102,14 @@ class Commands {
       command: 'extends',
       callback: (DartDeclaration self, dynamic testSubject, {String key, dynamic value}) {
         self.setExtends(value);
+        return self;
+      },
+    ),
+    Command(
+      prefix: '\@',
+      command: 'mixin',
+      callback: (DartDeclaration self, dynamic testSubject, {String key, dynamic value}) {
+        self.setMixin(value);
         return self;
       },
     ),
