@@ -111,8 +111,9 @@ class DartDeclaration {
     }
     if (import is List) {
       imports.addAll(import.map((e) => e));
+    } else if (import != null && import.isNotEmpty){
+       imports.add(import);
     }
-    if (import != null && import.isNotEmpty) imports.add(import);
 
     imports = LinkedHashSet<String>.from(imports).toList();
   }

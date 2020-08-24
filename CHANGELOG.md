@@ -17,3 +17,16 @@
 ## 1.3.13
 
 - Better usage peek on doc
+
+## 1.4.0
+
+- Enum support
+
+## 1.5.0
+
+- Support for @extends, @mixin and @override
+- Some minor improvements and bugfixes
+
+## 1.5.1
+
+- Bugfix in multiple @imports via a list
