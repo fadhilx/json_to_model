@@ -1,5 +1,4 @@
 import 'package:json_to_model/core/dart_declaration.dart';
-import 'package:json_to_model/core/json_model.dart';
 import 'package:json_to_model/core/model_template.dart';
 
 extension StringExtension on String {
@@ -64,6 +63,11 @@ extension StringExtension on String {
 extension JsonKeyModels on List<DartDeclaration> {
   String toDeclarationStrings(String className) {
     return where((e) => e.name != null).map((e) => e.toDeclaration(className)).join('\n').trim();
+  }
+
+  String toCloneDeclarationStrings() {
+    final declarations = where((e) => e.name != null).map((e) => e.toCloneDeclaration()).join('\n').trim();
+    return ModelTemplates.indented(declarations, indent: 2);
   }
 
   String toEqualsDeclarationString() {

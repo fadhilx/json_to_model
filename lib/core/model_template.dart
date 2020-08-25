@@ -13,6 +13,7 @@ class ModelTemplates {
         equalsDeclarations: data.equalsDeclarations,
         hashDeclarations: data.hashDeclarations,
         declaration: data.declaration,
+        cloneDeclarations: data.cloneDeclarations,
         enums: data.enums,
         enumConverters: data.enumConverters,
         nestedClasses: data.nestedClasses,
@@ -28,6 +29,7 @@ class ModelTemplates {
     String equalsDeclarations,
     String hashDeclarations,
     String declaration,
+    String cloneDeclarations,
     String enums,
     String enumConverters,
     String nestedClasses,
@@ -54,6 +56,10 @@ class ${className ?? '/*TODO: className*/'}${extendsClass != null ? ' extends $e
 
   factory ${className ?? '/*TODO: className*/'}.fromJson(Map<String,dynamic> json) => _\$${className}FromJson(json);
   Map<String, dynamic> toJson() => _\$${className}ToJson(this);
+
+  $className clone() => $className()
+    $cloneDeclarations;
+
 ''';
 
     if ((enumConverters?.length ?? 0) > 0) {

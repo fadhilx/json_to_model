@@ -38,7 +38,7 @@ class DartDeclaration {
 
     if (isEnum) {
       declaration += '${getEnum(className).toImport()}\n';
-    }else if(override){
+    } else if (override) {
       declaration += '@override ';
     }
 
@@ -47,7 +47,34 @@ class DartDeclaration {
     return ModelTemplates.indented(declaration);
   }
 
-  String toEquals(){
+  String toCloneDeclaration() {
+    var cleanType = type;
+    var cloneDeclaration;
+
+    var isList = cleanType.startsWith('List');
+    if (isList) {
+      cleanType = cleanType.substring(5, cleanType.length - 1);
+    }
+
+    final importExists =
+        imports.firstWhere((element) => element == cleanType.toSnakeCase(), orElse: () => null) != null;
+    final nestedClassExists =
+        nestedClasses.firstWhere((element) => element.className == cleanType, orElse: () => null) != null;
+
+    if (!isEnum && (importExists || nestedClassExists)) {
+      if (isList) {
+        cloneDeclaration = '.. $name = $name.map((e) => e.clone()).toList()';
+      } else {
+        cloneDeclaration = '..$name = $name.clone()';
+      }
+    }else{
+      cloneDeclaration = '..$name = $name';
+    }
+
+    return cloneDeclaration;
+  }
+
+  String toEquals() {
     return '$name == other.$name';
   }
 
@@ -111,8 +138,8 @@ class DartDeclaration {
     }
     if (import is List) {
       imports.addAll(import.map((e) => e));
-    } else if (import != null && import.isNotEmpty){
-       imports.add(import);
+    } else if (import != null && import.isNotEmpty) {
+      imports.add(import);
     }
 
     imports = LinkedHashSet<String>.from(imports).toList();
@@ -126,7 +153,7 @@ class DartDeclaration {
     this.mixinClass = mixinClass;
   }
 
-  void enableOverridden(){
+  void enableOverridden() {
     override = true;
   }
 
