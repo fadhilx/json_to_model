@@ -58,7 +58,7 @@ class ${className ?? '/*TODO: className*/'}${extendsClass != null ? ' extends $e
   Map<String, dynamic> toJson() => _\$${className}ToJson(this);
 
   $className clone() => $className()
-    $cloneDeclarations;
+$cloneDeclarations;
 
 ''';
 

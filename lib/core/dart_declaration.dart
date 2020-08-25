@@ -51,9 +51,16 @@ class DartDeclaration {
     var cleanType = type;
     var cloneDeclaration;
 
+    //Support for nested lists List<List<type>> (but not deeper than 2 levels)
     var isList = cleanType.startsWith('List');
+    var isListInList = false;
+
     if (isList) {
       cleanType = cleanType.substring(5, cleanType.length - 1);
+      isListInList = cleanType.startsWith('List');
+      if (isListInList) {
+        cleanType = cleanType.substring(5, cleanType.length - 1);
+      }
     }
 
     final importExists =
@@ -62,12 +69,14 @@ class DartDeclaration {
         nestedClasses.firstWhere((element) => element.className == cleanType, orElse: () => null) != null;
 
     if (!isEnum && (importExists || nestedClassExists)) {
-      if (isList) {
-        cloneDeclaration = '.. $name = $name.map((e) => e.clone()).toList()';
+      if (isListInList) {
+        cloneDeclaration = '..$name = $name.map((x) => x.map((y) => y.clone()).toList()).toList()';
+      } else if (isList) {
+        cloneDeclaration = '..$name = $name.map((e) => e.clone()).toList()';
       } else {
         cloneDeclaration = '..$name = $name.clone()';
       }
-    }else{
+    } else {
       cloneDeclaration = '..$name = $name';
     }
 
