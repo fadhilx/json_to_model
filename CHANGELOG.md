@@ -30,3 +30,7 @@
 ## 1.5.1
 
 - Bugfix in multiple @imports via a list
+
+## 1.5.2
+
+- Make toJson explicitToJson: true to always call nested classes `toJson` method.

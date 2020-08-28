@@ -47,7 +47,7 @@ part '$fileName.g.dart';
     }
 
     template += '''
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class ${className ?? '/*TODO: className*/'}${extendsClass != null ? ' extends $extendsClass ' : ''}${mixinClass.isNotEmpty ? ' with $mixinClass' : ''} {
   
   ${className ?? '/*TODO: className*/'}();
