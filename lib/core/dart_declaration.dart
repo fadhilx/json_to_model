@@ -70,11 +70,11 @@ class DartDeclaration {
 
     if (!isEnum && (importExists || nestedClassExists)) {
       if (isListInList) {
-        cloneDeclaration = '..$name = $name.map((x) => x.map((y) => y.clone()).toList()).toList()';
+        cloneDeclaration = '..$name = $name.map((x) => x.map((y) => y?.clone()).toList()).toList()';
       } else if (isList) {
-        cloneDeclaration = '..$name = $name.map((e) => e.clone()).toList()';
+        cloneDeclaration = '..$name = $name.map((e) => e?.clone()).toList()';
       } else {
-        cloneDeclaration = '..$name = $name.clone()';
+        cloneDeclaration = '..$name = $name?.clone()';
       }
     } else {
       cloneDeclaration = '..$name = $name';

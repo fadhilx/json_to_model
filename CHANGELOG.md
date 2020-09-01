@@ -34,3 +34,7 @@
 ## 1.5.2
 
 - Make toJson explicitToJson: true to always call nested classes `toJson` method.
+
+## 1.5.3
+
+- Allow nullable support for .clone() method 
