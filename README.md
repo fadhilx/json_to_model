@@ -1,8 +1,12 @@
-# json_to_model [![Pub Version](https://img.shields.io/pub/v/json_to_model?color=%2335d9ba&style=flat-square)](https://pub.dev/packages/json_to_model)
+# apn_json2model [![Pub Version](https://img.shields.io/pub/v/json_to_model?color=%2335d9ba&style=flat-square)](https://pub.dev/packages/json_to_model)
+
+_copy of the [json_to_model](https://pub.dev/packages/json_to_model)
+-- Maintainer is not supporting the package anymore
 
 Command line tool for generating Dart models (json_serializable) from Json file.
 
 _partly inspired by [json_model](https://github.com/flutterchina/json_model)._
+
 
 ## Installation
 
@@ -10,7 +14,7 @@ on `pubspec.yaml`
 
 ```yaml
 dependencies:
-  json_to_model: ^1.4.1
+  apn_json2model: ^1.5.3
   build_runner: ^1.9.0
   json_serializable: ^3.3.0
   json_annotation: ^3.0.1
@@ -41,7 +45,7 @@ The `json_model` is great, cool structure, but it doesnt have _recursive import_
 ### How
 
 it run through your json file and find possible type, variable name, import uri, decorator and class name, and will write it into the templates.
-Create/copy `.json` files into `./jsons/`(default) on root of your project, and run `pub run json_to_model`.
+Create/copy `.json` files into `./jsons/`(default) on root of your project, and run `pub run apn_json2model`.
 
 #### Example
 
@@ -60,11 +64,11 @@ Create/copy `.json` files into `./jsons/`(default) on root of your project, and 
 
 #### Command:
 
-> `pub run json_to_model`
+> `pub run apn_json2model`
 
 or
 
-> `flutter pub run json_to_model`
+> `flutter pub run apn_json2model`
 
 **Output**
 
@@ -136,7 +140,7 @@ class _ExamplesAuthStateEnumConverter<int, O> {
 
 ## Contents
 
-- [json_to_model ![Pub Version](https://pub.dev/packages/json_to_model)](#json_to_model-img-srchttpspubdevpackagesjson_to_model-altpub-version)
+- apn_json2model ![Pub Version](https://pub.dev/packages/apn_json2model)
   - [Installation](#installation)
   - [What?, Why?, How?](#what-why-how)
     - [What](#what)
@@ -177,7 +181,7 @@ class _ExamplesAuthStateEnumConverter<int, O> {
 
 1. Create a directory `jsons`(default) at root of your project
 2. Put all or Create json files inside `jsons` directory
-3. run `pub run json_to_model`. or `flutter packages pub run json_to_model` flutter project
+3. run `pub run apn_json2model`. or `flutter packages pub run apn_json2model` flutter project
 
 ## Usage
 
@@ -198,7 +202,7 @@ this package will read `.json` file, and generate `.dart` file, asign the `type 
 
 ## Examples
 
-you can copy json below and generate using `pub run json_to_model` command
+you can copy json below and generate using `pub run apn_json2model` command
 
 ### Basic
 

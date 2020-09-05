@@ -1,4 +1,4 @@
-import 'package:json_to_model/core/json_model.dart';
+import 'package:apn_json2model/core/json_model.dart';
 
 typedef JsonModelConverter = String Function(JsonModel data, [bool isNested]);
 
