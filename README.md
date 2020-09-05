@@ -1,8 +1,11 @@
 # json_to_model [![Pub Version](https://img.shields.io/pub/v/json_to_model?color=%2335d9ba&style=flat-square)](https://pub.dev/packages/json_to_model)
 
+_copy of the [json_to_model](https://pub.dev/packages/json_to_model) - Maintainer is not supporting the package anymore
+
 Command line tool for generating Dart models (json_serializable) from Json file.
 
 _partly inspired by [json_model](https://github.com/flutterchina/json_model)._
+
 
 ## Installation
 

@@ -1,6 +1,6 @@
-import 'package:json_to_model/core/decorator.dart';
-import 'package:json_to_model/core/json_key.dart';
-import 'package:json_to_model/core/json_model.dart';
+import 'package:apn_json2model/core/decorator.dart';
+import 'package:apn_json2model/core/json_key.dart';
+import 'package:apn_json2model/core/json_model.dart';
 
 import 'dart_declaration.dart';
 import '../utils/extensions.dart';

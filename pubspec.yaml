@@ -1,7 +1,7 @@
-name: json_to_model
-description: Generate model class from Json file. partly inspired by json_model.
+name: apn_json2model
+description: Generate model class from Json file. Fork of json_to_model.
 version: 1.5.3
-homepage: https://github.com/fadhilx/json_to_model
+homepage: https://appnormal.com
 
 environment:
   sdk: ">=2.7.0 <3.0.0"

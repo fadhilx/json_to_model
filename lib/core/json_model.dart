@@ -1,4 +1,4 @@
-import 'package:json_to_model/core/dart_declaration.dart';
+import 'package:apn_json2model/core/dart_declaration.dart';
 
 import '../utils/extensions.dart';
 
