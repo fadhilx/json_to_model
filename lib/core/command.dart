@@ -128,7 +128,7 @@ class Commands {
       prefix: '@',
       command: '_',
       callback: (DartDeclaration self, dynamic testSubject, {String key, dynamic value}) {
-        self.type = key.substring(1);
+        self.type = key.substring(2);
         self.name = value;
         return self;
       },
