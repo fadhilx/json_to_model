@@ -1,6 +1,6 @@
-# apn_json2model [![Pub Version](https://img.shields.io/pub/v/json_to_model?color=%2335d9ba&style=flat-square)](https://pub.dev/packages/json_to_model)
+# apn_json2model [![Pub Version](https://img.shields.io/pub/v/apn_json2model?color=%2335d9ba&style=flat-square)](https://pub.dev/packages/apn_json2model)
 
-_copy of the [json_to_model](https://pub.dev/packages/json_to_model)
+_copy of the [json_to_model](https://pub.dev/packages/json_to_model)_
 -- Maintainer is not supporting the package anymore
 
 Command line tool for generating Dart models (json_serializable) from Json file.
@@ -14,7 +14,7 @@ on `pubspec.yaml`
 
 ```yaml
 dependencies:
-  apn_json2model: ^1.5.3
+  apn_json2model: ^1.5.4
   build_runner: ^1.9.0
   json_serializable: ^3.3.0
   json_annotation: ^3.0.1
