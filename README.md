@@ -3,6 +3,8 @@
 _copy of the [json_to_model](https://pub.dev/packages/json_to_model)_
 -- Maintainer is not supporting the package anymore
 
+_copy of the [json_to_model](https://pub.dev/packages/json_to_model) - Maintainer is not supporting the package anymore
+
 Command line tool for generating Dart models (json_serializable) from Json file.
 
 _partly inspired by [json_model](https://github.com/flutterchina/json_model)._
