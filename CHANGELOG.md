@@ -37,4 +37,8 @@
 
 ## 1.5.3
 
-- Allow nullable support for .clone() method 
+- Allow nullable support for .clone() method
+
+## 1.5.5
+
+- Support for Flutter 1.22 (Updated build dependencies)
