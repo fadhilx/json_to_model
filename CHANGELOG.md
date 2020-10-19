@@ -42,3 +42,7 @@
 ## 1.5.5
 
 - Support for Flutter 1.22 (Updated build dependencies)
+
+## 1.5.6
+
+- Ignore generated enum types in toJson

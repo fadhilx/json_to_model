@@ -275,6 +275,7 @@ class $converterName<$valueType, O> {
 
   String toImport() {
     return '''
+@JsonKey(ignore: true)
 $enumName 
   get ${enumName.toCamelCase()} => $enumValuesMapName.map[$name];
   set ${enumName.toCamelCase()}($enumName value) => $name = $enumValuesMapName.reverse[value];''';
