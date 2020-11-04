@@ -46,3 +46,7 @@
 ## 1.5.6
 
 - Ignore generated enum types in toJson
+
+## 1.6.0
+
+- Upgrade build_runner and build_runner_core
