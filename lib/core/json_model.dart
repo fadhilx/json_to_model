@@ -12,12 +12,11 @@ class JsonModel {
   String hashDeclarations;
   String equalsDeclarations;
   String imports;
-  List<String> imports_raw;
   String enums;
   String enumConverters;
   String nestedClasses;
 
-  JsonModel(String fileName, List<DartDeclaration> dartDeclarations) {
+  JsonModel(String fileName, List<DartDeclaration> dartDeclarations, [String relativePath]) {
     this.fileName = fileName;
     className = fileName.toTitleCase();
     extendsClass = dartDeclarations.firstWhere((element) => element.extendsClass != null, orElse: () => null)?.extendsClass;
@@ -26,14 +25,13 @@ class JsonModel {
     cloneDeclarations = dartDeclarations.toCloneDeclarationStrings();
     equalsDeclarations = dartDeclarations.toEqualsDeclarationString();
     hashDeclarations = dartDeclarations.toHashDeclarationString();
-    imports = dartDeclarations.toImportStrings();
-    imports_raw = dartDeclarations.getImportRaw();
+    imports = dartDeclarations.toImportStrings(relativePath);
     enums = dartDeclarations.getEnums(className);
     nestedClasses = dartDeclarations.getNestedClasses();
   }
 
   // model string from json map
-  static JsonModel fromMap(String fileName, Map jsonMap) {
+  static JsonModel fromMap(String fileName, Map jsonMap, {String relativePath}) {
     var dartDeclarations = <DartDeclaration>[];
     jsonMap.forEach((key, value) {
       var declaration = DartDeclaration.fromKeyValue(key, value);
@@ -42,6 +40,6 @@ class JsonModel {
     });
     // add key to templatestring
     // add valuetype to templatestring
-    return JsonModel(fileName, dartDeclarations);
+    return JsonModel(fileName, dartDeclarations, relativePath);
   }
 }

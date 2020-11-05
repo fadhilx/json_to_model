@@ -75,23 +75,23 @@ class JsonModelRunner {
         if (f.path.endsWith(fileExtension)) {
           var file = File(f.path);
           var dartPath = f.path.replaceFirst(srcDir, distDir).replaceFirst(
-                fileExtension,
-                '.dart',
-                f.path.length - fileExtension.length - 1,
-              );
+            fileExtension,
+            '.dart',
+            f.path.length - fileExtension.length - 1,
+          );
           List basenameString = path.basename(f.path).split('.');
           String fileName = basenameString.first;
           Map jsonMap = json.decode(file.readAsStringSync());
 
-          var jsonModel = JsonModel.fromMap(fileName, jsonMap);
-          warningIfImportNotExists(jsonModel, f);
+          var relative = dartPath
+              .replaceFirst(distDir + path.separator, '')
+              .replaceAll(path.separator, '/');
+
+          var jsonModel = JsonModel.fromMap(fileName, jsonMap, relativePath: relative);
           if (!generateFileFromJson(dartPath, jsonModel, fileName)) {
             error.write('cant write $dartPath');
           }
 
-          var relative = dartPath
-              .replaceFirst(distDir + path.separator, '')
-              .replaceAll(path.separator, '/');
           print('generated: $relative');
           indexFile += "export '$relative';\n";
         }
@@ -101,17 +101,6 @@ class JsonModelRunner {
       File(path.join(distDir, 'index.dart')).writeAsStringSync(indexFile);
     }
     return indexFile.isNotEmpty;
-  }
-
-  void warningIfImportNotExists(jsonModel, jsonFile) {
-    jsonModel.imports_raw.forEach((importPath) {
-      var parentPath =
-          jsonFile.path.substring(0, jsonFile.path.lastIndexOf(path.separator));
-      if (!File(path.join(parentPath, '$importPath.json')).existsSync()) {
-        print(
-            "[Warning] File '$importPath.json' not exist, import attempt on '${jsonFile.path}'");
-      }
-    });
   }
 
   // generate models from the json file

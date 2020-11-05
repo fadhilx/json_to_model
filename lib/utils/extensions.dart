@@ -78,9 +78,9 @@ extension JsonKeyModels on List<DartDeclaration> {
     return where((e) => e.name != null).map((e) => e.toHash()).join(' ^ ').trim();
   }
 
-  String toImportStrings() {
+  String toImportStrings(String relativePath) {
     var imports = where((element) => element.imports != null && element.imports.isNotEmpty)
-        .map((e) => e.getImportStrings())
+        .map((e) => e.getImportStrings(relativePath))
         .where((element) => element != null && element.isNotEmpty)
         .fold<List<String>>(<String>[], (prev, current) => prev..addAll(current));
 
@@ -108,18 +108,5 @@ extension JsonKeyModels on List<DartDeclaration> {
               },
             ).join('\n\n'))
         .join('\n');
-  }
-
-  List<String> getImportRaw() {
-    var imports_raw = <String>[];
-    where((element) => element.imports != null && element.imports.isNotEmpty).forEach((element) {
-      imports_raw.addAll(element.imports);
-      if (element.nestedClasses.isNotEmpty) {
-        imports_raw
-            .addAll(element.nestedClasses.map((e) => e.imports_raw).reduce((value, element) => value..addAll(element)));
-      }
-    });
-    imports_raw = imports_raw.where((element) => element != null && element.isNotEmpty).toList();
-    return imports_raw;
   }
 }

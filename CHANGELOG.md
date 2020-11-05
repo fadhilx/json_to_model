@@ -50,3 +50,7 @@
 ## 1.6.0
 
 - Upgrade build_runner and build_runner_core
+
+## 1.6.1
+
+- Add basic support for nested json models (fixed imports for used classes)

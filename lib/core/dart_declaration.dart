@@ -103,8 +103,14 @@ class DartDeclaration {
     return decorators?.join('\n');
   }
 
-  List<String> getImportStrings() {
-    return imports.where((element) => element != null && element.isNotEmpty).map((e) => "import '$e.dart';").toList();
+  List<String> getImportStrings(String relativePath) {
+    var prefix = '';
+
+    if(relativePath != null){
+      List( RegExp(r'\/').allMatches(relativePath).length).forEach((_) => prefix = '$prefix../');
+    }
+
+    return imports.where((element) => element != null && element.isNotEmpty).map((e) => "import '$prefix$e.dart';").toList();
   }
 
   static String getTypeFromJsonKey(String theString) {
