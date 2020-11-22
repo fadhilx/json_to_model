@@ -1,36 +1,41 @@
 import 'dart:collection';
+
 import 'package:apn_json2model/core/command.dart';
 import 'package:apn_json2model/core/decorator.dart';
 import 'package:apn_json2model/core/json_key.dart';
 import 'package:apn_json2model/core/json_model.dart';
 import 'package:apn_json2model/core/model_template.dart';
+
 import '../utils/extensions.dart';
 
 class DartDeclaration {
-  JsonKeyMutate jsonKey;
+  final keyComands = Commands.keyComands;
+  final valueCommands = Commands.valueCommands;
+
+  JsonKeyMutate jsonKey = JsonKeyMutate();
   List<Decorator> decorators = [];
   List<String> imports = [];
-  String type;
-  String name;
-  String assignment;
-  String extendsClass;
-  String mixinClass;
-  List<Command> keyComands = [];
-  List<Command> valueCommands = [];
+  String? type;
+  String? name;
+  String? assignment;
+  String? extendsClass;
+  String? mixinClass;
   List<String> enumValues = [];
   List<JsonModel> nestedClasses = [];
+  bool isNullable = false;
   bool override = false;
+
   bool get isEnum => enumValues.isNotEmpty;
 
   DartDeclaration({
-    this.jsonKey,
     this.type,
     this.name,
     this.assignment,
-  }) {
-    keyComands = Commands.keyComands;
-    valueCommands = Commands.valueCommands;
-    jsonKey = JsonKeyMutate();
+  });
+
+  String toConstructor() {
+    final nullable = isNullable ? '' : 'required';
+    return ModelTemplates.indented('$nullable this.$name,'.trim());
   }
 
   String toDeclaration(String className) {
@@ -42,42 +47,50 @@ class DartDeclaration {
       declaration += '@override ';
     }
 
-    declaration += '${stringifyDecorator(getDecorator())}$type $name${stringifyAssignment(assignment)};'.trim();
+    declaration +=
+        '${stringifyDecorator(getDecorator())} final $type${isNullable ? '?' : ''} $name${stringifyAssignment(assignment)};'
+            .trim();
 
     return ModelTemplates.indented(declaration);
   }
 
+  String copyWithConstructorDeclaration() {
+    return '$type? $name';
+  }
+
+  String copyWithBodyDeclaration() {
+    return '$name: $name ?? this.$name';
+  }
+
   String toCloneDeclaration() {
-    var cleanType = type;
+    var cleanType = type!;
     var cloneDeclaration;
 
     //Support for nested lists List<List<type>> (but not deeper than 2 levels)
-    var isList = cleanType.startsWith('List');
+    var isList = cleanType.startsWith('List') == true;
     var isListInList = false;
 
     if (isList) {
       cleanType = cleanType.substring(5, cleanType.length - 1);
-      isListInList = cleanType.startsWith('List');
+      isListInList = cleanType.startsWith('List') == true;
       if (isListInList) {
         cleanType = cleanType.substring(5, cleanType.length - 1);
       }
     }
 
-    final importExists =
-        imports.firstWhere((element) => element == cleanType.toSnakeCase(), orElse: () => null) != null;
-    final nestedClassExists =
-        nestedClasses.firstWhere((element) => element.className == cleanType, orElse: () => null) != null;
+    final importExists = imports.indexWhere((element) => element == cleanType.toSnakeCase()) != -1;
+    final nestedClassExists = nestedClasses.indexWhere((element) => element.className == cleanType) != -1;
 
     if (!isEnum && (importExists || nestedClassExists)) {
       if (isListInList) {
-        cloneDeclaration = '..$name = $name.map((x) => x.map((y) => y?.clone()).toList()).toList()';
+        cloneDeclaration = '$name: $name${isNullable ? '?' : ''}.map((x) => x.map((y) => y.clone()).toList()).toList()';
       } else if (isList) {
-        cloneDeclaration = '..$name = $name.map((e) => e?.clone()).toList()';
+        cloneDeclaration = '$name: $name${isNullable ? '?' : ''}.map((e) => e.clone()).toList()';
       } else {
-        cloneDeclaration = '..$name = $name?.clone()';
+        cloneDeclaration = '$name: $name${isNullable ? '?' : ''}.clone()';
       }
     } else {
-      cloneDeclaration = '..$name = $name';
+      cloneDeclaration = '$name: $name';
     }
 
     return cloneDeclaration;
@@ -99,27 +112,32 @@ class DartDeclaration {
     return deco != null && deco.isNotEmpty ? '$deco ' : '';
   }
 
-  String getDecorator() {
-    return decorators?.join('\n');
+  void setIsNullable(bool isNullable) {
+    this.isNullable = isNullable;
   }
 
-  List<String> getImportStrings(String relativePath) {
+  String getDecorator() {
+    return decorators.join('\n');
+  }
+
+  List<String> getImportStrings(String? relativePath) {
     var prefix = '';
 
-    if(relativePath != null){
-      List( RegExp(r'\/').allMatches(relativePath).length).forEach((_) => prefix = '$prefix../');
+    if (relativePath != null) {
+      final matches = RegExp(r'\/').allMatches(relativePath).length;
+      List.filled(matches, (i) => i).forEach((_) => prefix = '$prefix../');
     }
 
-    return imports.where((element) => element != null && element.isNotEmpty).map((e) => "import '$prefix$e.dart';").toList();
+    return imports.where((element) => element.isNotEmpty).map((e) => "import '$prefix$e.dart';").toList();
   }
 
-  static String getTypeFromJsonKey(String theString) {
+  static String? getTypeFromJsonKey(String theString) {
     var declare = theString.split(')').last.trim().split(' ');
     if (declare.isNotEmpty) return declare.first;
     return null;
   }
 
-  static String getNameFromJsonKey(String theString) {
+  static String? getNameFromJsonKey(String theString) {
     var declare = theString.split(')').last.trim().split(' ');
     if (declare.length > 1) return declare.last;
     return null;
@@ -129,13 +147,12 @@ class DartDeclaration {
     return theString.split('(')[1].split(')')[0];
   }
 
-  void setName(String newName) {
-    name = newName;
-    if (newName.isTitleCase() || newName.contains(RegExp(r'[_\W]'))) {
-      jsonKey.addKey(name: newName);
-      name = newName.toCamelCase();
-      decorators.replaceDecorator(Decorator(jsonKey.toString()));
-    }
+  void setName(String name) {
+    final cleaned = name.cleaned();
+
+    jsonKey.addKey(name: cleaned, nullable: isNullable);
+    this.name = cleaned.toCamelCase();
+    decorators.replaceDecorator(Decorator(jsonKey.toString()));
   }
 
   void setEnumValues(List<String> values) {
@@ -144,7 +161,7 @@ class DartDeclaration {
   }
 
   Enum getEnum(String className) {
-    return Enum(className, name, enumValues);
+    return Enum(className, name!, enumValues);
   }
 
   void addImport(import) {
@@ -193,20 +210,25 @@ class DartDeclaration {
     return dartDeclaration;
   }
 
-  static DartDeclaration fromCommand(List<Command> commandList, self,
-      {dynamic testSubject, String key, dynamic value}) {
+  static DartDeclaration fromCommand(
+    List<Command> commandList,
+    self, {
+    required String key,
+    dynamic testSubject,
+    dynamic value,
+  }) {
     var newSelf = self;
 
     for (var command in commandList) {
       if (testSubject is String) {
-        if ((command.prefix != null && testSubject.startsWith(command.prefix))) {
+        if ((command.prefix != null && testSubject.startsWith(command.prefix!))) {
           final commandPrefixMatch = command.prefix != null &&
               command.command != null &&
-              testSubject.startsWith(command.prefix + command.command);
-          final commandMatch = command.command != null && testSubject.startsWith(command.command);
+              testSubject.startsWith(command.prefix! + command.command!);
+          final commandMatch = command.command != null && testSubject.startsWith(command.command!);
           if (commandPrefixMatch || commandMatch) {
-            final notprefix = command.notprefix != null && !testSubject.startsWith(command.notprefix);
             final prefixnull = command.notprefix == null;
+            final notprefix = !prefixnull && !testSubject.startsWith(command.notprefix!);
 
             if (notprefix || prefixnull) {
               newSelf = command.callback(self, testSubject, key: key, value: value);
@@ -232,7 +254,9 @@ class Enum {
   var valueType = 'String';
 
   String get enumName => '$className${name.toTitleCase()}Enum';
+
   String get converterName => '_${enumName.toTitleCase()}Converter';
+
   String get enumValuesMapName => '_${enumName.toCamelCase()}Values';
 
   Enum(this.className, this.name, this.values) {

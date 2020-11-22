@@ -15,14 +15,15 @@ class BuildScript {
   BuildScript(this.args);
   var localCommands = [CleanCommand(), GenerateBuildScript()];
   
-  BuildCommandRunner commandRunner;
   List<String> args;
 
-  ArgResults parsedArgs;
   void build() async {
+
+    late ArgResults parsedArgs;
+    late BuildCommandRunner commandRunner;
+
     var localCommandNames = localCommands.map((c) => c.name).toSet();
 
-    ArgResults parsedArgs;
     try {
       commandRunner = BuildCommandRunner([], await PackageGraph.forThisPackage());
       parsedArgs = commandRunner.parse(args);
@@ -57,6 +58,6 @@ class BuildScript {
       while (
           (exitCode = await generateAndRun(args)) == ExitCode.tempFail.code) {}
     }
-    await logListener?.cancel();
+    await logListener.cancel();
   }
 }

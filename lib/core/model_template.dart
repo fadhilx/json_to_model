@@ -5,6 +5,7 @@ typedef JsonModelConverter = String Function(JsonModel data, [bool isNested]);
 class ModelTemplates {
   static JsonModelConverter fromJsonModel = (data, [isNested = false]) => ModelTemplates.defaultTemplate(
         isNested: isNested,
+        constructor: data.constructor,
         imports: data.imports,
         fileName: data.fileName,
         className: data.className,
@@ -13,31 +14,35 @@ class ModelTemplates {
         equalsDeclarations: data.equalsDeclarations,
         hashDeclarations: data.hashDeclarations,
         declaration: data.declaration,
-        cloneDeclarations: data.cloneDeclarations,
+        copyWith: data.copyWith,
+        cloneFunction: data.cloneFunction,
         enums: data.enums,
         enumConverters: data.enumConverters,
         nestedClasses: data.nestedClasses,
       );
 
   static String defaultTemplate({
-    bool isNested,
-    String imports,
-    String fileName,
-    String className,
-    String extendsClass,
-    String mixinClass,
-    String equalsDeclarations,
-    String hashDeclarations,
-    String declaration,
-    String cloneDeclarations,
-    String enums,
-    String enumConverters,
-    String nestedClasses,
+    required bool isNested,
+    required String constructor,
+    required String imports,
+    required String fileName,
+    required String className,
+    required String mixinClass,
+    required String equalsDeclarations,
+    required String hashDeclarations,
+    required String declaration,
+    required String copyWith,
+    required String cloneFunction,
+    String? enums,
+    String? enumConverters,
+    String? nestedClasses,
+    String? extendsClass,
   }) {
     var template = '';
 
     if (!isNested) {
       template += '''
+import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 $imports
 
@@ -48,17 +53,17 @@ part '$fileName.g.dart';
 
     template += '''
 @JsonSerializable(explicitToJson: true)
-class ${className ?? '/*TODO: className*/'}${extendsClass != null ? ' extends $extendsClass ' : ''}${mixinClass.isNotEmpty ? ' with $mixinClass' : ''} {
+@immutable
+class $className${extendsClass != null ? ' extends $extendsClass ' : ''}${mixinClass.isNotEmpty ? ' with $mixinClass' : ''} {
   
-  ${className ?? '/*TODO: className*/'}();
+$constructor
 
-  ${declaration ?? '/*TODO: declaration*/'}
+  $declaration
 
-  factory ${className ?? '/*TODO: className*/'}.fromJson(Map<String,dynamic> json) => _\$${className}FromJson(json);
+  factory $className.fromJson(Map<String,dynamic> json) => _\$${className}FromJson(json);
   Map<String, dynamic> toJson() => _\$${className}ToJson(this);
 
-  $className clone() => $className()
-$cloneDeclarations;
+  $cloneFunction
 
 ''';
 
@@ -67,6 +72,8 @@ $cloneDeclarations;
     }
 
     template += '''
+    
+$copyWith  
 
   @override
   bool operator ==(Object other) => identical(this, other) 
@@ -75,7 +82,6 @@ $cloneDeclarations;
   @override
   int get hashCode => $hashDeclarations;
 ''';
-    
 
     template += '}\n';
 
@@ -90,9 +96,8 @@ $cloneDeclarations;
     return template;
   }
 
-  static String indented(String content, {int indent}) {
-    indent = indent ?? 1;
-    var indentString = (List(indent)..fillRange(0, indent, '  ')).join('');
+  static String indented(String content, {int indent = 1}) {
+    var indentString = List.generate(indent, (index) => '  ').join('');
 
     content = content.replaceAll('\n', '\n$indentString');
 

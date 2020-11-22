@@ -3,16 +3,17 @@ import 'dart:convert';
 import 'package:expressions/expressions.dart';
 
 class JsonKeyMutate {
-  Object defaultValue;
-  bool disallowNullValue;
-  Function fromJson;
-  bool ignore;
-  bool includeIfNull;
-  String name;
-  bool nullable;
-  bool required;
-  Function toJson;
-  Object unknownEnumValue;
+  Object? defaultValue;
+  bool? disallowNullValue;
+  Function? fromJson;
+  bool? ignore;
+  bool? includeIfNull;
+  String? name;
+  bool? nullable;
+  bool? required;
+  Function? toJson;
+  Object? unknownEnumValue;
+
   JsonKeyMutate({
     this.defaultValue,
     this.disallowNullValue,
@@ -25,6 +26,7 @@ class JsonKeyMutate {
     this.toJson,
     this.unknownEnumValue,
   });
+
   void addKey({
     defaultValue,
     disallowNullValue,
@@ -78,10 +80,11 @@ class JsonKeyMutate {
   }
 
   static String getParameterString(String theString) {
+    print(theString.split('('));
     return theString.split('(')[1].split(')')[0];
   }
 
-  factory JsonKeyMutate.fromJsonKeyParamaString(String theString) {
+  factory JsonKeyMutate.fromJsonKeyParamString(String theString) {
     theString = getParameterString(theString);
     var newList = theString
         .split(',')

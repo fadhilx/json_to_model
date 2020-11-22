@@ -5,25 +5,29 @@ import 'package:apn_json2model/core/json_model.dart';
 import 'dart_declaration.dart';
 import '../utils/extensions.dart';
 
-typedef Callback = DartDeclaration Function(DartDeclaration self, String testSubject, {String key, dynamic value});
+typedef Callback = DartDeclaration Function(DartDeclaration self, String testSubject, {required String key, dynamic value});
 
 class Command {
-  Type type = String;
-  String notprefix;
-  String prefix;
-  String command;
-  Callback callback;
+  final Type? type;
+  final String? notprefix;
+  final String? prefix;
+  final String? command;
+  final Callback callback;
+
   Command({
     this.type,
     this.prefix,
     this.notprefix,
     this.command,
-    this.callback,
+    required this.callback,
   });
 }
 
 class Commands {
-  static Callback defaultCommandCallback = (DartDeclaration self, dynamic testSubject, {String key, dynamic value}) {
+  static Callback defaultCommandCallback = (DartDeclaration self, dynamic testSubject, {required String key, dynamic value}) {
+    self.isNullable = key.endsWith('?');
+
+    key = key.cleaned();
     self.setName(key);
 
     if (value == null) {
@@ -76,8 +80,11 @@ class Commands {
     Command(
       prefix: '\@',
       command: 'JsonKey',
-      callback: (DartDeclaration self, String testSubject, {String key, dynamic value}) {
-        var jsonKey = JsonKeyMutate.fromJsonKeyParamaString(testSubject);
+      callback: (DartDeclaration self, String testSubject, {required String key, dynamic value}) {
+        print(testSubject);
+
+        var jsonKey = JsonKeyMutate.fromJsonKeyParamString(testSubject);
+
         self.jsonKey &= jsonKey;
         var newDeclaration =
             DartDeclaration.fromCommand(valueCommands, self, testSubject: value, key: key, value: value);
@@ -92,7 +99,7 @@ class Commands {
     Command(
       prefix: '\@',
       command: 'import',
-      callback: (DartDeclaration self, dynamic testSubject, {String key, dynamic value}) {
+      callback: (DartDeclaration self, dynamic testSubject, {required String key, dynamic value}) {
         self.addImport(value);
         return self;
       },
@@ -100,7 +107,7 @@ class Commands {
     Command(
       prefix: '\@',
       command: 'extends',
-      callback: (DartDeclaration self, dynamic testSubject, {String key, dynamic value}) {
+      callback: (DartDeclaration self, dynamic testSubject, {required String key, dynamic value}) {
         self.setExtends(value);
         return self;
       },
@@ -108,7 +115,7 @@ class Commands {
     Command(
       prefix: '\@',
       command: 'mixin',
-      callback: (DartDeclaration self, dynamic testSubject, {String key, dynamic value}) {
+      callback: (DartDeclaration self, dynamic testSubject, {required String key, dynamic value}) {
         self.setMixin(value);
         return self;
       },
@@ -116,7 +123,7 @@ class Commands {
     Command(
       prefix: '\@',
       command: 'override',
-      callback: (DartDeclaration self, dynamic testSubject, {String key, dynamic value}) {
+      callback: (DartDeclaration self, dynamic testSubject, {required String key, dynamic value}) {
         self.enableOverridden();
 
         key = key.cleaned();
@@ -127,15 +134,13 @@ class Commands {
     Command(
       prefix: '@',
       command: '_',
-      callback: (DartDeclaration self, dynamic testSubject, {String key, dynamic value}) {
+      callback: (DartDeclaration self, dynamic testSubject, {required String key, dynamic value}) {
         self.type = key.substring(2);
         self.name = value;
         return self;
       },
     ),
     Command(
-      prefix: '',
-      command: '',
       callback: defaultCommandCallback,
     ),
   ];
@@ -144,7 +149,7 @@ class Commands {
     Command(
       prefix: '\$',
       command: '\[\]',
-      callback: (DartDeclaration self, String testSubject, {String key, dynamic value}) {
+      callback: (DartDeclaration self, String testSubject, {required String key, dynamic value}) {
         var typeName = testSubject.substring(3).split('/').last.split('\\').last.toCamelCase();
         var toImport = testSubject.substring(3);
         self.addImport(toImport);
@@ -154,9 +159,8 @@ class Commands {
     ),
     Command(
       prefix: '\$',
-      command: '',
       notprefix: '\$\[\]',
-      callback: (DartDeclaration self, String testSubject, {String key, dynamic value}) {
+      callback: (DartDeclaration self, String testSubject, {required String key, dynamic value}) {
         self.setName(key);
 
         var typeName = testSubject.substring(1).split('/').last.split('\\').last.toCamelCase();
@@ -172,9 +176,8 @@ class Commands {
     ),
     Command(
       prefix: '\@datetime',
-      command: '',
       notprefix: '\$\[\]',
-      callback: (DartDeclaration self, String testSubject, {String key, dynamic value}) {
+      callback: (DartDeclaration self, String testSubject, {required String key, dynamic value}) {
         self.setName(key);
         self.type = 'DateTime';
         return self;
@@ -182,9 +185,8 @@ class Commands {
     ),
     Command(
       prefix: '\@enum',
-      command: ':',
       notprefix: '\$\[\]',
-      callback: (DartDeclaration self, String testSubject, {String key, dynamic value}) {
+      callback: (DartDeclaration self, String testSubject, {required String key, dynamic value}) {
         self.setEnumValues((value as String).substring('@enum:'.length).split(','));
         self.setName(key);
         return self;
@@ -192,7 +194,7 @@ class Commands {
     ),
     Command(
       type: dynamic,
-      callback: (DartDeclaration self, dynamic testSubject, {String key, dynamic value}) {
+      callback: (DartDeclaration self, dynamic testSubject, {required String key, dynamic value}) {
         self.setName(key);
 
         if (value == null) {

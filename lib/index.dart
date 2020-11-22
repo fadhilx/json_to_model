@@ -10,11 +10,14 @@ import './core/json_model.dart';
 class JsonModelRunner {
   String srcDir = './jsons/';
   String distDir = './lib/models/';
-  String onlyFile = './lib/models/';
+  String? onlyFile = './lib/models/';
   List<FileSystemEntity> list = [];
 
-  JsonModelRunner({String source, String output, String onlyFile})
-      : srcDir = source,
+  JsonModelRunner({
+    required String source,
+    required String output,
+    String? onlyFile,
+  })   : srcDir = source,
         distDir = output,
         onlyFile = onlyFile;
 
@@ -28,9 +31,7 @@ class JsonModelRunner {
   bool run({command}) {
     // run
     // get all json files ./jsons
-    list = onlyFile == null
-        ? getAllJsonFiles()
-        : [File(path.join(srcDir, onlyFile))];
+    list = onlyFile == null ? getAllJsonFiles() : [File(path.join(srcDir, onlyFile))];
     if (!generateModelsDirectory()) return false;
     if (!iterateJsonFile()) return false;
 
@@ -42,11 +43,10 @@ class JsonModelRunner {
 
     // build
     if (onlyFile == null) {
-      await BuildScript(['build', '--delete-conflicting-outputs']).build();
+      BuildScript(['build', '--delete-conflicting-outputs']).build();
     } else {
       var dotSplit = path.join(srcDir, onlyFile).split('.');
-      await BuildScript(['run', (dotSplit..removeLast()).join('.') + '.dart'])
-          .build();
+      BuildScript(['run', (dotSplit..removeLast()).join('.') + '.dart']).build();
     }
   }
 
@@ -75,17 +75,15 @@ class JsonModelRunner {
         if (f.path.endsWith(fileExtension)) {
           var file = File(f.path);
           var dartPath = f.path.replaceFirst(srcDir, distDir).replaceFirst(
-            fileExtension,
-            '.dart',
-            f.path.length - fileExtension.length - 1,
-          );
+                fileExtension,
+                '.dart',
+                f.path.length - fileExtension.length - 1,
+              );
           List basenameString = path.basename(f.path).split('.');
           String fileName = basenameString.first;
           Map jsonMap = json.decode(file.readAsStringSync());
 
-          var relative = dartPath
-              .replaceFirst(distDir + path.separator, '')
-              .replaceAll(path.separator, '/');
+          var relative = dartPath.replaceFirst(distDir + path.separator, '').replaceAll(path.separator, '/');
 
           var jsonModel = JsonModel.fromMap(fileName, jsonMap, relativePath: relative);
           if (!generateFileFromJson(dartPath, jsonModel, fileName)) {

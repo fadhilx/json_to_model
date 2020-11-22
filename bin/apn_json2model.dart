@@ -1,3 +1,5 @@
+// @dart=2.9
+
 import 'package:apn_json2model/json_to_model.dart';
 import 'package:args/args.dart';
 

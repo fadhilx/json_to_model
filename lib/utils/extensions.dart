@@ -20,7 +20,7 @@ extension StringExtension on String {
     return '$leadingWord';
   }
 
-  String between(String start, String end) {
+  String? between(String start, String end) {
     final startIndex = indexOf(start);
     final endIndex = indexOf(end);
     if (startIndex == -1) return null;
@@ -56,18 +56,39 @@ extension StringExtension on String {
   }
 
   String cleaned() {
-    return replaceAll('@override', '').trim();
+    return replaceAll('@override', '').replaceAll('?', '').trim();
   }
 }
 
 extension JsonKeyModels on List<DartDeclaration> {
+  String toConstructor(String className) {
+    final declarations = where((e) => e.name != null).map((e) => e.toConstructor()).join('\n').trim();
+    return ModelTemplates.indented('const $className({\n  $declarations\n});', indent: 1);
+  }
+
   String toDeclarationStrings(String className) {
     return where((e) => e.name != null).map((e) => e.toDeclaration(className)).join('\n').trim();
   }
 
-  String toCloneDeclarationStrings() {
-    final declarations = where((e) => e.name != null).map((e) => e.toCloneDeclaration()).join('\n').trim();
-    return ModelTemplates.indented(declarations, indent: 2);
+  String toCopyWith(String className) {
+    var constructorDeclarations = where((e) => e.name != null).map((e) => e.copyWithConstructorDeclaration()).join(',\n').trim();
+    constructorDeclarations = ModelTemplates.indented(constructorDeclarations);
+
+    var bodyDeclarations = where((e) => e.name != null).map((e) => e.copyWithBodyDeclaration()).join(',\n').trim();
+    bodyDeclarations = ModelTemplates.indented(bodyDeclarations);
+
+    return ModelTemplates.indented('$className copyWith({\n'
+        '$constructorDeclarations\n'
+        '}) => $className(\n'
+        '$bodyDeclarations\n'
+        ');');
+  }
+
+  String toCloneFunction(String className) {
+    final declarations = where((e) => e.name != null).map((e) => e.toCloneDeclaration()).join(',\n').trim();
+    final cloneDeclarations = ModelTemplates.indented(declarations, indent: 2);
+
+    return '$className clone() => $className(\n$cloneDeclarations\n  );';
   }
 
   String toEqualsDeclarationString() {
@@ -78,7 +99,7 @@ extension JsonKeyModels on List<DartDeclaration> {
     return where((e) => e.name != null).map((e) => e.toHash()).join(' ^ ').trim();
   }
 
-  String toImportStrings(String relativePath) {
+  String toImportStrings(String? relativePath) {
     var imports = where((element) => element.imports != null && element.imports.isNotEmpty)
         .map((e) => e.getImportStrings(relativePath))
         .where((element) => element != null && element.isNotEmpty)

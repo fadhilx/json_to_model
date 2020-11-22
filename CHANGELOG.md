@@ -1,56 +1,64 @@
-## 1.0.0
+## 2.0.0-nullsafety
 
-- Initial version, created by Stagehand
+- Converted code to nullsafety. To soon for enabling sound null safety because almost all dependencies are not ready yet.
+- Generated code is now also compatible with nullsafety (Add ? to property key to indicate nullability)
+- All generated models are now @immutable
+- Generated constructors are now different because we have immutable classes and final properties
 
-## 1.2.0
+## 1.6.1
 
-- rename directory `models` to `core
+- Add basic support for nested json models (fixed imports for used classes)
 
-## 1.3.11
+## 1.6.0
 
-- fix TitleCase error on className
+- Upgrade build_runner and build_runner_core
 
-## 1.3.12
+## 1.5.6
 
-- fix file .g.dart not generated
+- Ignore generated enum types in toJson
 
-## 1.3.13
+## 1.5.5
 
-- Better usage peek on doc
+- Support for Flutter 1.22 (Updated build dependencies)
 
-## 1.4.0
+## 1.5.3
 
-- Enum support
+- Allow nullable support for .clone() method
+
+## 1.5.2
+
+- Make toJson explicitToJson: true to always call nested classes `toJson` method.
+
+## 1.5.1
+
+- Bugfix in multiple @imports via a list
 
 ## 1.5.0
 
 - Support for @extends, @mixin and @override
 - Some minor improvements and bugfixes
 
-## 1.5.1
+## 1.4.0
 
-- Bugfix in multiple @imports via a list
+- Enum support
 
-## 1.5.2
+## 1.3.13
 
-- Make toJson explicitToJson: true to always call nested classes `toJson` method.
+- Better usage peek on doc
 
-## 1.5.3
+## 1.3.12
 
-- Allow nullable support for .clone() method
+- fix file .g.dart not generated
 
-## 1.5.5
+## 1.3.11
 
-- Support for Flutter 1.22 (Updated build dependencies)
+- fix TitleCase error on className
 
-## 1.5.6
+## 1.2.0
 
-- Ignore generated enum types in toJson
+- rename directory `models` to `core
 
-## 1.6.0
+## 1.0.0
 
-- Upgrade build_runner and build_runner_core
+- Initial version, created by Stagehand
 
-## 1.6.1
-
-- Add basic support for nested json models (fixed imports for used classes)
