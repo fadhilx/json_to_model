@@ -1,8 +1,6 @@
 import 'dart:collection';
 
 import 'package:apn_json2model/core/command.dart';
-import 'package:apn_json2model/core/decorator.dart';
-import 'package:apn_json2model/core/json_key.dart';
 import 'package:apn_json2model/core/json_model.dart';
 import 'package:apn_json2model/core/model_template.dart';
 
@@ -12,8 +10,6 @@ class DartDeclaration {
   final keyComands = Commands.keyComands;
   final valueCommands = Commands.valueCommands;
 
-  JsonKeyMutate jsonKey = JsonKeyMutate();
-  List<Decorator> decorators = [];
   List<String> imports = [];
   String? type;
   String? name;
@@ -26,12 +22,11 @@ class DartDeclaration {
   bool override = false;
 
   bool get isEnum => enumValues.isNotEmpty;
+  bool get isDatetime => type == 'DateTime';
 
-  DartDeclaration({
-    this.type,
-    this.name,
-    this.assignment,
-  });
+  String get isNullableString => isNullable ? '?' : '';
+
+  DartDeclaration();
 
   String toConstructor() {
     final nullable = isNullable ? '' : 'required';
@@ -47,11 +42,59 @@ class DartDeclaration {
       declaration += '@override ';
     }
 
-    declaration +=
-        '${stringifyDecorator(getDecorator())} final $type${isNullable ? '?' : ''} $name${stringifyAssignment(assignment)};'
-            .trim();
+    declaration += 'final $type$isNullableString $name${stringifyAssignment(assignment)};'.trim();
 
     return ModelTemplates.indented(declaration);
+  }
+
+  String fromJsonBody() {
+    return checkNestedTypes(type!, (String cleanedType, bool isList, bool isListInList, bool isModel) {
+      /// TOIMPROVE - make toSnakeCase configurable
+      final jsonVar = 'json[\'${name?.toSnakeCase()}\']';
+      String conversion;
+      String modelFromJson([String jsonVar = 'e']) => '$cleanedType.fromJson($jsonVar as Map<String, dynamic>)';
+
+      if (isListInList) {
+        conversion = '($jsonVar as List).map((e) => (e as List).map((e) => ${modelFromJson()}).toList()).toList()';
+      } else if (isList) {
+        conversion = '($jsonVar as List).map((e) => ${modelFromJson()}).toList()';
+      } else if (isModel) {
+        conversion = modelFromJson(jsonVar);
+      } else if (isDatetime) {
+        conversion = 'DateTime.parse($jsonVar as String)';
+      } else {
+        conversion = '$jsonVar as $type';
+      }
+
+      if (isNullable) {
+        return '$name: $jsonVar != null ? $conversion : null';
+      } else {
+        return '$name: $conversion';
+      }
+    });
+  }
+
+  String toJsonBody(String className) {
+    return checkNestedTypes(type!, (String cleanedType, bool isList, bool isListInList, bool isModel) {
+      String conversion;
+      if (isModel) {
+        if (isListInList) {
+          conversion = '$name$isNullableString.map((e) => e.map((e) => e.toJson()).toList()).toList()';
+        } else if (isList) {
+          conversion = '$name$isNullableString.map((e) => e.toJson()).toList()';
+        } else {
+          conversion = '$name.toJson()';
+        }
+      } else if(isEnum){
+        conversion = '${getEnum(className).enumValuesMapName}.reverse[$name]';
+      } else if (isDatetime) {
+        conversion = '$name$isNullableString.toIso8601String()';
+      }else {
+        conversion = '$name';
+      }
+
+      return '\'${name?.toSnakeCase()}\': $conversion';
+    });
   }
 
   String copyWithConstructorDeclaration() {
@@ -63,16 +106,31 @@ class DartDeclaration {
   }
 
   String toCloneDeclaration() {
-    var cleanType = type!;
-    var cloneDeclaration;
+    return checkNestedTypes(type!, (String cleanedType, bool isList, bool isListInList, bool isModel) {
+      if (isModel) {
+        if (isListInList) {
+          return '$name: $name${isNullable ? '?' : ''}.map((x) => x.map((y) => y.clone()).toList()).toList()';
+        } else if (isList) {
+          return '$name: $name${isNullable ? '?' : ''}.map((e) => e.clone()).toList()';
+        } else {
+          return '$name: $name${isNullable ? '?' : ''}.clone()';
+        }
+      } else {
+        return '$name: $name';
+      }
+    });
+  }
 
-    //Support for nested lists List<List<type>> (but not deeper than 2 levels)
-    var isList = cleanType.startsWith('List') == true;
+  String checkNestedTypes(String type, NestedCallbackFunction callback) {
+    var cleanType = type;
+
+    var isList = type.startsWith('List') == true;
     var isListInList = false;
 
     if (isList) {
-      cleanType = cleanType.substring(5, cleanType.length - 1);
+      cleanType = type.substring(5, type.length - 1);
       isListInList = cleanType.startsWith('List') == true;
+
       if (isListInList) {
         cleanType = cleanType.substring(5, cleanType.length - 1);
       }
@@ -80,20 +138,9 @@ class DartDeclaration {
 
     final importExists = imports.indexWhere((element) => element == cleanType.toSnakeCase()) != -1;
     final nestedClassExists = nestedClasses.indexWhere((element) => element.className == cleanType) != -1;
+    final isModel = !isEnum && (importExists || nestedClassExists);
 
-    if (!isEnum && (importExists || nestedClassExists)) {
-      if (isListInList) {
-        cloneDeclaration = '$name: $name${isNullable ? '?' : ''}.map((x) => x.map((y) => y.clone()).toList()).toList()';
-      } else if (isList) {
-        cloneDeclaration = '$name: $name${isNullable ? '?' : ''}.map((e) => e.clone()).toList()';
-      } else {
-        cloneDeclaration = '$name: $name${isNullable ? '?' : ''}.clone()';
-      }
-    } else {
-      cloneDeclaration = '$name: $name';
-    }
-
-    return cloneDeclaration;
+    return callback(cleanType, isList && isModel, isListInList && isModel, isModel);
   }
 
   String toEquals() {
@@ -108,16 +155,8 @@ class DartDeclaration {
     return value != null ? ' = $value' : '';
   }
 
-  String stringifyDecorator(deco) {
-    return deco != null && deco.isNotEmpty ? '$deco ' : '';
-  }
-
   void setIsNullable(bool isNullable) {
     this.isNullable = isNullable;
-  }
-
-  String getDecorator() {
-    return decorators.join('\n');
   }
 
   List<String> getImportStrings(String? relativePath) {
@@ -148,11 +187,7 @@ class DartDeclaration {
   }
 
   void setName(String name) {
-    final cleaned = name.cleaned();
-
-    jsonKey.addKey(name: cleaned, nullable: isNullable);
-    this.name = cleaned.toCamelCase();
-    decorators.replaceDecorator(Decorator(jsonKey.toString()));
+    this.name = name.cleaned().toCamelCase();
   }
 
   void setEnumValues(List<String> values) {
@@ -189,13 +224,13 @@ class DartDeclaration {
     override = true;
   }
 
-  static DartDeclaration fromKeyValue(key, val) {
+  static DartDeclaration fromKeyValue(String key, dynamic val) {
     var dartDeclaration = DartDeclaration();
     dartDeclaration = fromCommand(
       Commands.valueCommands,
       dartDeclaration,
       testSubject: val,
-      key: key.replaceAll('@override', '').trim(),
+      key: key.cleaned(),
       value: val,
     );
 
@@ -203,7 +238,7 @@ class DartDeclaration {
       Commands.keyComands,
       dartDeclaration,
       testSubject: key,
-      key: key,
+      key: key.cleaned(),
       value: val,
     );
 
@@ -212,7 +247,7 @@ class DartDeclaration {
 
   static DartDeclaration fromCommand(
     List<Command> commandList,
-    self, {
+    DartDeclaration self, {
     required String key,
     dynamic testSubject,
     dynamic value,
@@ -225,12 +260,13 @@ class DartDeclaration {
           final commandPrefixMatch = command.prefix != null &&
               command.command != null &&
               testSubject.startsWith(command.prefix! + command.command!);
-          final commandMatch = command.command != null && testSubject.startsWith(command.command!);
-          if (commandPrefixMatch || commandMatch) {
-            final prefixnull = command.notprefix == null;
-            final notprefix = !prefixnull && !testSubject.startsWith(command.notprefix!);
+          final commandMatch = command.command == null || testSubject.startsWith(command.command!);
 
-            if (notprefix || prefixnull) {
+          if (commandPrefixMatch || commandMatch) {
+            final notprefixnull = command.notprefix == null;
+            final notprefix = !notprefixnull && !testSubject.startsWith(command.notprefix!);
+
+            if (notprefix || notprefixnull) {
               newSelf = command.callback(self, testSubject, key: key, value: value);
               break;
             }
@@ -242,7 +278,12 @@ class DartDeclaration {
         break;
       }
     }
+
     return newSelf;
+  }
+
+  String toString() {
+    return 'Instance of DartDeclaration --> $type => $name';
   }
 }
 
@@ -293,8 +334,8 @@ ${valuesForTemplate()}
 
 
 class $converterName<$valueType, O> {
-  Map<$valueType, O> map;
-  Map<O, $valueType> reverseMap;
+  final Map<$valueType, O> map;
+  Map<O, $valueType>? reverseMap;
 
   $converterName(this.map);
 
@@ -305,10 +346,8 @@ class $converterName<$valueType, O> {
 
   String toImport() {
     return '''
-@JsonKey(ignore: true)
 $enumName 
-  get ${enumName.toCamelCase()} => $enumValuesMapName.map[$name];
-  set ${enumName.toCamelCase()}($enumName value) => $name = $enumValuesMapName.reverse[value];''';
+  get ${enumName.toCamelCase()} => $enumValuesMapName.map[$name]!;''';
   }
 }
 
@@ -322,3 +361,5 @@ String _detectType(String value) {
   }
   return 'String';
 }
+
+typedef NestedCallbackFunction = String Function(String cleanedType, bool isList, bool isListInList, bool isModel);

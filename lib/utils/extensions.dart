@@ -80,8 +80,20 @@ extension JsonKeyModels on List<DartDeclaration> {
     return ModelTemplates.indented('$className copyWith({\n'
         '$constructorDeclarations\n'
         '}) => $className(\n'
-        '$bodyDeclarations\n'
+        '$bodyDeclarations,\n'
         ');');
+  }
+
+  String toJsonFunctions(String className) {
+    var result = '';
+
+    final fromJsonBody = ModelTemplates.indented(where((e) => e.name != null).map((e) => e.fromJsonBody()).join(',\n').trim());
+    final toJsonBody = ModelTemplates.indented(where((e) => e.name != null).map((e) => e.toJsonBody(className)).join(',\n').trim());
+
+    result = 'factory $className.fromJson(Map<String,dynamic> json) => $className(\n$fromJsonBody\n);\n\n';
+    result += 'Map<String, dynamic> toJson() => {\n$toJsonBody\n};';
+
+    return ModelTemplates.indented(result);
   }
 
   String toCloneFunction(String className) {

@@ -6,17 +6,18 @@ class JsonModel {
   late String fileName;
   late String constructor;
   late String className;
-  String? extendsClass;
   late String mixinClass;
   late String declaration;
   late String copyWith;
   late String cloneFunction;
+  late String jsonFunctions;
   late String hashDeclarations;
   late String equalsDeclarations;
   late String imports;
-  late String enums;
-  late String enumConverters;
-  late String nestedClasses;
+  String? enums;
+  String? enumConverters;
+  String? nestedClasses;
+  String? extendsClass;
 
   JsonModel(String fileName, List<DartDeclaration> dartDeclarations, [String? relativePath]) {
     this.fileName = fileName;
@@ -26,6 +27,7 @@ class JsonModel {
     declaration = dartDeclarations.toDeclarationStrings(className);
     copyWith = dartDeclarations.toCopyWith(className);
     cloneFunction = dartDeclarations.toCloneFunction(className);
+    jsonFunctions = dartDeclarations.toJsonFunctions(className);
     equalsDeclarations = dartDeclarations.toEqualsDeclarationString();
     hashDeclarations = dartDeclarations.toHashDeclarationString();
     imports = dartDeclarations.toImportStrings(relativePath);
@@ -39,7 +41,7 @@ class JsonModel {
   }
 
   // model string from json map
-  static JsonModel fromMap(String fileName, Map jsonMap, {String? relativePath}) {
+  static JsonModel fromMap(String fileName, Map<String, dynamic> jsonMap, {String? relativePath}) {
     var dartDeclarations = <DartDeclaration>[];
     jsonMap.forEach((key, value) {
       var declaration = DartDeclaration.fromKeyValue(key, value);

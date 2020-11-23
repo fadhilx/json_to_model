@@ -1,5 +1,3 @@
-import 'package:apn_json2model/core/decorator.dart';
-import 'package:apn_json2model/core/json_key.dart';
 import 'package:apn_json2model/core/json_model.dart';
 
 import 'dart_declaration.dart';
@@ -21,13 +19,17 @@ class Command {
     this.command,
     required this.callback,
   });
+
+  @override
+  String toString() {
+    return 'Command $type => $prefix $command && !$notprefix';
+  }
 }
 
 class Commands {
   static Callback defaultCommandCallback = (DartDeclaration self, dynamic testSubject, {required String key, dynamic value}) {
-    self.isNullable = key.endsWith('?');
+    self.isNullable = testSubject.endsWith('?');
 
-    key = key.cleaned();
     self.setName(key);
 
     if (value == null) {
@@ -37,7 +39,7 @@ class Commands {
 
     if (value is Map) {
       self.type = key.toTitleCase();
-      self.nestedClasses.add(JsonModel.fromMap(key, value));
+      self.nestedClasses.add(JsonModel.fromMap(key, value as Map<String, dynamic>));
       return self;
     }
 
@@ -49,13 +51,13 @@ class Commands {
           final key = nestedFirst['\$key'];
           nestedFirst.remove('\$key');
           self.type = 'List<List<$key>>';
-          self.nestedClasses.add(JsonModel.fromMap(key, nestedFirst));
+          self.nestedClasses.add(JsonModel.fromMap(key, nestedFirst as Map<String, dynamic>));
         }
       } else if (firstListValue is Map) {
         final key = firstListValue['\$key'];
         firstListValue.remove('\$key');
         self.type = 'List<$key>';
-        self.nestedClasses.add(JsonModel.fromMap(key, firstListValue));
+        self.nestedClasses.add(JsonModel.fromMap(key, firstListValue as Map<String, dynamic>));
       } else {
         final listValueType = firstListValue.runtimeType.toString();
         self.type = 'List<$listValueType>';
@@ -77,25 +79,6 @@ class Commands {
   };
 
   static final List<Command> keyComands = [
-    Command(
-      prefix: '\@',
-      command: 'JsonKey',
-      callback: (DartDeclaration self, String testSubject, {required String key, dynamic value}) {
-        print(testSubject);
-
-        var jsonKey = JsonKeyMutate.fromJsonKeyParamString(testSubject);
-
-        self.jsonKey &= jsonKey;
-        var newDeclaration =
-            DartDeclaration.fromCommand(valueCommands, self, testSubject: value, key: key, value: value);
-
-        self.decorators.replaceDecorator(Decorator(self.jsonKey.toString()));
-        self.type = DartDeclaration.getTypeFromJsonKey(testSubject) ?? newDeclaration.type ?? self.type;
-        self.name = DartDeclaration.getNameFromJsonKey(testSubject) ?? newDeclaration.name ?? self.name;
-        if (self.name == null) self.setName(value);
-        return self;
-      },
-    ),
     Command(
       prefix: '\@',
       command: 'import',
@@ -125,9 +108,6 @@ class Commands {
       command: 'override',
       callback: (DartDeclaration self, dynamic testSubject, {required String key, dynamic value}) {
         self.enableOverridden();
-
-        key = key.cleaned();
-        print('Override found for key $testSubject -> cleaned $key');
         return defaultCommandCallback(self, key, key: key, value: value);
       },
     ),
@@ -141,6 +121,7 @@ class Commands {
       },
     ),
     Command(
+      type: String,
       callback: defaultCommandCallback,
     ),
   ];
@@ -175,7 +156,8 @@ class Commands {
       },
     ),
     Command(
-      prefix: '\@datetime',
+      prefix: '\@',
+      command: 'datetime',
       notprefix: '\$\[\]',
       callback: (DartDeclaration self, String testSubject, {required String key, dynamic value}) {
         self.setName(key);
@@ -184,7 +166,8 @@ class Commands {
       },
     ),
     Command(
-      prefix: '\@enum',
+      prefix: '\@',
+      command: 'enum',
       notprefix: '\$\[\]',
       callback: (DartDeclaration self, String testSubject, {required String key, dynamic value}) {
         self.setEnumValues((value as String).substring('@enum:'.length).split(','));
@@ -203,7 +186,7 @@ class Commands {
         }
         if (value is Map) {
           self.type = key.toTitleCase();
-          self.nestedClasses.add(JsonModel.fromMap('nested', value));
+          self.nestedClasses.add(JsonModel.fromMap('nested', value as Map<String, dynamic>));
           return self;
         }
         self.type = value.runtimeType.toString();

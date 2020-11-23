@@ -1,6 +1,6 @@
 name: apn_json2model
 description: Generate model class from Json file. Fork of json_to_model.
-version: 2.0.0-nullsafety
+version: 2.1.0-nullsafety
 homepage: https://appnormal.com
 
 environment:
@@ -12,9 +12,6 @@ dependencies:
   build_runner_core: ^6.1.1
   expressions: ^0.1.5
   io: ^0.3.4
-  json_annotation: ^3.1.1
-  json_serializable: ^3.5.0
-  logging: ^0.11.4
   path: ^1.8.0-nullsafety.3
 
 dev_dependencies:

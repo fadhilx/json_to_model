@@ -1,3 +1,7 @@
+## 2.1.0-nullsafety
+
+- Dropped json_serializable and make toJson and fromJson ourselves
+
 ## 2.0.0-nullsafety
 
 - Converted code to nullsafety. To soon for enabling sound null safety because almost all dependencies are not ready yet.

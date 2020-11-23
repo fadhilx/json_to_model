@@ -41,10 +41,7 @@ class JsonModelRunner {
   void cleanup() async {
     // wrapup cleanup
 
-    // build
-    if (onlyFile == null) {
-      BuildScript(['build', '--delete-conflicting-outputs']).build();
-    } else {
+    if (onlyFile != null) {
       var dotSplit = path.join(srcDir, onlyFile).split('.');
       BuildScript(['run', (dotSplit..removeLast()).join('.') + '.dart']).build();
     }
@@ -81,7 +78,7 @@ class JsonModelRunner {
               );
           List basenameString = path.basename(f.path).split('.');
           String fileName = basenameString.first;
-          Map jsonMap = json.decode(file.readAsStringSync());
+          Map<String, dynamic> jsonMap = json.decode(file.readAsStringSync());
 
           var relative = dartPath.replaceFirst(distDir + path.separator, '').replaceAll(path.separator, '/');
 

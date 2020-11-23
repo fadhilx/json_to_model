@@ -16,6 +16,7 @@ class ModelTemplates {
         declaration: data.declaration,
         copyWith: data.copyWith,
         cloneFunction: data.cloneFunction,
+        jsonFunctions: data.jsonFunctions,
         enums: data.enums,
         enumConverters: data.enumConverters,
         nestedClasses: data.nestedClasses,
@@ -33,6 +34,7 @@ class ModelTemplates {
     required String declaration,
     required String copyWith,
     required String cloneFunction,
+    required String jsonFunctions,
     String? enums,
     String? enumConverters,
     String? nestedClasses,
@@ -43,16 +45,12 @@ class ModelTemplates {
     if (!isNested) {
       template += '''
 import 'package:flutter/foundation.dart';
-import 'package:json_annotation/json_annotation.dart';
 $imports
-
-part '$fileName.g.dart';
 
 ''';
     }
 
     template += '''
-@JsonSerializable(explicitToJson: true)
 @immutable
 class $className${extendsClass != null ? ' extends $extendsClass ' : ''}${mixinClass.isNotEmpty ? ' with $mixinClass' : ''} {
   
@@ -60,8 +58,7 @@ $constructor
 
   $declaration
 
-  factory $className.fromJson(Map<String,dynamic> json) => _\$${className}FromJson(json);
-  Map<String, dynamic> toJson() => _\$${className}ToJson(this);
+$jsonFunctions
 
   $cloneFunction
 
