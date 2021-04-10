@@ -1,4 +1,4 @@
-## 2.2.0
+## 2.2.1
 
 - Fixed a generating null-safe code
 - Added @ignore option to exclude that declaration from toJson/fromJson
