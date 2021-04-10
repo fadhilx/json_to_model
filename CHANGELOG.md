@@ -5,7 +5,7 @@
 
 ## 2.1.0-nullsafety
 
-- Dropped json_serializable and make toJson and fromJson ourselves
+- Dropped **json_serializable** and make toJson and fromJson ourselves
 
 ## 2.0.0-nullsafety
 
@@ -32,7 +32,7 @@
 
 ## 1.5.3
 
-- Allow nullable support for .clone() method
+- Allow nullable support for **.clone()** method
 
 ## 1.5.2
 
