@@ -1,3 +1,8 @@
+## 2.2.2
+
+- Drop all unused dependencies
+- Speed up generation with a factor of 10
+
 ## 2.2.1
 
 - Fixed a generating null-safe code

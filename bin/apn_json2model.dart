@@ -2,22 +2,25 @@ import 'package:apn_json2model/json_to_model.dart';
 import 'package:args/args.dart';
 
 void main(List<String> arguments) {
-  var source = '';
-  var output = '';
+  const defaultSource = './jsons/';
+  const defaultOutput = './lib/models/';
+
+  String? source = '';
+  String? output = '';
   String? onlyFile;
 
   var argParser = ArgParser();
   argParser.addOption(
     'source',
     abbr: 's',
-    defaultsTo: './jsons/',
+    defaultsTo: defaultSource,
     callback: (v) => source = v,
     help: 'Specify source directory',
   );
   argParser.addOption(
     'output',
     abbr: 'o',
-    defaultsTo: './lib/models/',
+    defaultsTo: defaultOutput,
     callback: (v) => output = v,
     help: 'Specify models directory',
   );
@@ -29,8 +32,8 @@ void main(List<String> arguments) {
   );
   argParser.parse(arguments);
   var runner = JsonModelRunner(
-    source: source,
-    output: output,
+    source: source ?? defaultSource,
+    output: output ?? defaultOutput,
     onlyFile: onlyFile,
   );
 

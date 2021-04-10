@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:apn_json2model/core/model_template.dart';
-import 'package:apn_json2model/utils/build_script.dart';
 import 'package:path/path.dart' as path;
 
 import './core/json_model.dart';
@@ -40,11 +39,6 @@ class JsonModelRunner {
 
   void cleanup() async {
     // wrapup cleanup
-
-    if (onlyFile != null) {
-      var dotSplit = path.join(srcDir, onlyFile).split('.');
-      BuildScript(['run', (dotSplit..removeLast()).join('.') + '.dart']).build();
-    }
   }
 
   // all json files
