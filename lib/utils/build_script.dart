@@ -14,7 +14,7 @@ import 'package:build_runner/src/logging/std_io_logging.dart';
 class BuildScript {
   BuildScript(this.args);
   var localCommands = [CleanCommand(), GenerateBuildScript()];
-  
+
   List<String> args;
 
   void build() async {

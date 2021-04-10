@@ -56,7 +56,12 @@ extension StringExtension on String {
   }
 
   String cleaned() {
-    return replaceAll('@override', '').replaceAll('?', '').trim();
+    var cleaned = this;
+    cleaned = cleaned.replaceAll('@override', '');
+    cleaned = cleaned.replaceAll('@ignore', '');
+    cleaned = cleaned.replaceAll('?', '');
+    cleaned = cleaned.trim();
+    return cleaned;
   }
 }
 
@@ -71,7 +76,8 @@ extension JsonKeyModels on List<DartDeclaration> {
   }
 
   String toCopyWith(String className) {
-    var constructorDeclarations = where((e) => e.name != null).map((e) => e.copyWithConstructorDeclaration()).join(',\n').trim();
+    var constructorDeclarations =
+        where((e) => e.name != null).map((e) => e.copyWithConstructorDeclaration()).join(',\n').trim();
     constructorDeclarations = ModelTemplates.indented(constructorDeclarations);
 
     var bodyDeclarations = where((e) => e.name != null).map((e) => e.copyWithBodyDeclaration()).join(',\n').trim();
@@ -87,8 +93,9 @@ extension JsonKeyModels on List<DartDeclaration> {
   String toJsonFunctions(String className) {
     var result = '';
 
-    final fromJsonBody = ModelTemplates.indented(where((e) => e.name != null).map((e) => e.fromJsonBody()).join(',\n').trim());
-    final toJsonBody = ModelTemplates.indented(where((e) => e.name != null).map((e) => e.toJsonBody(className)).join(',\n').trim());
+    bool find(DartDeclaration e) => e.name != null && e.ignored == false;
+    final fromJsonBody = ModelTemplates.indented(where(find).map((e) => e.fromJsonBody()).join(',\n').trim());
+    final toJsonBody = ModelTemplates.indented(where(find).map((e) => e.toJsonBody(className)).join(',\n').trim());
 
     result = 'factory $className.fromJson(Map<String,dynamic> json) => $className(\n$fromJsonBody\n);\n\n';
     result += 'Map<String, dynamic> toJson() => {\n$toJsonBody\n};';

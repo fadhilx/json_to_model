@@ -20,6 +20,7 @@ class DartDeclaration {
   List<JsonModel> nestedClasses = [];
   bool isNullable = false;
   bool override = false;
+  bool ignored = false;
 
   bool get isEnum => enumValues.isNotEmpty;
   bool get isDatetime => type == 'DateTime';
@@ -50,7 +51,7 @@ class DartDeclaration {
   String fromJsonBody() {
     return checkNestedTypes(type!, (String cleanedType, bool isList, bool isListInList, bool isModel) {
       /// TOIMPROVE - make toSnakeCase configurable
-      final jsonVar = 'json[\'${name?.toSnakeCase()}\']';
+      final jsonVar = 'json[\'$name\']';
       String conversion;
       String modelFromJson([String jsonVar = 'e']) => '$cleanedType.fromJson($jsonVar as Map<String, dynamic>)';
 
@@ -83,7 +84,7 @@ class DartDeclaration {
         } else if (isList) {
           conversion = '$name$isNullableString.map((e) => e.toJson()).toList()';
         } else {
-          conversion = '$name.toJson()';
+          conversion = '$name$isNullableString.toJson()';
         }
       } else if(isEnum){
         conversion = '${getEnum(className).enumValuesMapName}.reverse[$name]';
@@ -93,7 +94,7 @@ class DartDeclaration {
         conversion = '$name';
       }
 
-      return '\'${name?.toSnakeCase()}\': $conversion';
+      return '\'$name\': $conversion';
     });
   }
 
@@ -220,6 +221,10 @@ class DartDeclaration {
     this.mixinClass = mixinClass;
   }
 
+  void setIgnored() {
+    ignored = true;
+  }
+
   void enableOverridden() {
     override = true;
   }
@@ -327,6 +332,9 @@ class Enum {
     return '''
 enum $enumName { ${values.map((e) => valueName(e)).toList().join(', ')} }
 
+extension ${enumName}Ex on $enumName{
+  String? get value => $enumValuesMapName.reverse[this];
+}
 
 final $enumValuesMapName = $converterName({
 ${valuesForTemplate()}
@@ -346,7 +354,7 @@ class $converterName<$valueType, O> {
 
   String toImport() {
     return '''
-$enumName 
+$enumName
   get ${enumName.toCamelCase()} => $enumValuesMapName.map[$name]!;''';
   }
 }

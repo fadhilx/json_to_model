@@ -1,3 +1,8 @@
+## 2.2.0
+
+- Fixed a generating null-safe code
+- Added @ignore option to exclude that declaration from toJson/fromJson
+
 ## 2.1.0-nullsafety
 
 - Dropped json_serializable and make toJson and fromJson ourselves

@@ -105,10 +105,18 @@ class Commands {
     ),
     Command(
       prefix: '\@',
+      command: 'ignore',
+      callback: (DartDeclaration self, dynamic testSubject, {required String key, dynamic value}) {
+        self.setIgnored();
+        return defaultCommandCallback(self, testSubject, key: key, value: value);
+      },
+    ),
+     Command(
+      prefix: '\@',
       command: 'override',
       callback: (DartDeclaration self, dynamic testSubject, {required String key, dynamic value}) {
         self.enableOverridden();
-        return defaultCommandCallback(self, key, key: key, value: value);
+        return defaultCommandCallback(self, testSubject, key: key, value: value);
       },
     ),
     Command(
