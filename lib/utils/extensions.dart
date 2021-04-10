@@ -11,7 +11,7 @@ extension StringExtension on String {
     var words = getWords();
     var leadingWords = words.getRange(1, words.length).toList();
     var leadingWord = leadingWords.map((e) => e.toTitleCase()).join('');
-    return '${words[0].toLowerCase()}${leadingWord}';
+    return '${words[0].toLowerCase()}$leadingWord';
   }
 
   String toSnakeCase() {
@@ -119,9 +119,9 @@ extension JsonKeyModels on List<DartDeclaration> {
   }
 
   String toImportStrings(String? relativePath) {
-    var imports = where((element) => element.imports != null && element.imports.isNotEmpty)
+    var imports = where((element) => element.imports.isNotEmpty)
         .map((e) => e.getImportStrings(relativePath))
-        .where((element) => element != null && element.isNotEmpty)
+        .where((element) => element.isNotEmpty)
         .fold<List<String>>(<String>[], (prev, current) => prev..addAll(current));
 
     var nestedImports = where((element) => element.nestedClasses.isNotEmpty)
@@ -136,7 +136,7 @@ extension JsonKeyModels on List<DartDeclaration> {
   String getEnums(String className) {
     return where((element) => element.isEnum)
         .map((e) => e.getEnum(className).toTemplateString())
-        .where((element) => element != null && element.isNotEmpty)
+        .where((element) => element.isNotEmpty)
         .join('\n');
   }
 

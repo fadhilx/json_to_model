@@ -11,10 +11,8 @@ _based of the [json_to_model](https://pub.dev/packages/json_to_model)_
   - [Features](#features)
   - [Installation](#installation)
   - [What does this library do](#what-does-this-library-do)
-    - [How](#how)
-      - [Example](#example)
-      - [Command:](#command)
-  - [Getting started](#getting-started)
+    - [Get started](#get-started)
+    - [Examples](#examples)
   - [Usage](#usage)
 
 
@@ -43,14 +41,17 @@ install using `pub get` command or if you using dart vscode/android studio, you 
 
 ## What does this library do
 
-**Command line tool to convert `.json` files into immutable `.dart` models.**
+Command line tool to convert `.json` files into immutable `.dart` models.
 
-### How
+### Get started
 
-it run through your json file and find possible type, variable name, import uri, decorator and class name, and will write it into the templates.
-Create/copy `.json` files into `./jsons/`(default) on root of your project, and run `pub run apn_json2model`.
+The command will run through your json files and find possible type, variable name, import uri, decorator and class name, and will write it into the templates.
 
-#### Example
+Create/copy `.json` files into `./jsons/`(default) on root of your project, and run `flutter pub run apn_json2model`.
+
+### Examples
+
+**Input**
 Consider this file named employee.json
 
 ```json
@@ -60,14 +61,6 @@ Consider this file named employee.json
   "@ignore products?": "$[]product"
 }
 ```
-
-#### Command:
-
-> `pub run apn_json2model`
-
-or
-
-> `flutter pub run apn_json2model`
 
 **Output**
 This will generate this employee.dart
@@ -128,6 +121,180 @@ class Employee {
     products.hashCode;
 }
 ```
+
+
+**Input**
+Consider this file named location.json
+
+```json
+{
+    "locationId?": 93,
+    "locationTypeId?": "1234",
+    "updatedAt": "@datetime",
+    "name?": "Lunet 10a, Veenendaal",
+    "confidential?": false,
+    "locationType?": "@enum:INSIDE,OUTSIDE,CLIENT,HOME,ROOM,UNKNOWN",
+    "point?": {
+        "longitude": 58.1234,
+        "latitude": 12.123
+    }
+}
+```
+
+**Output**
+This will generate this location.dart
+
+```dart
+import 'package:flutter/foundation.dart';
+
+@immutable
+class Location {
+
+  const Location({
+    this.locationId,
+    this.locationTypeId,
+    required this.updatedAt,
+    this.name,
+    this.confidential,
+    this.locationType,
+    this.point,
+  });
+
+  final int? locationId;
+  final String? locationTypeId;
+  final DateTime updatedAt;
+  final String? name;
+  final bool? confidential;
+  LocationLocationTypeEnum
+    get locationLocationTypeEnum => _locationLocationTypeEnumValues.map[locationType]!;
+  final String? locationType;
+  final Point? point;
+
+  factory Location.fromJson(Map<String,dynamic> json) => Location(
+    locationId: json['locationId'] != null ? json['locationId'] as int : null,
+    locationTypeId: json['locationTypeId'] != null ? json['locationTypeId'] as String : null,
+    updatedAt: DateTime.parse(json['updatedAt'] as String),
+    name: json['name'] != null ? json['name'] as String : null,
+    confidential: json['confidential'] != null ? json['confidential'] as bool : null,
+    locationType: json['locationType'] != null ? json['locationType'] as String : null,
+    point: json['point'] != null ? Point.fromJson(json['point'] as Map<String, dynamic>) : null
+  );
+
+  Map<String, dynamic> toJson() => {
+    'locationId': locationId,
+    'locationTypeId': locationTypeId,
+    'updatedAt': updatedAt.toIso8601String(),
+    'name': name,
+    'confidential': confidential,
+    'locationType': _locationLocationTypeEnumValues.reverse[locationType],
+    'point': point?.toJson()
+  };
+
+  Location clone() => Location(
+    locationId: locationId,
+    locationTypeId: locationTypeId,
+    updatedAt: updatedAt,
+    name: name,
+    confidential: confidential,
+    locationType: locationType,
+    point: point?.clone()
+  );
+
+  Location copyWith({
+    int? locationId,
+    String? locationTypeId,
+    DateTime? updatedAt,
+    String? name,
+    bool? confidential,
+    String? locationType,
+    Point? point
+  }) => Location(
+    locationId: locationId ?? this.locationId,
+    locationTypeId: locationTypeId ?? this.locationTypeId,
+    updatedAt: updatedAt ?? this.updatedAt,
+    name: name ?? this.name,
+    confidential: confidential ?? this.confidential,
+    locationType: locationType ?? this.locationType,
+    point: point ?? this.point,
+  );
+
+  @override
+  bool operator ==(Object other) => identical(this, other)
+    || other is Location && locationId == other.locationId && locationTypeId == other.locationTypeId && updatedAt == other.updatedAt && name == other.name && confidential == other.confidential && locationType == other.locationType && point == other.point;
+
+  @override
+  int get hashCode => locationId.hashCode ^ locationTypeId.hashCode ^ updatedAt.hashCode ^ name.hashCode ^ confidential.hashCode ^ locationType.hashCode ^ point.hashCode;
+}
+
+enum LocationLocationTypeEnum { INSIDE, OUTSIDE, CLIENT, HOME, ROOM, UNKNOWN }
+
+extension LocationLocationTypeEnumEx on LocationLocationTypeEnum{
+  String? get value => _locationLocationTypeEnumValues.reverse[this];
+}
+
+final _locationLocationTypeEnumValues = _LocationLocationTypeEnumConverter({
+  'INSIDE': LocationLocationTypeEnum.INSIDE,
+  'OUTSIDE': LocationLocationTypeEnum.OUTSIDE,
+  'CLIENT': LocationLocationTypeEnum.CLIENT,
+  'HOME': LocationLocationTypeEnum.HOME,
+  'ROOM': LocationLocationTypeEnum.ROOM,
+  'UNKNOWN': LocationLocationTypeEnum.UNKNOWN,
+});
+
+class _LocationLocationTypeEnumConverter<String, O> {
+  final Map<String, O> map;
+  Map<O, String>? reverseMap;
+
+  _LocationLocationTypeEnumConverter(this.map);
+
+  Map<O, String> get reverse => reverseMap ??= map.map((k, v) => MapEntry(v, k));
+}
+
+@immutable
+class Point {
+
+  const Point({
+    required this.longitude,
+    required this.latitude,
+  });
+
+  final double longitude;
+  final double latitude;
+
+  factory Point.fromJson(Map<String,dynamic> json) => Point(
+    longitude: json['longitude'] as double,
+    latitude: json['latitude'] as double
+  );
+
+  Map<String, dynamic> toJson() => {
+    'longitude': longitude,
+    'latitude': latitude
+  };
+
+  Point clone() => Point(
+    longitude: longitude,
+    latitude: latitude
+  );
+
+
+  Point copyWith({
+    double? longitude,
+    double? latitude
+  }) => Point(
+    longitude: longitude ?? this.longitude,
+    latitude: latitude ?? this.latitude,
+  );
+
+  @override
+  bool operator ==(Object other) => identical(this, other)
+    || other is Point && longitude == other.longitude && latitude == other.latitude;
+
+  @override
+  int get hashCode => longitude.hashCode ^ latitude.hashCode;
+}
+```
+
+
 
 ## Getting started
 

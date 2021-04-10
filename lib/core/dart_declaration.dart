@@ -19,7 +19,7 @@ class DartDeclaration {
   List<String> enumValues = [];
   List<JsonModel> nestedClasses = [];
   bool isNullable = false;
-  bool override = false;
+  bool overrideEnabled = false;
   bool ignored = false;
 
   bool get isEnum => enumValues.isNotEmpty;
@@ -39,7 +39,7 @@ class DartDeclaration {
 
     if (isEnum) {
       declaration += '${getEnum(className).toImport()}\n';
-    } else if (override) {
+    } else if (overrideEnabled) {
       declaration += '@override ';
     }
 
@@ -226,7 +226,7 @@ class DartDeclaration {
   }
 
   void enableOverridden() {
-    override = true;
+    overrideEnabled = true;
   }
 
   static DartDeclaration fromKeyValue(String key, dynamic val) {
@@ -287,6 +287,7 @@ class DartDeclaration {
     return newSelf;
   }
 
+  @override
   String toString() {
     return 'Instance of DartDeclaration --> $type => $name';
   }
