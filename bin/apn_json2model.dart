@@ -1,12 +1,10 @@
-// @dart=2.9
-
 import 'package:apn_json2model/json_to_model.dart';
 import 'package:args/args.dart';
 
 void main(List<String> arguments) {
   var source = '';
   var output = '';
-  String onlyFile;
+  String? onlyFile;
 
   var argParser = ArgParser();
   argParser.addOption(
