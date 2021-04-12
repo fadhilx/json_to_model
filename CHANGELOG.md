@@ -1,3 +1,7 @@
+## 2.2.3
+
+- Make generated enum property nullable if the linked property is nullable
+
 ## 2.2.2
 
 - Drop all unused dependencies

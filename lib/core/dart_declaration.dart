@@ -86,11 +86,11 @@ class DartDeclaration {
         } else {
           conversion = '$name$isNullableString.toJson()';
         }
-      } else if(isEnum){
+      } else if (isEnum) {
         conversion = '${getEnum(className).enumValuesMapName}.reverse[$name]';
       } else if (isDatetime) {
         conversion = '$name$isNullableString.toIso8601String()';
-      }else {
+      } else {
         conversion = '$name';
       }
 
@@ -197,7 +197,7 @@ class DartDeclaration {
   }
 
   Enum getEnum(String className) {
-    return Enum(className, name!, enumValues);
+    return Enum(className, name!, enumValues, isNullable);
   }
 
   void addImport(import) {
@@ -297,8 +297,11 @@ class Enum {
   final String className;
   final String name;
   final List<String> values;
+  final bool isNullable;
 
   var valueType = 'String';
+
+  String get isNullableString => isNullable ? '?' : '';
 
   String get enumName => '$className${name.toTitleCase()}Enum';
 
@@ -306,7 +309,12 @@ class Enum {
 
   String get enumValuesMapName => '_${enumName.toCamelCase()}Values';
 
-  Enum(this.className, this.name, this.values) {
+  Enum(
+    this.className,
+    this.name,
+    this.values,
+    this.isNullable,
+  ) {
     valueType = _detectType(values.first);
   }
 
@@ -355,8 +363,7 @@ class $converterName<$valueType, O> {
 
   String toImport() {
     return '''
-$enumName
-  get ${enumName.toCamelCase()} => $enumValuesMapName.map[$name]!;''';
+$enumName$isNullableString get ${enumName.toCamelCase()} => $enumValuesMapName.map[$name]${isNullable ? '' : '!'};''';
   }
 }
 
