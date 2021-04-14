@@ -1,3 +1,7 @@
+## 2.2.4
+
+- Bugfix in toJson enum serialisation
+
 ## 2.2.3
 
 - Make generated enum property nullable if the linked property is nullable

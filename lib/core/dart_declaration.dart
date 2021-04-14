@@ -86,8 +86,6 @@ class DartDeclaration {
         } else {
           conversion = '$name$isNullableString.toJson()';
         }
-      } else if (isEnum) {
-        conversion = '${getEnum(className).enumValuesMapName}.reverse[$name]';
       } else if (isDatetime) {
         conversion = '$name$isNullableString.toIso8601String()';
       } else {
