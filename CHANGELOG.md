@@ -1,3 +1,7 @@
+## 2.2.5
+
+- Bugfix in fromJson list deserialisation
+
 ## 2.2.4
 
 - Bugfix in toJson enum serialisation

@@ -56,9 +56,9 @@ class DartDeclaration {
       String modelFromJson([String jsonVar = 'e']) => '$cleanedType.fromJson($jsonVar as Map<String, dynamic>)';
 
       if (isListInList) {
-        conversion = '($jsonVar as List).map((e) => (e as List).map((e) => ${modelFromJson()}).toList()).toList()';
+        conversion = '($jsonVar as List? ?? []).map((e) => (e as List? ?? []).map((e) => ${modelFromJson()}).toList()).toList()';
       } else if (isList) {
-        conversion = '($jsonVar as List).map((e) => ${modelFromJson()}).toList()';
+        conversion = '($jsonVar as List? ?? []).map((e) => ${modelFromJson()}).toList()';
       } else if (isModel) {
         conversion = modelFromJson(jsonVar);
       } else if (isDatetime) {
