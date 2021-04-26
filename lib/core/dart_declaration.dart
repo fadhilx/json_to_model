@@ -50,15 +50,19 @@ class DartDeclaration {
 
   String fromJsonBody() {
     return checkNestedTypes(type!, (String cleanedType, bool isList, bool isListInList, bool isModel) {
-      /// TOIMPROVE - make toSnakeCase configurable
       final jsonVar = 'json[\'$name\']';
       String conversion;
       String modelFromJson([String jsonVar = 'e']) => '$cleanedType.fromJson($jsonVar as Map<String, dynamic>)';
 
       if (isListInList) {
-        conversion = '($jsonVar as List? ?? []).map((e) => (e as List? ?? []).map((e) => ${modelFromJson()}).toList()).toList()';
+        conversion =
+            '($jsonVar as List? ?? []).map((e) => (e as List? ?? []).map((e) => ${modelFromJson()}).toList()).toList()';
       } else if (isList) {
-        conversion = '($jsonVar as List? ?? []).map((e) => ${modelFromJson()}).toList()';
+        if (isModel) {
+          conversion = '($jsonVar as List? ?? []).map((e) => ${modelFromJson()}).toList()';
+        } else {
+          conversion = '($jsonVar as List? ?? []).map((e) => $cleanedType).toList()';
+        }
       } else if (isModel) {
         conversion = modelFromJson(jsonVar);
       } else if (isDatetime) {
@@ -78,14 +82,17 @@ class DartDeclaration {
   String toJsonBody(String className) {
     return checkNestedTypes(type!, (String cleanedType, bool isList, bool isListInList, bool isModel) {
       String conversion;
-      if (isModel) {
-        if (isListInList) {
-          conversion = '$name$isNullableString.map((e) => e.map((e) => e.toJson()).toList()).toList()';
-        } else if (isList) {
+
+      if (isListInList) {
+        conversion = '$name$isNullableString.map((e) => e.map((e) => e.toJson()).toList()).toList()';
+      } else if (isList) {
+        if (isModel) {
           conversion = '$name$isNullableString.map((e) => e.toJson()).toList()';
         } else {
-          conversion = '$name$isNullableString.toJson()';
+          conversion = '$name$isNullableString.map((e) => e.toString()).toList()';
         }
+      } else if (isModel) {
+        conversion = '$name$isNullableString.toJson()';
       } else if (isDatetime) {
         conversion = '$name$isNullableString.toIso8601String()';
       } else {
@@ -106,14 +113,16 @@ class DartDeclaration {
 
   String toCloneDeclaration() {
     return checkNestedTypes(type!, (String cleanedType, bool isList, bool isListInList, bool isModel) {
-      if (isModel) {
-        if (isListInList) {
-          return '$name: $name${isNullable ? '?' : ''}.map((x) => x.map((y) => y.clone()).toList()).toList()';
-        } else if (isList) {
+      if (isListInList) {
+        return '$name: $name${isNullable ? '?' : ''}.map((x) => x.map((y) => y.clone()).toList()).toList()';
+      } else if (isList) {
+        if (isModel) {
           return '$name: $name${isNullable ? '?' : ''}.map((e) => e.clone()).toList()';
         } else {
-          return '$name: $name${isNullable ? '?' : ''}.clone()';
+          return '$name: $name${isNullable ? '?' : ''}.toList()';
         }
+      } else if (isModel) {
+        return '$name: $name${isNullable ? '?' : ''}.clone()';
       } else {
         return '$name: $name';
       }
@@ -139,7 +148,7 @@ class DartDeclaration {
     final nestedClassExists = nestedClasses.indexWhere((element) => element.className == cleanType) != -1;
     final isModel = !isEnum && (importExists || nestedClassExists);
 
-    return callback(cleanType, isList && isModel, isListInList && isModel, isModel);
+    return callback(cleanType, isList, isListInList, isModel);
   }
 
   String toEquals() {

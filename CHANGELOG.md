@@ -1,5 +1,9 @@
 ## 2.2.5
 
+- Bugfix in fromJson/toJson/clone list conversions when values in list are primitives
+
+## 2.2.5
+
 - Bugfix in fromJson list deserialisation
 
 ## 2.2.4
