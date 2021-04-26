@@ -1,4 +1,4 @@
-## 2.2.5
+## 2.2.7
 
 - Bugfix in fromJson/toJson/clone list conversions when values in list are primitives
 
