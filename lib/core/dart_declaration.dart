@@ -12,6 +12,7 @@ class DartDeclaration {
 
   List<String> imports = [];
   String? type;
+  String? originalName;
   String? name;
   String? assignment;
   String? extendsClass;
@@ -50,7 +51,7 @@ class DartDeclaration {
 
   String fromJsonBody() {
     return checkNestedTypes(type!, (String cleanedType, bool isList, bool isListInList, bool isModel) {
-      final jsonVar = 'json[\'$name\']';
+      final jsonVar = 'json[\'$originalName\']';
       String conversion;
       String modelFromJson([String jsonVar = 'e']) => '$cleanedType.fromJson($jsonVar as Map<String, dynamic>)';
 
@@ -99,7 +100,7 @@ class DartDeclaration {
         conversion = '$name';
       }
 
-      return '\'$name\': $conversion';
+      return '\'$originalName\': $conversion';
     });
   }
 
@@ -195,6 +196,7 @@ class DartDeclaration {
   }
 
   void setName(String name) {
+    this.originalName = name;
     this.name = name.cleaned().toCamelCase();
   }
 
