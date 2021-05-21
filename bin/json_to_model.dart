@@ -1,4 +1,4 @@
-import 'package:apn_json2model/json_to_model.dart';
+import 'package:json_to_model/json_to_model.dart';
 import 'package:args/args.dart';
 
 void main(List<String> arguments) {

@@ -1,8 +1,8 @@
 import 'dart:collection';
 
-import 'package:apn_json2model/core/command.dart';
-import 'package:apn_json2model/core/json_model.dart';
-import 'package:apn_json2model/core/model_template.dart';
+import 'package:json_to_model/core/command.dart';
+import 'package:json_to_model/core/json_model.dart';
+import 'package:json_to_model/core/model_template.dart';
 
 import '../utils/extensions.dart';
 

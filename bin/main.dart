@@ -1,3 +1,3 @@
 // @dart=2.10
 
-export 'apn_json2model.dart';
+export 'json_to_model.dart';

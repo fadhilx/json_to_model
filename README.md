@@ -1,4 +1,4 @@
-# apn_json2model [![Pub Version](https://img.shields.io/pub/v/apn_json2model?color=%2335d9ba&style=flat-square)](https://pub.dev/packages/apn_json2model)
+# json_to_model [![Pub Version](https://img.shields.io/pub/v/json_to_model?color=%2335d9ba&style=flat-square)](https://pub.dev/packages/json_to_model)
 
 Command line tool for generating Dart models (json_serializable) from Json file.
 
@@ -34,7 +34,7 @@ on `pubspec.yaml`
 
 ```yaml
 dev_dependencies:
-  apn_json2model: ^2.2.0
+  json_to_model: ^2.2.0
 ```
 
 install using `pub get` command or if you using dart vscode/android studio, you can use install option.
@@ -47,7 +47,7 @@ Command line tool to convert `.json` files into immutable `.dart` models.
 
 The command will run through your json files and find possible type, variable name, import uri, decorator and class name, and will write it into the templates.
 
-Create/copy `.json` files into `./jsons/`(default) on root of your project, and run `flutter pub run apn_json2model`.
+Create/copy `.json` files into `./jsons/`(default) on root of your project, and run `flutter pub run json_to_model`.
 
 ### Examples
 
@@ -75,7 +75,7 @@ eployee.json
 ```
 
 **Output**
-This will generate this product.dart and employee.dart 
+This will generate this product.dart and employee.dart
 
 product.dart
 
@@ -84,7 +84,7 @@ import 'package:flutter/foundation.dart';
 
 @immutable
 class Product {
-  
+
   const Product({
     required this.id,
     this.caseId,
@@ -106,7 +106,7 @@ class Product {
     endDate: json['endDate'] != null ? json['endDate'] as String : null,
     placementDescription: json['placementDescription'] != null ? json['placementDescription'] as String : null
   );
-  
+
   Map<String, dynamic> toJson() => {
     'id': id,
     'caseId': caseId,
@@ -123,7 +123,7 @@ class Product {
     placementDescription: placementDescription
   );
 
-    
+
   Product copyWith({
     String? id,
     String? caseId,
@@ -136,10 +136,10 @@ class Product {
     startDate: startDate ?? this.startDate,
     endDate: endDate ?? this.endDate,
     placementDescription: placementDescription ?? this.placementDescription,
-  );  
+  );
 
   @override
-  bool operator ==(Object other) => identical(this, other) 
+  bool operator ==(Object other) => identical(this, other)
     || other is Product && id == other.id && caseId == other.caseId && startDate == other.startDate && endDate == other.endDate && placementDescription == other.placementDescription;
 
   @override
@@ -384,7 +384,7 @@ class Point {
 
 1. Create a directory `jsons`(default) at root of your project
 2. Put all or Create json files inside `jsons` directory
-3. run `pub run apn_json2model`. or `flutter packages pub run apn_json2model` flutter project
+3. run `pub run json_to_model`. or `flutter packages pub run json_to_model` flutter project
 
 ## Usage
 

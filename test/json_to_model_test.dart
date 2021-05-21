@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import 'package:apn_json2model/utils/extensions.dart';
+import 'package:json_to_model/utils/extensions.dart';
 
 void main() {
   test('to Title case', () {
