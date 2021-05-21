@@ -1,8 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:json_to_model/core/model_template.dart';
-import 'package:json_to_model/utils/build_script.dart';
+import 'package:apn_json2model/core/model_template.dart';
 import 'package:path/path.dart' as path;
 
 import './core/json_model.dart';
@@ -10,11 +9,14 @@ import './core/json_model.dart';
 class JsonModelRunner {
   String srcDir = './jsons/';
   String distDir = './lib/models/';
-  String onlyFile = './lib/models/';
+  String? onlyFile = './lib/models/';
   List<FileSystemEntity> list = [];
 
-  JsonModelRunner({String source, String output, String onlyFile})
-      : srcDir = source,
+  JsonModelRunner({
+    required String source,
+    required String output,
+    String? onlyFile,
+  })   : srcDir = source,
         distDir = output,
         onlyFile = onlyFile;
 
@@ -28,9 +30,7 @@ class JsonModelRunner {
   bool run({command}) {
     // run
     // get all json files ./jsons
-    list = onlyFile == null
-        ? getAllJsonFiles()
-        : [File(path.join(srcDir, onlyFile))];
+    list = onlyFile == null ? getAllJsonFiles() : [File(path.join(srcDir, onlyFile))];
     if (!generateModelsDirectory()) return false;
     if (!iterateJsonFile()) return false;
 
@@ -39,15 +39,6 @@ class JsonModelRunner {
 
   void cleanup() async {
     // wrapup cleanup
-
-    // build
-    if (onlyFile == null) {
-      await BuildScript(['build', '--delete-conflicting-outputs']).build();
-    } else {
-      var dotSplit = path.join(srcDir, onlyFile).split('.');
-      await BuildScript(['run', (dotSplit..removeLast()).join('.') + '.dart'])
-          .build();
-    }
   }
 
   // all json files
@@ -81,17 +72,15 @@ class JsonModelRunner {
               );
           List basenameString = path.basename(f.path).split('.');
           String fileName = basenameString.first;
-          Map jsonMap = json.decode(file.readAsStringSync());
+          Map<String, dynamic> jsonMap = json.decode(file.readAsStringSync());
 
-          var jsonModel = JsonModel.fromMap(fileName, jsonMap);
-          warningIfImportNotExists(jsonModel, f);
+          var relative = dartPath.replaceFirst(distDir + path.separator, '').replaceAll(path.separator, '/');
+
+          var jsonModel = JsonModel.fromMap(fileName, jsonMap, relativePath: relative);
           if (!generateFileFromJson(dartPath, jsonModel, fileName)) {
             error.write('cant write $dartPath');
           }
 
-          var relative = dartPath
-              .replaceFirst(distDir + path.separator, '')
-              .replaceAll(path.separator, '/');
           print('generated: $relative');
           indexFile += "export '$relative';\n";
         }
@@ -101,17 +90,6 @@ class JsonModelRunner {
       File(path.join(distDir, 'index.dart')).writeAsStringSync(indexFile);
     }
     return indexFile.isNotEmpty;
-  }
-
-  void warningIfImportNotExists(jsonModel, jsonFile) {
-    jsonModel.imports_raw.forEach((importPath) {
-      var parentPath =
-          jsonFile.path.substring(0, jsonFile.path.lastIndexOf(path.separator));
-      if (!File(path.join(parentPath, '$importPath.json')).existsSync()) {
-        print(
-            "[Warning] File '$importPath.json' not exist, import attempt on '${jsonFile.path}'");
-      }
-    });
   }
 
   // generate models from the json file

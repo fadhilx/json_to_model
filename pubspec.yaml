@@ -1,25 +1,16 @@
-name: json_to_model
-description: Generate model class from Json file. partly inspired by json_model.
-version: 1.4.1
-homepage: https://github.com/fadhilx/json_to_model
+name: apn_json2model
+description: Generate model class from Json file. Fork of json_to_model.
+version: 2.3.0
+homepage: https://appnormal.com
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
-  path: ^1.6.0
-
-  args: ^1.5.0
-  build_runner_core: ^5.1.0
-
-  io: ^0.3.4
-  logging: ^0.11.4
-
-  expressions: ^0.1.5
-  build_runner: ^1.9.0
-  json_serializable: ^3.3.0
-  json_annotation: ^3.0.1
+  args: ^2.0.0
+  logging: ^1.0.1
+  path: ^1.8.0
 
 dev_dependencies:
-  pedantic: ^1.9.0
-  test: ^1.14.2
+  pedantic: ^1.9.2
+  test: ^1.15.6

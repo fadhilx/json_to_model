@@ -1,6 +1,5 @@
-import 'package:json_to_model/core/dart_declaration.dart';
-import 'package:json_to_model/core/json_model.dart';
-import 'package:json_to_model/core/model_template.dart';
+import 'package:apn_json2model/core/dart_declaration.dart';
+import 'package:apn_json2model/core/model_template.dart';
 
 extension StringExtension on String {
   String toTitleCase() {
@@ -12,7 +11,7 @@ extension StringExtension on String {
     var words = getWords();
     var leadingWords = words.getRange(1, words.length).toList();
     var leadingWord = leadingWords.map((e) => e.toTitleCase()).join('');
-    return '${words[0].toLowerCase()}${leadingWord}';
+    return '${words[0].toLowerCase()}$leadingWord';
   }
 
   String toSnakeCase() {
@@ -21,7 +20,7 @@ extension StringExtension on String {
     return '$leadingWord';
   }
 
-  String between(String start, String end) {
+  String? between(String start, String end) {
     final startIndex = indexOf(start);
     final endIndex = indexOf(end);
     if (startIndex == -1) return null;
@@ -55,17 +54,74 @@ extension StringExtension on String {
     }
     return firstLetter.toUpperCase() == substring(0, 1);
   }
+
+  String cleaned() {
+    var cleaned = this;
+    cleaned = cleaned.replaceAll('@override', '');
+    cleaned = cleaned.replaceAll('@ignore', '');
+    cleaned = cleaned.replaceAll('?', '');
+    cleaned = cleaned.trim();
+    return cleaned;
+  }
 }
 
 extension JsonKeyModels on List<DartDeclaration> {
-  String toDeclarationStrings(String className) {
-    return map((e) => e.toDeclaration(className)).join('\n').trim();
+  String toConstructor(String className) {
+    final declarations = where((e) => e.name != null).map((e) => e.toConstructor()).join('\n').trim();
+    return ModelTemplates.indented('const $className({\n  $declarations\n});', indent: 1);
   }
 
-  String toImportStrings() {
-    var imports = where((element) => element.imports != null && element.imports.isNotEmpty)
-        .map((e) => e.getImportStrings())
-        .where((element) => element != null && element.isNotEmpty)
+  String toDeclarationStrings(String className) {
+    return where((e) => e.name != null).map((e) => e.toDeclaration(className)).join('\n').trim();
+  }
+
+  String toCopyWith(String className) {
+    var constructorDeclarations =
+        where((e) => e.name != null).map((e) => e.copyWithConstructorDeclaration()).join(',\n').trim();
+    constructorDeclarations = ModelTemplates.indented(constructorDeclarations);
+
+    var bodyDeclarations = where((e) => e.name != null).map((e) => e.copyWithBodyDeclaration()).join(',\n').trim();
+    bodyDeclarations = ModelTemplates.indented(bodyDeclarations);
+
+    return ModelTemplates.indented('$className copyWith({\n'
+        '$constructorDeclarations\n'
+        '}) => $className(\n'
+        '$bodyDeclarations,\n'
+        ');');
+  }
+
+  String toJsonFunctions(String className) {
+    var result = '';
+
+    bool find(DartDeclaration e) => e.name != null && e.ignored == false;
+    final fromJsonBody = ModelTemplates.indented(where(find).map((e) => e.fromJsonBody()).join(',\n').trim());
+    final toJsonBody = ModelTemplates.indented(where(find).map((e) => e.toJsonBody(className)).join(',\n').trim());
+
+    result = 'factory $className.fromJson(Map<String,dynamic> json) => $className(\n$fromJsonBody\n);\n\n';
+    result += 'Map<String, dynamic> toJson() => {\n$toJsonBody\n};';
+
+    return ModelTemplates.indented(result);
+  }
+
+  String toCloneFunction(String className) {
+    final declarations = where((e) => e.name != null).map((e) => e.toCloneDeclaration()).join(',\n').trim();
+    final cloneDeclarations = ModelTemplates.indented(declarations, indent: 2);
+
+    return '$className clone() => $className(\n$cloneDeclarations\n  );';
+  }
+
+  String toEqualsDeclarationString() {
+    return where((e) => e.name != null).map((e) => e.toEquals()).join(' && ').trim();
+  }
+
+  String toHashDeclarationString() {
+    return where((e) => e.name != null).map((e) => e.toHash()).join(' ^ ').trim();
+  }
+
+  String toImportStrings(String? relativePath) {
+    var imports = where((element) => element.imports.isNotEmpty)
+        .map((e) => e.getImportStrings(relativePath))
+        .where((element) => element.isNotEmpty)
         .fold<List<String>>(<String>[], (prev, current) => prev..addAll(current));
 
     var nestedImports = where((element) => element.nestedClasses.isNotEmpty)
@@ -80,7 +136,7 @@ extension JsonKeyModels on List<DartDeclaration> {
   String getEnums(String className) {
     return where((element) => element.isEnum)
         .map((e) => e.getEnum(className).toTemplateString())
-        .where((element) => element != null && element.isNotEmpty)
+        .where((element) => element.isNotEmpty)
         .join('\n');
   }
 
@@ -92,18 +148,5 @@ extension JsonKeyModels on List<DartDeclaration> {
               },
             ).join('\n\n'))
         .join('\n');
-  }
-
-  List<String> getImportRaw() {
-    var imports_raw = <String>[];
-    where((element) => element.imports != null && element.imports.isNotEmpty).forEach((element) {
-      imports_raw.addAll(element.imports);
-      if (element.nestedClasses.isNotEmpty) {
-        imports_raw
-            .addAll(element.nestedClasses.map((e) => e.imports_raw).reduce((value, element) => value..addAll(element)));
-      }
-    });
-    imports_raw = imports_raw.where((element) => element != null && element.isNotEmpty).toList();
-    return imports_raw;
   }
 }
