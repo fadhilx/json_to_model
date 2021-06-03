@@ -351,7 +351,7 @@ class Enum {
 enum $enumName { ${values.map((e) => valueName(e)).toList().join(', ')} }
 
 extension ${enumName}Ex on $enumName{
-  String? get value => $enumValuesMapName.reverse[this];
+  String? get value => $enumValuesMapName.reverse[this].toString();
 }
 
 final $enumValuesMapName = $converterName({
