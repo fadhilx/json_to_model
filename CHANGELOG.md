@@ -1,3 +1,7 @@
+## 2.3.1
+
+- Use enum value type as return type for value getter
+
 ## 2.3.0
 
 - Preserve original case for fromJson and toJson
