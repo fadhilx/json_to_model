@@ -63,12 +63,20 @@ extension StringExtension on String {
     cleaned = cleaned.trim();
     return cleaned;
   }
+
+  String indented({int indent = 1}) {
+  var indentString = List.generate(indent, (index) => '  ').join('');
+
+  final content = replaceAll('\n', '\n$indentString');
+
+  return '$indentString$content';
+}
 }
 
 extension JsonKeyModels on List<DartDeclaration> {
   String toConstructor(String className) {
     final declarations = where((e) => e.name != null).map((e) => e.toConstructor()).join('\n').trim();
-    return ModelTemplates.indented('const $className({\n  $declarations\n});', indent: 1);
+    return 'const $className({\n  $declarations\n});'.indented(indent: 1);
   }
 
   String toDeclarationStrings(String className) {
@@ -78,34 +86,34 @@ extension JsonKeyModels on List<DartDeclaration> {
   String toCopyWith(String className) {
     var constructorDeclarations =
         where((e) => e.name != null).map((e) => e.copyWithConstructorDeclaration()).join(',\n').trim();
-    constructorDeclarations = ModelTemplates.indented(constructorDeclarations);
+    constructorDeclarations = constructorDeclarations.indented();
 
     var bodyDeclarations = where((e) => e.name != null).map((e) => e.copyWithBodyDeclaration()).join(',\n').trim();
-    bodyDeclarations = ModelTemplates.indented(bodyDeclarations);
+    bodyDeclarations = bodyDeclarations.indented();
 
-    return ModelTemplates.indented('$className copyWith({\n'
+    return '$className copyWith({\n'
         '$constructorDeclarations\n'
         '}) => $className(\n'
         '$bodyDeclarations,\n'
-        ');');
+        ');'.indented();
   }
 
   String toJsonFunctions(String className) {
     var result = '';
 
     bool find(DartDeclaration e) => e.name != null && e.ignored == false;
-    final fromJsonBody = ModelTemplates.indented(where(find).map((e) => e.fromJsonBody()).join(',\n').trim());
-    final toJsonBody = ModelTemplates.indented(where(find).map((e) => e.toJsonBody(className)).join(',\n').trim());
+    final fromJsonBody = where(find).map((e) => e.fromJsonBody()).join(',\n').trim().indented();
+    final toJsonBody = where(find).map((e) => e.toJsonBody(className)).join(',\n').trim().indented();
 
     result = 'factory $className.fromJson(Map<String,dynamic> json) => $className(\n$fromJsonBody\n);\n\n';
     result += 'Map<String, dynamic> toJson() => {\n$toJsonBody\n};';
 
-    return ModelTemplates.indented(result);
+    return result.indented();
   }
 
   String toCloneFunction(String className) {
     final declarations = where((e) => e.name != null).map((e) => e.toCloneDeclaration()).join(',\n').trim();
-    final cloneDeclarations = ModelTemplates.indented(declarations, indent: 2);
+    final cloneDeclarations = declarations.indented(indent: 2);
 
     return '$className clone() => $className(\n$cloneDeclarations\n  );';
   }

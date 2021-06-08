@@ -92,12 +92,6 @@ $copyWith
 
     return template;
   }
-
-  static String indented(String content, {int indent = 1}) {
-    var indentString = List.generate(indent, (index) => '  ').join('');
-
-    content = content.replaceAll('\n', '\n$indentString');
-
-    return '$indentString$content';
-  }
 }
+
+

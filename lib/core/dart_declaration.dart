@@ -32,7 +32,7 @@ class DartDeclaration {
 
   String toConstructor() {
     final nullable = isNullable ? '' : 'required';
-    return ModelTemplates.indented('$nullable this.$name,'.trim());
+    return '$nullable this.$name,'.trim().indented();
   }
 
   String toDeclaration(String className) {
@@ -46,7 +46,7 @@ class DartDeclaration {
 
     declaration += 'final $type$isNullableString $name${stringifyAssignment(assignment)};'.trim();
 
-    return ModelTemplates.indented(declaration);
+    return declaration.indented();
   }
 
   String fromJsonBody() {
@@ -196,7 +196,7 @@ class DartDeclaration {
   }
 
   void setName(String name) {
-    this.originalName = name;
+    originalName = name;
     this.name = name.cleaned().toCamelCase();
   }
 
