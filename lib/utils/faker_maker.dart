@@ -56,6 +56,9 @@ class FakerMaker {
 
   String _guessString(String? value) {
     if (value != null) {
+      if (value.contains('@')) {
+        return 'faker.internet.email()';
+      }
       if (value.startsWith('https')) {
         return 'faker.internet.httpsUrl()';
       }
