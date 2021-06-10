@@ -7,7 +7,6 @@ String factoryFromJsonModel(
   bool isNested = false,
 }) {
   final mockDeclarations = data.mockDeclaration;
-  final className = data.className;
   final nestedClasses = data.nestedFactoryClasses;
   final relativePath = data.relativePath;
   var indexPathPrefix = '';
