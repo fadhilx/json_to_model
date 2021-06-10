@@ -3,11 +3,13 @@ import 'package:json_to_model/utils/extensions.dart';
 
 class FakerMaker {
   final DartDeclaration declaration;
+  final String className;
   final String type;
   final bool isModel;
 
   FakerMaker(
     this.declaration,
+    this.className,
     this.type,
     // ignore: avoid_positional_boolean_parameters
     this.isModel,
@@ -16,6 +18,8 @@ class FakerMaker {
   String generate() {
     if (isModel) {
       return 'mock$type()';
+    } else if (declaration.isEnum) {
+      return _enumFaker(declaration.getEnum(className));
     } else if (declaration.fakerDeclaration != null) {
       return _interpretFaker(declaration.fakerDeclaration!);
     } else if (type == 'int') {
@@ -63,6 +67,23 @@ class FakerMaker {
     } else {
       return 'faker.randomGenerator.string(100)';
     }
+  }
+
+  String _enumFaker(Enum e) {
+    var values = e.values.map((e) {
+      final valueOverride = e.between('(', ')');
+      return valueOverride ?? e;
+    }).toList();
+
+    if (type == 'String') {
+      values = values.map((e) => "'$e'").toList();
+    }
+
+    if (e.isNullable) {
+      values.add('null');
+    }
+
+    return 'faker.randomGenerator.element<$type${e.isNullableString}>([${values.join(', ')}])';
   }
 
   String createForString(List<String> options) {

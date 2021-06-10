@@ -34,9 +34,9 @@ class DartDeclaration {
     return '$nullable this.$name,'.trim().indented();
   }
 
-  String toMockDeclaration() {
+  String toMockDeclaration(String className) {
     final value = checkNestedTypes(type!, (String cleanedType, bool isList, bool isListInList, bool isModel) {
-      final fakerMaker = FakerMaker(this, cleanedType, isModel);
+      final fakerMaker = FakerMaker(this, className, cleanedType, isModel);
       final fakerDeclaration = fakerMaker.generate();
 
       if (isListInList) {

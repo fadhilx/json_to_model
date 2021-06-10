@@ -82,7 +82,7 @@ extension JsonKeyModels on List<DartDeclaration> {
   }
 
   String toMockDeclarationStrings(String className) {
-    final declaration = where((e) => e.name != null).map((e) => e.toMockDeclaration()).join(',\n').trim();
+    final declaration = where((e) => e.name != null).map((e) => e.toMockDeclaration(className)).join(',\n').trim();
     final constructorDeclarations = toConstructorDeclarations();
     return '''
 
