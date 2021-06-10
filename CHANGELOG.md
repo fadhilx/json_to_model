@@ -1,3 +1,9 @@
+## 3.0.0-beta.0
+
+- Pre-release onder beta flag
+- Major internal cleanup
+- Added support for creating mocks backed with faker
+
 ## 2.3.1
 
 - Use enum value type as return type for value getter

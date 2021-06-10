@@ -1,109 +1,92 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:json_to_model/core/model_template.dart';
 import 'package:path/path.dart' as path;
 
-import './core/json_model.dart';
+import 'package:json_to_model/config/options.dart';
+import 'package:json_to_model/core/factory_template.dart';
+import 'package:json_to_model/core/model_template.dart';
+import 'package:json_to_model/core/json_model.dart';
 
 class JsonModelRunner {
-  String srcDir = './jsons/';
-  String distDir = './lib/models/';
-  String? onlyFile = './lib/models/';
-  List<FileSystemEntity> list = [];
+  final Options _options;
 
-  JsonModelRunner({
-    required String source,
-    required String output,
-    String? onlyFile,
-  })   : srcDir = source,
-        distDir = output,
-        onlyFile = onlyFile;
+  String get _srcDir => _options.getOption<String>(kSource).value;
+  String get _distDir => _options.getOption<String>(kOutput).value;
+  String get _factoryOutput => _options.getOption<String>(kFactoryOutput).value;
+  bool get _createFactories => _options.getOption<bool>(kCreateFactories).value;
 
-  void setup() {
-    if (srcDir.endsWith('/')) srcDir = srcDir.substring(0, srcDir.length - 1);
-    if (distDir.endsWith('/')) {
-      distDir = distDir.substring(0, distDir.length - 1);
+  JsonModelRunner(this._options);
+
+  void run() {
+    // Ensure the dirs exist
+    _createDirectory(_distDir);
+    _createDirectory(_factoryOutput);
+
+    // Iterate and create all models+factories
+    _iterateOverJsonFiles();
+  }
+
+  void _createDirectory(String dir) {
+    if (!Directory(dir).existsSync()) {
+      Directory(dir).createSync(recursive: true);
     }
   }
 
-  bool run({command}) {
-    // run
-    // get all json files ./jsons
-    list = onlyFile == null ? getAllJsonFiles() : [File(path.join(srcDir, onlyFile))];
-    if (!generateModelsDirectory()) return false;
-    if (!iterateJsonFile()) return false;
-
-    return true;
-  }
-
-  void cleanup() async {
-    // wrapup cleanup
-  }
-
-  // all json files
-  List<FileSystemEntity> getAllJsonFiles() {
-    var src = Directory(srcDir);
-    return src.listSync(recursive: true);
-  }
-
-  bool generateModelsDirectory() {
-    if (list.isEmpty) return false;
-    if (!Directory(distDir).existsSync()) {
-      Directory(distDir).createSync(recursive: true);
-    }
-    return true;
-  }
-
-  // iterate json files
-  bool iterateJsonFile() {
-    var error = StringBuffer();
-
+  bool _iterateOverJsonFiles() {
     var indexFile = '';
-    list.forEach((f) {
+    Directory(_srcDir).listSync(recursive: true).forEach((f) {
       if (FileSystemEntity.isFileSync(f.path)) {
-        var fileExtension = '.json';
+        const fileExtension = '.json';
         if (f.path.endsWith(fileExtension)) {
-          var file = File(f.path);
-          var dartPath = f.path.replaceFirst(srcDir, distDir).replaceFirst(
+          final file = File(f.path);
+          final dartPath = f.path.replaceFirst(_srcDir, _distDir).replaceFirst(
                 fileExtension,
                 '.dart',
                 f.path.length - fileExtension.length - 1,
               );
-          List basenameString = path.basename(f.path).split('.');
-          String fileName = basenameString.first;
-          Map<String, dynamic> jsonMap = json.decode(file.readAsStringSync());
+          final factoryPath = f.path.replaceFirst(_srcDir, _factoryOutput).replaceFirst(
+                fileExtension,
+                '.dart',
+                f.path.length - fileExtension.length - 1,
+              );
+          final basenameString = path.basename(f.path).split('.');
+          final fileName = basenameString.first;
+          final jsonMap = json.decode(file.readAsStringSync()) as Map<String, dynamic>;
+          final relative = dartPath.replaceFirst(_distDir + path.separator, '').replaceAll(path.separator, '/');
+          final jsonModel = JsonModel.fromMap(
+            fileName,
+            jsonMap,
+            relativePath: relative,
+            packageName: _options.getOption<String>(kPackageName).value,
+            indexPath: path.join(_distDir.replaceAll('./lib/', ''), 'index.dart'),
+          );
 
-          var relative = dartPath.replaceFirst(distDir + path.separator, '').replaceAll(path.separator, '/');
+          File(dartPath)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(modelFromJsonModel(jsonModel));
 
-          var jsonModel = JsonModel.fromMap(fileName, jsonMap, relativePath: relative);
-          if (!generateFileFromJson(dartPath, jsonModel, fileName)) {
-            error.write('cant write $dartPath');
+          print('model: $dartPath');
+          if (_createFactories) {
+            print('factory: $factoryPath');
+
+            File(factoryPath)
+              ..createSync(recursive: true)
+              ..writeAsStringSync(factoryFromJsonModel(jsonModel));
           }
 
-          print('generated: $relative');
           indexFile += "export '$relative';\n";
         }
       }
     });
+
     if (indexFile.isNotEmpty) {
-      File(path.join(distDir, 'index.dart')).writeAsStringSync(indexFile);
+      File(path.join(_distDir, 'index.dart')).writeAsStringSync(indexFile);
+
+      if (_createFactories) {
+        File(path.join(_factoryOutput, 'index.dart')).writeAsStringSync(indexFile);
+      }
     }
     return indexFile.isNotEmpty;
-  }
-
-  // generate models from the json file
-  bool generateFileFromJson(outputPath, JsonModel jsonModel, name) {
-    try {
-      File(outputPath)
-        ..createSync(recursive: true)
-        ..writeAsStringSync(
-          ModelTemplates.fromJsonModel(jsonModel),
-        );
-    } catch (e) {
-      print(e);
-      return false;
-    }
-    return true;
   }
 }

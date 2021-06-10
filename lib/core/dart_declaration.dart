@@ -2,14 +2,11 @@ import 'dart:collection';
 
 import 'package:json_to_model/core/command.dart';
 import 'package:json_to_model/core/json_model.dart';
-import 'package:json_to_model/core/model_template.dart';
+import 'package:json_to_model/utils/faker_maker.dart';
 
 import '../utils/extensions.dart';
 
 class DartDeclaration {
-  final keyComands = Commands.keyComands;
-  final valueCommands = Commands.valueCommands;
-
   List<String> imports = [];
   String? type;
   String? originalName;
@@ -17,6 +14,7 @@ class DartDeclaration {
   String? assignment;
   String? extendsClass;
   String? mixinClass;
+  String? fakerDeclaration;
   List<String> enumValues = [];
   List<JsonModel> nestedClasses = [];
   bool isNullable = false;
@@ -35,6 +33,23 @@ class DartDeclaration {
     return '$nullable this.$name,'.trim().indented();
   }
 
+  String toMockDeclaration() {
+    final value = checkNestedTypes(type!, (String cleanedType, bool isList, bool isListInList, bool isModel) {
+      final fakerMaker = FakerMaker(this, cleanedType, isModel);
+      final fakerDeclaration = fakerMaker.generate();
+
+      if (isListInList) {
+        return 'List.generate(5, (_) => List.generate(5, (_) => $fakerDeclaration))';
+      } else if (isList) {
+        return 'List.generate(5, (_) => $fakerDeclaration)';
+      } else {
+        return fakerDeclaration;
+      }
+    });
+
+    return '$name: $name ?? $value'.trim().indented();
+  }
+
   String toDeclaration(String className) {
     var declaration = '';
 
@@ -51,7 +66,7 @@ class DartDeclaration {
 
   String fromJsonBody() {
     return checkNestedTypes(type!, (String cleanedType, bool isList, bool isListInList, bool isModel) {
-      final jsonVar = 'json[\'$originalName\']';
+      final jsonVar = "json['$originalName']";
       String conversion;
       String modelFromJson([String jsonVar = 'e']) => '$cleanedType.fromJson($jsonVar as Map<String, dynamic>)';
 
@@ -97,10 +112,10 @@ class DartDeclaration {
       } else if (isDatetime) {
         conversion = '$name$isNullableString.toIso8601String()';
       } else {
-        conversion = '$name';
+        conversion = name ?? '';
       }
 
-      return '\'$originalName\': $conversion';
+      return "'$originalName': $conversion";
     });
   }
 
@@ -133,7 +148,7 @@ class DartDeclaration {
   String checkNestedTypes(String type, NestedCallbackFunction callback) {
     var cleanType = type;
 
-    var isList = type.startsWith('List') == true;
+    final isList = type.startsWith('List') == true;
     var isListInList = false;
 
     if (isList) {
@@ -160,12 +175,8 @@ class DartDeclaration {
     return '$name.hashCode';
   }
 
-  String stringifyAssignment(value) {
+  String stringifyAssignment(String? value) {
     return value != null ? ' = $value' : '';
-  }
-
-  void setIsNullable(bool isNullable) {
-    this.isNullable = isNullable;
   }
 
   List<String> getImportStrings(String? relativePath) {
@@ -173,20 +184,21 @@ class DartDeclaration {
 
     if (relativePath != null) {
       final matches = RegExp(r'\/').allMatches(relativePath).length;
-      List.filled(matches, (i) => i).forEach((_) => prefix = '$prefix../');
+      String addPrefix(_) => prefix = '$prefix../';
+      List.filled(matches, (i) => i).forEach(addPrefix);
     }
 
     return imports.where((element) => element.isNotEmpty).map((e) => "import '$prefix$e.dart';").toList();
   }
 
   static String? getTypeFromJsonKey(String theString) {
-    var declare = theString.split(')').last.trim().split(' ');
+    final declare = theString.split(')').last.trim().split(' ');
     if (declare.isNotEmpty) return declare.first;
     return null;
   }
 
   static String? getNameFromJsonKey(String theString) {
-    var declare = theString.split(')').last.trim().split(' ');
+    final declare = theString.split(')').last.trim().split(' ');
     if (declare.length > 1) return declare.last;
     return null;
   }
@@ -206,28 +218,20 @@ class DartDeclaration {
   }
 
   Enum getEnum(String className) {
-    return Enum(className, name!, enumValues, isNullable);
+    return Enum(className, name!, enumValues, isNullable: isNullable);
   }
 
-  void addImport(import) {
-    if (import == null && !import.isNotEmpty) {
+  void addImport(dynamic import) {
+    if (import == null) {
       return;
     }
-    if (import is List) {
-      imports.addAll(import.map((e) => e));
-    } else if (import != null && import.isNotEmpty) {
+    if (import is List && !import.isNotEmpty) {
+      imports.addAll(import.map((e) => e as String));
+    } else if (import != null && import is String) {
       imports.add(import);
     }
 
     imports = LinkedHashSet<String>.from(imports).toList();
-  }
-
-  void setExtends(String extendsClass) {
-    this.extendsClass = extendsClass;
-  }
-
-  void setMixin(String mixinClass) {
-    this.mixinClass = mixinClass;
   }
 
   void setIgnored() {
@@ -238,18 +242,18 @@ class DartDeclaration {
     overrideEnabled = true;
   }
 
-  static DartDeclaration fromKeyValue(String key, dynamic val) {
+  factory DartDeclaration.fromKeyValue(String key, dynamic val) {
     var dartDeclaration = DartDeclaration();
-    dartDeclaration = fromCommand(
-      Commands.valueCommands,
+    dartDeclaration = DartDeclaration.fromCommand(
+      valueCommands,
       dartDeclaration,
       testSubject: val,
       key: key.cleaned(),
       value: val,
     );
 
-    dartDeclaration = fromCommand(
-      Commands.keyComands,
+    dartDeclaration = DartDeclaration.fromCommand(
+      keyComands,
       dartDeclaration,
       testSubject: key,
       key: key.cleaned(),
@@ -259,7 +263,7 @@ class DartDeclaration {
     return dartDeclaration;
   }
 
-  static DartDeclaration fromCommand(
+  factory DartDeclaration.fromCommand(
     List<Command> commandList,
     DartDeclaration self, {
     required String key,
@@ -268,9 +272,9 @@ class DartDeclaration {
   }) {
     var newSelf = self;
 
-    for (var command in commandList) {
+    for (final command in commandList) {
       if (testSubject is String) {
-        if ((command.prefix != null && testSubject.startsWith(command.prefix!))) {
+        if (command.prefix != null && testSubject.startsWith(command.prefix!)) {
           final commandPrefixMatch = command.prefix != null &&
               command.command != null &&
               testSubject.startsWith(command.prefix! + command.command!);
@@ -308,7 +312,7 @@ class Enum {
   final List<String> values;
   final bool isNullable;
 
-  var valueType = 'String';
+  String valueType = 'String';
 
   String get isNullableString => isNullable ? '?' : '';
 
@@ -321,9 +325,9 @@ class Enum {
   Enum(
     this.className,
     this.name,
-    this.values,
-    this.isNullable,
-  ) {
+    this.values, {
+    required this.isNullable,
+  }) {
     valueType = _detectType(values.first);
   }
 
@@ -341,7 +345,7 @@ class Enum {
       if (value != null) {
         return '  $value: $enumName.${valueName(e)},';
       } else {
-        return '  \'$e\': $enumName.${valueName(e)},';
+        return "  '$e': $enumName.${valueName(e)},";
       }
     }).join('\n');
   }

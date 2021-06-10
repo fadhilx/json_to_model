@@ -1,23 +1,23 @@
 import 'package:json_to_model/core/dart_declaration.dart';
+import 'package:json_to_model/core/factory_template.dart';
 import 'package:json_to_model/core/model_template.dart';
 
 extension StringExtension on String {
   String toTitleCase() {
-    var firstWord = toCamelCase();
+    final firstWord = toCamelCase();
     return '${firstWord.substring(0, 1).toUpperCase()}${firstWord.substring(1)}';
   }
 
   String toCamelCase() {
-    var words = getWords();
-    var leadingWords = words.getRange(1, words.length).toList();
-    var leadingWord = leadingWords.map((e) => e.toTitleCase()).join('');
+    final words = getWords();
+    final leadingWords = words.getRange(1, words.length).toList();
+    final leadingWord = leadingWords.map((e) => e.toTitleCase()).join();
     return '${words[0].toLowerCase()}$leadingWord';
   }
 
   String toSnakeCase() {
-    var words = getWords();
-    var leadingWord = words.map((e) => e.toLowerCase()).join('_');
-    return '$leadingWord';
+    final words = getWords();
+    return words.map((e) => e.toLowerCase()).join('_');
   }
 
   String? between(String start, String end) {
@@ -31,12 +31,11 @@ extension StringExtension on String {
   }
 
   List<String> getWords() {
-    var trimmed = trim();
     List<String> value;
 
-    value = trimmed.split(RegExp(r'[_\W]'));
+    value = trim().split(RegExp(r'[_\W]'));
     value = value.where((element) => element.isNotEmpty).toList();
-    value = value.expand((e) => e.split(RegExp(r'(?=[A-Z])'))).where((element) => element.isNotEmpty).toList();
+    value = value.expand((e) => e.split(RegExp('(?=[A-Z])'))).where((element) => element.isNotEmpty).toList();
 
     return value;
   }
@@ -48,7 +47,7 @@ extension StringExtension on String {
     if (trimLeft().isEmpty) {
       return false;
     }
-    var firstLetter = trimLeft().substring(0, 1);
+    final firstLetter = trimLeft().substring(0, 1);
     if (double.tryParse(firstLetter) != null) {
       return false;
     }
@@ -65,37 +64,62 @@ extension StringExtension on String {
   }
 
   String indented({int indent = 1}) {
-  var indentString = List.generate(indent, (index) => '  ').join('');
+    final indentString = List.generate(indent, (index) => '  ').join();
+    final content = replaceAll('\n', '\n$indentString');
 
-  final content = replaceAll('\n', '\n$indentString');
-
-  return '$indentString$content';
-}
+    return '$indentString$content';
+  }
 }
 
 extension JsonKeyModels on List<DartDeclaration> {
   String toConstructor(String className) {
     final declarations = where((e) => e.name != null).map((e) => e.toConstructor()).join('\n').trim();
-    return 'const $className({\n  $declarations\n});'.indented(indent: 1);
+    return 'const $className({\n  $declarations\n});'.indented();
   }
 
   String toDeclarationStrings(String className) {
     return where((e) => e.name != null).map((e) => e.toDeclaration(className)).join('\n').trim();
   }
 
-  String toCopyWith(String className) {
-    var constructorDeclarations =
-        where((e) => e.name != null).map((e) => e.copyWithConstructorDeclaration()).join(',\n').trim();
-    constructorDeclarations = constructorDeclarations.indented();
+  String toMockDeclarationStrings(String className) {
+    final declaration = where((e) => e.name != null).map((e) => e.toMockDeclaration()).join(',\n').trim();
+    final constructorDeclarations = toConstructorDeclarations();
+    return '''
 
-    var bodyDeclarations = where((e) => e.name != null).map((e) => e.copyWithBodyDeclaration()).join(',\n').trim();
-    bodyDeclarations = bodyDeclarations.indented();
+$className mock$className({
+$constructorDeclarations,
+}) => $className(
+  $declaration,
+);
+''';
+  }
+
+  String toConstructorDeclarations() {
+    return where((e) => e.name != null)
+        .map(
+          (e) => e.copyWithConstructorDeclaration(),
+        )
+        .join(',\n')
+        .trim()
+        .indented();
+  }
+
+  String toCopyWith(String className) {
+    final constructorDeclarations = toConstructorDeclarations();
+    final bodyDeclarations = where((e) => e.name != null)
+        .map(
+          (e) => e.copyWithBodyDeclaration(),
+        )
+        .join(',\n')
+        .trim()
+        .indented();
 
     return '$className copyWith({\n'
-        '$constructorDeclarations\n'
-        '}) => $className(\n'
-        '$bodyDeclarations,\n'
-        ');'.indented();
+            '$constructorDeclarations\n'
+            '}) => $className(\n'
+            '$bodyDeclarations,\n'
+            ');'
+        .indented();
   }
 
   String toJsonFunctions(String className) {
@@ -127,12 +151,12 @@ extension JsonKeyModels on List<DartDeclaration> {
   }
 
   String toImportStrings(String? relativePath) {
-    var imports = where((element) => element.imports.isNotEmpty)
+    final imports = where((element) => element.imports.isNotEmpty)
         .map((e) => e.getImportStrings(relativePath))
         .where((element) => element.isNotEmpty)
         .fold<List<String>>(<String>[], (prev, current) => prev..addAll(current));
 
-    var nestedImports = where((element) => element.nestedClasses.isNotEmpty)
+    final nestedImports = where((element) => element.nestedClasses.isNotEmpty)
         .map((e) => e.nestedClasses.map((jsonModel) => jsonModel.imports).toList())
         .fold<List<String>>(<String>[], (prev, current) => prev..addAll(current));
 
@@ -148,13 +172,44 @@ extension JsonKeyModels on List<DartDeclaration> {
         .join('\n');
   }
 
-  String getNestedClasses() {
+  String getNestedModelClasses() {
     return where((element) => element.nestedClasses.isNotEmpty)
         .map((e) => e.nestedClasses.map(
               (jsonModel) {
-                return ModelTemplates.fromJsonModel(jsonModel, true);
+                return modelFromJsonModel(jsonModel, isNested: true);
               },
             ).join('\n\n'))
         .join('\n');
+  }
+
+  String getNestedFactoryClasses() {
+    return where((element) => element.nestedClasses.isNotEmpty)
+        .map((e) => e.nestedClasses.map(
+              (jsonModel) {
+                return factoryFromJsonModel(
+                  jsonModel,
+                  isNested: true,
+                );
+              },
+            ).join('\n\n'))
+        .join('\n');
+  }
+}
+
+extension ListStringEx on List<String> {
+  bool hasStartsWith(String needle) {
+    return where((element) => element.startsWith(needle)).isNotEmpty;
+  }
+
+  bool hasStartsWithOr(List<String> needles) {
+    bool needleLoop(String option) {
+      for (final needle in needles) {
+        if (option.startsWith(needle)) return true;
+      }
+
+      return false;
+    }
+
+    return where(needleLoop).isNotEmpty;
   }
 }
