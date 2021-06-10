@@ -9,6 +9,7 @@ import '../utils/extensions.dart';
 class DartDeclaration {
   List<String> imports = [];
   String? type;
+  dynamic jsonValue;
   String? originalName;
   String? name;
   String? assignment;

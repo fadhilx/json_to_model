@@ -21,7 +21,7 @@ class FakerMaker {
     } else if (type == 'int') {
       return 'faker.randomGenerator.integer(100)';
     } else if (type == 'String') {
-      return 'faker.randomGenerator.string(100)';
+      return _guessString(declaration.jsonValue as String?);
     } else if (type == 'bool') {
       return 'faker.randomGenerator.boolean()';
     } else if (type == 'DateTime') {
@@ -43,12 +43,26 @@ class FakerMaker {
     if (type == 'int') {
       return createForInt(options);
     }
-
     if (type == 'DateTime') {
       return createForDateTime(options);
     }
 
     return 'Faker not found';
+  }
+
+  String _guessString(String? value) {
+    if (value != null) {
+      if (value.startsWith('https')) {
+        return 'faker.internet.httpsUrl()';
+      }
+      if (value.startsWith('http')) {
+        return 'faker.internet.httpUrl()';
+      } else {
+        return 'faker.randomGenerator.string(100)';
+      }
+    } else {
+      return 'faker.randomGenerator.string(100)';
+    }
   }
 
   String createForString(List<String> options) {

@@ -95,6 +95,7 @@ DartDeclaration defaultCommandCallback(DartDeclaration self, dynamic testSubject
     value: v,
   );
 
+  self.jsonValue = v;
   self.type = newDeclaration.type ?? v.runtimeType.toString();
 
   return self;
