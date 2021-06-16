@@ -21,6 +21,11 @@ class PubspecParser extends Parser {
       result.setOption(kCreateFactories, options['create_factories'] as bool?);
     }
 
+    final quiverInPubspec = (map['dependencies'] as Map<String, dynamic>?)?['clock'] as String?;
+    if (quiverInPubspec == null) {
+      throw 'Quiver is needed to generate models (To support `null` in copyWith and mocks). Please run `flutter pub add quiver`\n\n';
+    }
+
     if (result.getOption<bool>(kCreateFactories).value == true) {
       final fakerInPubspec = (map['dev_dependencies'] as Map<String, dynamic>?)?['faker'] as String?;
       if (fakerInPubspec == null) {

@@ -7,6 +7,7 @@ String modelFromJsonModel(JsonModel data, {bool isNested = false}) => _defaultJs
       constructor: data.constructor,
       imports: data.imports,
       fileName: data.fileName,
+      relativePath: data.relativePath,
       className: data.className,
       extendsClass: data.extendsClass,
       mixinClass: data.mixinClass,
@@ -34,16 +35,28 @@ String _defaultJsonTemplate({
   required String copyWith,
   required String cloneFunction,
   required String jsonFunctions,
+  String? relativePath,
   String? enums,
   String? enumConverters,
   String? nestedClasses,
   String? extendsClass,
 }) {
+  var indexPathPrefix = '';
+
+  if (relativePath != null) {
+    final matches = RegExp(r'\/').allMatches(relativePath).length;
+    String addPrefix(_) => indexPathPrefix = '$indexPathPrefix../';
+    List.filled(matches, (i) => i).forEach(addPrefix);
+  }
+
   var template = '';
 
   if (!isNested) {
     template += '''
 import 'package:flutter/foundation.dart';
+import 'package:quiver/core.dart';
+import '${indexPathPrefix}index.dart';
+
 $imports
 
 ''';

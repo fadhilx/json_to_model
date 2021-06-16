@@ -1,8 +1,9 @@
-## 3.0.0-beta.0
+## 3.0.0-beta
 
 - Pre-release onder beta flag
 - Major internal cleanup
 - Added support for creating mocks backed with faker
+- Breaking change in copyWith so we can support Optional.of(null) in copyWith (and in mocks)
 
 ## 2.3.1
 

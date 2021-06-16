@@ -48,7 +48,11 @@ class DartDeclaration {
       }
     });
 
-    return '$name: $name ?? $value'.trim().indented();
+    if (isNullable) {
+      return '$name: checkOptional($name, $value)'.trim().indented();
+    } else {
+      return '$name: $name ?? $value'.trim().indented();
+    }
   }
 
   String toDeclaration(String className) {
@@ -121,11 +125,19 @@ class DartDeclaration {
   }
 
   String copyWithConstructorDeclaration() {
-    return '$type? $name';
+    if (isNullable) {
+      return 'Optional<$type?>? $name';
+    } else {
+      return '$type? $name';
+    }
   }
 
   String copyWithBodyDeclaration() {
-    return '$name: $name ?? this.$name';
+    if (isNullable) {
+      return '$name: checkOptional($name, this.$name)';
+    } else {
+      return '$name: $name ?? this.$name';
+    }
   }
 
   String toCloneDeclaration() {

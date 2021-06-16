@@ -25,6 +25,8 @@ String factoryFromJsonModel(
     template += '''
 import 'package:faker/faker.dart';
 import 'package:clock/clock.dart';
+import 'package:quiver/core.dart';
+
 import 'package:$packageName/$indexPath';
 import '${indexPathPrefix}index.dart';
 ''';

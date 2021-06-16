@@ -64,12 +64,9 @@ class FakerMaker {
       }
       if (value.startsWith('http')) {
         return 'faker.internet.httpUrl()';
-      } else {
-        return 'faker.randomGenerator.string(100)';
       }
-    } else {
-      return 'faker.randomGenerator.string(100)';
     }
+    return 'faker.randomGenerator.string(100)';
   }
 
   String _enumFaker(Enum e) {
@@ -90,10 +87,6 @@ class FakerMaker {
   }
 
   String createForString(List<String> options) {
-    // Handle min/max options
-    if (options.hasStartsWithOr(['max', 'min', 'chars'])) {
-      return _minMaxFaker(options, type);
-    }
 
     // Handle person case
     if (options.hasStartsWith('person')) {
@@ -105,6 +98,10 @@ class FakerMaker {
       return _urlFaker(options);
     }
 
+    // Handle min/max options
+    if (options.hasStartsWithOr(['max', 'min', 'chars'])) {
+      return _minMaxFaker(options, type);
+    }
     throw 'No faker could be generated for type `String` with options $options';
   }
 
@@ -193,12 +190,8 @@ String _urlFaker(List<String> options) {
 void _loopOptions(List<String> options, void Function(String, String?) callback) {
   for (final option in options) {
     final param = option.split('(')[0];
-    final value = _valueForOption(option);
+    final value = option.between('(', ')');
 
     callback(param, value);
   }
-}
-
-String? _valueForOption(String option) {
-  return RegExp(r'\((.*?\))').firstMatch(option)?.group(0)?.replaceAll('(', '').replaceAll(')', '');
 }
