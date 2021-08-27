@@ -158,6 +158,14 @@ final List<Command> keyComands = [
 ];
 
 final List<Command> valueCommands = [
+   Command(
+    prefix: '#',
+    callback: (DartDeclaration self, dynamic testSubject, {required String key, dynamic value}) {
+      final subject = testSubject as String;
+      self.type = subject.substring(1);
+      return self;
+    },
+  ),
   Command(
     prefix: '\$',
     command: '[]',

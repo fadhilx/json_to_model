@@ -30,6 +30,8 @@ class FakerMaker {
       return 'faker.randomGenerator.boolean()';
     } else if (type == 'DateTime') {
       return 'faker.date.dateTime(minYear: 1900, maxYear: 2025)';
+    } else if (type.startsWith('Map')) {
+      return '{}';
     }
 
     throw 'Cannot determine faker for type `$type`';
