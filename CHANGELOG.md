@@ -1,3 +1,9 @@
+## 3.0.0
+
+- Stable 3.0
+- Generate fakers to use in tests
+- Add explicit type declaration with value prefix `#`
+
 ## 3.0.0-beta
 
 - Pre-release onder beta flag
