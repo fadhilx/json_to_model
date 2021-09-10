@@ -1,3 +1,7 @@
+## 3.0.1
+
+- Fix typo in missing dependencies error message
+
 ## 3.0.0
 
 - Stable 3.0

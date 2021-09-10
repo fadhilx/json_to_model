@@ -23,7 +23,7 @@ class PubspecParser extends Parser {
 
     final quiverInPubspec = (map['dependencies'] as Map<String, dynamic>?)?['clock'] as String?;
     if (quiverInPubspec == null) {
-      throw 'Quiver is needed to generate models (To support `null` in copyWith and mocks). Please run `flutter pub add quiver`\n\n';
+      throw 'Clock is needed to generate models (To support `null` in copyWith and mocks). Please run `flutter pub add clock`\n\n';
     }
 
     if (result.getOption<bool>(kCreateFactories).value == true) {
