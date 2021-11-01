@@ -173,7 +173,7 @@ class DartDeclaration {
       }
     }
 
-    final importExists = imports.indexWhere((element) => element == cleanType.toSnakeCase()) != -1;
+    final importExists = imports.indexWhere((element) => element.contains(cleanType.toSnakeCase())) != -1;
     final nestedClassExists = nestedClasses.indexWhere((element) => element.className == cleanType) != -1;
     final isModel = !isEnum && (importExists || nestedClassExists);
 
