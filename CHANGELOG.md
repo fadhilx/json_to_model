@@ -1,3 +1,8 @@
+## 3.0.2
+
+- Add double support in factories (Thanks to @saad4software) (#23)
+- Fix quiver error message when thats missing (#27)
+
 ## 3.0.1
 
 - Fix typo in missing dependencies error message
