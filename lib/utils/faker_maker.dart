@@ -29,14 +29,14 @@ class FakerMaker {
     } else if (type == 'bool') {
       return 'faker.randomGenerator.boolean()';
     } else if (type == 'double') {
-      return 'faker.randomGenerator.numbers(100)';    
+      return 'faker.randomGenerator.numbers(100)';
     } else if (type == 'DateTime') {
       return 'faker.date.dateTime(minYear: 1900, maxYear: 2025)';
     } else if (type.startsWith('Map')) {
       return '{}';
     }
 
-    throw 'Cannot determine faker for type `$type`';
+    return 'Cannot determine faker for type `$type`';
   }
 
   String _interpretFaker(String input) {
@@ -91,7 +91,6 @@ class FakerMaker {
   }
 
   String createForString(List<String> options) {
-
     // Handle person case
     if (options.hasStartsWith('person')) {
       return _personFaker(options);
@@ -168,8 +167,9 @@ String _minMaxFaker(List<String> options, String type) {
   });
 
   if (type == 'String') {
-    final lengthProperty =
-        (max == min || length != null) ? length ?? max : 'faker.randomGenerator.integer($max, min: $min)';
+    final lengthProperty = (max == min || length != null)
+        ? length ?? max
+        : 'faker.randomGenerator.integer($max, min: $min)';
     return "faker.randomGenerator.fromCharSet('$charset', $lengthProperty)";
   }
 
@@ -177,7 +177,8 @@ String _minMaxFaker(List<String> options, String type) {
 }
 
 String _personFaker(List<String> options) {
-  assert(options.isNotEmpty, 'faker param `person` cannot be called without a opion (e.g. person(first_name))');
+  assert(options.isNotEmpty,
+      'faker param `person` cannot be called without a opion (e.g. person(first_name))');
 
   var field = 'first_name';
   _loopOptions(options, (String param, String? value) {
@@ -191,7 +192,8 @@ String _urlFaker(List<String> options) {
   return 'faker.internet.httpsUrl()';
 }
 
-void _loopOptions(List<String> options, void Function(String, String?) callback) {
+void _loopOptions(
+    List<String> options, void Function(String, String?) callback) {
   for (final option in options) {
     final param = option.split('(')[0];
     final value = option.between('(', ')');

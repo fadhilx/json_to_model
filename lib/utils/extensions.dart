@@ -35,7 +35,10 @@ extension StringExtension on String {
 
     value = trim().split(RegExp(r'[_\W]'));
     value = value.where((element) => element.isNotEmpty).toList();
-    value = value.expand((e) => e.split(RegExp('(?=[A-Z])'))).where((element) => element.isNotEmpty).toList();
+    value = value
+        .expand((e) => e.split(RegExp('(?=[A-Z])')))
+        .where((element) => element.isNotEmpty)
+        .toList();
 
     return value;
   }
@@ -73,16 +76,25 @@ extension StringExtension on String {
 
 extension JsonKeyModels on List<DartDeclaration> {
   String toConstructor(String className) {
-    final declarations = where((e) => e.name != null).map((e) => e.toConstructor()).join('\n').trim();
+    final declarations = where((e) => e.name != null)
+        .map((e) => e.toConstructor())
+        .join('\n')
+        .trim();
     return 'const $className({\n  $declarations\n});'.indented();
   }
 
   String toDeclarationStrings(String className) {
-    return where((e) => e.name != null).map((e) => e.toDeclaration(className)).join('\n').trim();
+    return where((e) => e.name != null)
+        .map((e) => e.toDeclaration(className))
+        .join('\n')
+        .trim();
   }
 
   String toMockDeclarationStrings(String className) {
-    final declaration = where((e) => e.name != null).map((e) => e.toMockDeclaration(className)).join(',\n').trim();
+    final declaration = where((e) => e.name != null)
+        .map((e) => e.toMockDeclaration(className))
+        .join(',\n')
+        .trim();
     final constructorDeclarations = toConstructorDeclarations();
     return '''
 
@@ -126,39 +138,59 @@ $constructorDeclarations,
     var result = '';
 
     bool find(DartDeclaration e) => e.name != null && e.ignored == false;
-    final fromJsonBody = where(find).map((e) => e.fromJsonBody()).join(',\n').trim().indented();
-    final toJsonBody = where(find).map((e) => e.toJsonBody(className)).join(',\n').trim().indented();
+    final fromJsonBody =
+        where(find).map((e) => e.fromJsonBody()).join(',\n').trim().indented();
+    final toJsonBody = where(find)
+        .map((e) => e.toJsonBody(className))
+        .join(',\n')
+        .trim()
+        .indented();
+    final isTemplate = where(find).any((item) => item.type == "T");
 
-    result = 'factory $className.fromJson(Map<String,dynamic> json) => $className(\n$fromJsonBody\n);\n\n';
-    result += 'Map<String, dynamic> toJson() => {\n$toJsonBody\n};';
+    result =
+        'factory $className.fromJson(Map<String,dynamic> json${isTemplate ? ', T Function(Map<String, dynamic>) fromJsonModel' : ''}) => $className(\n$fromJsonBody\n);\n\n';
+    result +=
+        'Map<String, dynamic> toJson(${isTemplate ? 'Map<String, dynamic> Function() toJsonModel' : ''}) => {\n$toJsonBody\n};';
 
     return result.indented();
   }
 
   String toCloneFunction(String className) {
-    final declarations = where((e) => e.name != null).map((e) => e.toCloneDeclaration()).join(',\n').trim();
+    final declarations = where((e) => e.name != null)
+        .map((e) => e.toCloneDeclaration())
+        .join(',\n')
+        .trim();
     final cloneDeclarations = declarations.indented(indent: 2);
 
     return '$className clone() => $className(\n$cloneDeclarations\n  );';
   }
 
   String toEqualsDeclarationString() {
-    return where((e) => e.name != null).map((e) => e.toEquals()).join(' && ').trim();
+    return where((e) => e.name != null)
+        .map((e) => e.toEquals())
+        .join(' && ')
+        .trim();
   }
 
   String toHashDeclarationString() {
-    return where((e) => e.name != null).map((e) => e.toHash()).join(' ^ ').trim();
+    return where((e) => e.name != null)
+        .map((e) => e.toHash())
+        .join(' ^ ')
+        .trim();
   }
 
   String toImportStrings(String? relativePath) {
     final imports = where((element) => element.imports.isNotEmpty)
         .map((e) => e.getImportStrings(relativePath))
         .where((element) => element.isNotEmpty)
-        .fold<List<String>>(<String>[], (prev, current) => prev..addAll(current));
+        .fold<List<String>>(
+            <String>[], (prev, current) => prev..addAll(current));
 
     final nestedImports = where((element) => element.nestedClasses.isNotEmpty)
-        .map((e) => e.nestedClasses.map((jsonModel) => jsonModel.imports).toList())
-        .fold<List<String>>(<String>[], (prev, current) => prev..addAll(current));
+        .map((e) =>
+            e.nestedClasses.map((jsonModel) => jsonModel.imports).toList())
+        .fold<List<String>>(
+            <String>[], (prev, current) => prev..addAll(current));
 
     imports.addAll(nestedImports);
 

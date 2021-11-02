@@ -22,12 +22,11 @@ Map<String, Object> yamlMapToDartMap(YamlMap yaml) {
 Object yamlNodeToDartObject(YamlNode? node) {
   var object = Object();
 
-
   if (node is YamlMap) {
     object = yamlMapToDartMap(node);
   } else if (node is YamlList) {
     object = yamlListToDartList(node);
-  } else if (node is YamlScalar) {
+  } else if (node is YamlScalar && node.value != null) {
     object = yamlScalarToDartObject(node);
   }
 

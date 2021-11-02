@@ -23,6 +23,7 @@ class JsonModel {
   String? nestedFactoryClasses;
   String? extendsClass;
   String? relativePath;
+  bool isTemplate = false;
 
   JsonModel(
     this.fileName,
@@ -51,7 +52,12 @@ class JsonModel {
     nestedClasses = dartDeclarations.getNestedModelClasses();
     nestedFactoryClasses = dartDeclarations.getNestedFactoryClasses();
 
-    final extendsClass = dartDeclarations.where((element) => element.extendsClass != null).toList();
+    isTemplate =
+        dartDeclarations.indexWhere((element) => element.type == "T") != -1;
+
+    final extendsClass = dartDeclarations
+        .where((element) => element.extendsClass != null)
+        .toList();
     if (extendsClass.isNotEmpty) {
       this.extendsClass = extendsClass[0].extendsClass;
     }

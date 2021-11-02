@@ -3,7 +3,8 @@ import 'package:json_to_model/core/json_model.dart';
 import '../utils/extensions.dart';
 import 'dart_declaration.dart';
 
-typedef Callback = DartDeclaration Function(DartDeclaration self, dynamic testSubject,
+typedef Callback = DartDeclaration Function(
+    DartDeclaration self, dynamic testSubject,
     {required String key, dynamic value});
 
 class Command {
@@ -27,7 +28,8 @@ class Command {
   }
 }
 
-DartDeclaration defaultCommandCallback(DartDeclaration self, dynamic testSubject,
+DartDeclaration defaultCommandCallback(
+    DartDeclaration self, dynamic testSubject,
     {required String key, dynamic value}) {
   self.isNullable = testSubject.toString().endsWith('?');
 
@@ -40,7 +42,8 @@ DartDeclaration defaultCommandCallback(DartDeclaration self, dynamic testSubject
 
   if (value is Map) {
     self.type = key.toTitleCase();
-    self.nestedClasses.add(JsonModel.fromMap(key, value as Map<String, dynamic>));
+    self.nestedClasses
+        .add(JsonModel.fromMap(key, value as Map<String, dynamic>));
     return self;
   }
 
@@ -52,13 +55,15 @@ DartDeclaration defaultCommandCallback(DartDeclaration self, dynamic testSubject
         final key = nestedFirst['\$key'];
         nestedFirst.remove('\$key');
         self.type = 'List<List<$key>>';
-        self.nestedClasses.add(JsonModel.fromMap(key as String, nestedFirst as Map<String, dynamic>));
+        self.nestedClasses.add(JsonModel.fromMap(
+            key as String, nestedFirst as Map<String, dynamic>));
       }
     } else if (firstListValue is Map) {
       final key = firstListValue['\$key'];
       firstListValue.remove('\$key');
       self.type = 'List<$key>';
-      self.nestedClasses.add(JsonModel.fromMap(key as String, firstListValue as Map<String, dynamic>));
+      self.nestedClasses.add(JsonModel.fromMap(
+          key as String, firstListValue as Map<String, dynamic>));
     } else {
       final listValueType = firstListValue.runtimeType.toString();
       self.type = 'List<$listValueType>';
@@ -105,7 +110,8 @@ final List<Command> keyComands = [
   Command(
     prefix: '@',
     command: 'import',
-    callback: (DartDeclaration self, dynamic testSubject, {required String key, dynamic value}) {
+    callback: (DartDeclaration self, dynamic testSubject,
+        {required String key, dynamic value}) {
       self.addImport(value);
       return self;
     },
@@ -113,7 +119,8 @@ final List<Command> keyComands = [
   Command(
     prefix: '@',
     command: 'extends',
-    callback: (DartDeclaration self, dynamic testSubject, {required String key, dynamic value}) {
+    callback: (DartDeclaration self, dynamic testSubject,
+        {required String key, dynamic value}) {
       self.extendsClass = value as String;
       return self;
     },
@@ -121,7 +128,8 @@ final List<Command> keyComands = [
   Command(
     prefix: '@',
     command: 'mixin',
-    callback: (DartDeclaration self, dynamic testSubject, {required String key, dynamic value}) {
+    callback: (DartDeclaration self, dynamic testSubject,
+        {required String key, dynamic value}) {
       self.mixinClass = value as String;
       return self;
     },
@@ -129,7 +137,8 @@ final List<Command> keyComands = [
   Command(
     prefix: '@',
     command: 'ignore',
-    callback: (DartDeclaration self, dynamic testSubject, {required String key, dynamic value}) {
+    callback: (DartDeclaration self, dynamic testSubject,
+        {required String key, dynamic value}) {
       self.setIgnored();
       return defaultCommandCallback(self, testSubject, key: key, value: value);
     },
@@ -137,7 +146,8 @@ final List<Command> keyComands = [
   Command(
     prefix: '@',
     command: 'override',
-    callback: (DartDeclaration self, dynamic testSubject, {required String key, dynamic value}) {
+    callback: (DartDeclaration self, dynamic testSubject,
+        {required String key, dynamic value}) {
       self.enableOverridden();
       return defaultCommandCallback(self, testSubject, key: key, value: value);
     },
@@ -145,7 +155,8 @@ final List<Command> keyComands = [
   Command(
     prefix: '@',
     command: '_',
-    callback: (DartDeclaration self, dynamic testSubject, {required String key, dynamic value}) {
+    callback: (DartDeclaration self, dynamic testSubject,
+        {required String key, dynamic value}) {
       self.type = key.substring(2);
       self.name = value as String;
       return self;
@@ -158,9 +169,10 @@ final List<Command> keyComands = [
 ];
 
 final List<Command> valueCommands = [
-   Command(
+  Command(
     prefix: '#',
-    callback: (DartDeclaration self, dynamic testSubject, {required String key, dynamic value}) {
+    callback: (DartDeclaration self, dynamic testSubject,
+        {required String key, dynamic value}) {
       final subject = testSubject as String;
       self.type = subject.substring(1);
       return self;
@@ -169,10 +181,12 @@ final List<Command> valueCommands = [
   Command(
     prefix: '\$',
     command: '[]',
-    callback: (DartDeclaration self, dynamic testSubject, {required String key, dynamic value}) {
+    callback: (DartDeclaration self, dynamic testSubject,
+        {required String key, dynamic value}) {
       final subject = testSubject as String;
 
-      final typeName = subject.substring(3).split('/').last.split('\\').last.toCamelCase();
+      final typeName =
+          subject.substring(3).split('/').last.split('\\').last.toCamelCase();
       final toImport = subject.substring(3);
       self.addImport(toImport);
       self.type = 'List<${typeName.toTitleCase()}>';
@@ -182,12 +196,14 @@ final List<Command> valueCommands = [
   Command(
     prefix: '\$',
     notprefix: '\$[]',
-    callback: (DartDeclaration self, dynamic testSubject, {required String key, dynamic value}) {
+    callback: (DartDeclaration self, dynamic testSubject,
+        {required String key, dynamic value}) {
       final subject = testSubject as String;
       self.setName(key);
       self.addImport(subject.substring(1));
 
-      final typeName = subject.substring(1).split('/').last.split('\\').last.toCamelCase();
+      final typeName =
+          subject.substring(1).split('/').last.split('\\').last.toCamelCase();
       final type = typeName.toTitleCase();
 
       self.type = type;
@@ -199,7 +215,8 @@ final List<Command> valueCommands = [
     prefix: '@',
     command: 'datetime',
     notprefix: '\$[]',
-    callback: (DartDeclaration self, dynamic testSubject, {required String key, dynamic value}) {
+    callback: (DartDeclaration self, dynamic testSubject,
+        {required String key, dynamic value}) {
       self.setName(key);
       self.type = 'DateTime';
       return self;
@@ -207,17 +224,31 @@ final List<Command> valueCommands = [
   ),
   Command(
     prefix: '@',
+    command: 'template',
+    notprefix: '\$[]',
+    callback: (DartDeclaration self, dynamic testSubject,
+        {required String key, dynamic value}) {
+      self.setName(key);
+      self.type = 'T';
+      return self;
+    },
+  ),
+  Command(
+    prefix: '@',
     command: 'enum',
     notprefix: '\$[]',
-    callback: (DartDeclaration self, dynamic testSubject, {required String key, dynamic value}) {
-      self.setEnumValues((value as String).substring('@enum:'.length).split(','));
+    callback: (DartDeclaration self, dynamic testSubject,
+        {required String key, dynamic value}) {
+      self.setEnumValues(
+          (value as String).substring('@enum:'.length).split(','));
       self.setName(key);
       return self;
     },
   ),
   Command(
     type: dynamic,
-    callback: (DartDeclaration self, dynamic testSubject, {required String key, dynamic value}) {
+    callback: (DartDeclaration self, dynamic testSubject,
+        {required String key, dynamic value}) {
       self.setName(key);
 
       if (value == null) {
@@ -226,7 +257,8 @@ final List<Command> valueCommands = [
       }
       if (value is Map) {
         self.type = key.toTitleCase();
-        self.nestedClasses.add(JsonModel.fromMap('nested', value as Map<String, dynamic>));
+        self.nestedClasses
+            .add(JsonModel.fromMap('nested', value as Map<String, dynamic>));
         return self;
       }
       self.type = value.runtimeType.toString();

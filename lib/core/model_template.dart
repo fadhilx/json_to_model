@@ -2,25 +2,26 @@ import 'package:json_to_model/core/json_model.dart';
 
 typedef JsonModelConverter = String Function(JsonModel data, [bool isNested]);
 
-String modelFromJsonModel(JsonModel data, {bool isNested = false}) => _defaultJsonTemplate(
-      isNested: isNested,
-      constructor: data.constructor,
-      imports: data.imports,
-      fileName: data.fileName,
-      relativePath: data.relativePath,
-      className: data.className,
-      extendsClass: data.extendsClass,
-      mixinClass: data.mixinClass,
-      equalsDeclarations: data.equalsDeclarations,
-      hashDeclarations: data.hashDeclarations,
-      declaration: data.declaration,
-      copyWith: data.copyWith,
-      cloneFunction: data.cloneFunction,
-      jsonFunctions: data.jsonFunctions,
-      enums: data.enums,
-      enumConverters: data.enumConverters,
-      nestedClasses: data.nestedClasses,
-    );
+String modelFromJsonModel(JsonModel data, {bool isNested = false}) =>
+    _defaultJsonTemplate(
+        isNested: isNested,
+        constructor: data.constructor,
+        imports: data.imports,
+        fileName: data.fileName,
+        relativePath: data.relativePath,
+        className: data.className,
+        extendsClass: data.extendsClass,
+        mixinClass: data.mixinClass,
+        equalsDeclarations: data.equalsDeclarations,
+        hashDeclarations: data.hashDeclarations,
+        declaration: data.declaration,
+        copyWith: data.copyWith,
+        cloneFunction: data.cloneFunction,
+        jsonFunctions: data.jsonFunctions,
+        isTemplate: data.isTemplate,
+        enums: data.enums,
+        enumConverters: data.enumConverters,
+        nestedClasses: data.nestedClasses);
 
 String _defaultJsonTemplate({
   required bool isNested,
@@ -35,6 +36,7 @@ String _defaultJsonTemplate({
   required String copyWith,
   required String cloneFunction,
   required String jsonFunctions,
+  required bool isTemplate,
   String? relativePath,
   String? enums,
   String? enumConverters,
@@ -64,7 +66,7 @@ $imports
 
   template += '''
 @immutable
-class $className${extendsClass != null ? ' extends $extendsClass ' : ''}${mixinClass.isNotEmpty ? ' with $mixinClass' : ''} {
+class $className${isTemplate ? '<T>' : ''}${extendsClass != null ? ' extends $extendsClass ' : ''}${mixinClass.isNotEmpty ? ' with $mixinClass' : ''} {
 
 $constructor
 
@@ -90,7 +92,16 @@ $copyWith
 
   @override
   int get hashCode => $hashDeclarations;
+
 ''';
+  if (!isTemplate) {
+    template += '''
+  // for template usage in case
+  static $className fromJsonModel(Map<String, dynamic> json) => $className.fromJson(json);
+  static Map<String, dynamic> toJsonModel() => $className.toJsonModel();
+
+''';
+  }
 
   template += '}\n';
 
