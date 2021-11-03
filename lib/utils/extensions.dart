@@ -148,7 +148,7 @@ $constructorDeclarations,
     final isTemplate = where(find).any((item) => item.type == "T");
 
     result =
-        'factory $className.fromJson(Map<String,dynamic> json${isTemplate ? ', T Function(Map<String, dynamic>) fromJsonModel' : ''}) => $className(\n$fromJsonBody\n);\n\n';
+        'factory $className.fromJson(Map<String,dynamic> json${isTemplate ? ', Function fromJsonModel' : ''}) => $className(\n$fromJsonBody\n);\n\n';
     result +=
         'Map<String, dynamic> toJson(${isTemplate ? 'Map<String, dynamic> Function() toJsonModel' : ''}) => {\n$toJsonBody\n};';
 

@@ -97,7 +97,7 @@ class DartDeclaration {
       } else if (isDatetime) {
         conversion = 'DateTime.parse($jsonVar as String)';
       } else if (isTemplate) {
-        conversion = 'fromJsonModel($jsonVar)';
+        conversion = 'fromJsonModel($jsonVar) as T';
       } else {
         conversion = '$jsonVar as $type';
       }

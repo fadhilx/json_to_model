@@ -94,14 +94,6 @@ $copyWith
   int get hashCode => $hashDeclarations;
 
 ''';
-  if (!isTemplate) {
-    template += '''
-  // for template usage in case
-  static $className fromJsonModel(Map<String, dynamic> json) => $className.fromJson(json);
-  static Map<String, dynamic> toJsonModel() => $className.toJsonModel();
-
-''';
-  }
 
   template += '}\n';
 
