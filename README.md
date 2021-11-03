@@ -380,6 +380,9 @@ class Point {
 }
 ```
 
+
+**Generic Response**
+
 ```json
 {
   "status": "success",
@@ -389,6 +392,8 @@ class Point {
 }
 ```
 
+
+**Output**
 
 ```dart
 import 'package:flutter/foundation.dart';
