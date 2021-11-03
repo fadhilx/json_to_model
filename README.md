@@ -398,7 +398,7 @@ this package will read `.json` file, and generate `.dart` file, asign the `type 
 | import model and asign type | {`...`:`"$value"`} | `{"auth":"$user"}` | `User auth;` | `import 'user.dart'` |
 | import from path | {`...`:`"$pathto/value"`} | `{"price":"$product/price"}` | `Price price;` | `import '../product/price.dart'` |
 | asign list of type and import (can also be recursive) | {`...`:`"$[]value"`} | `{"addreses":"$[]address"}` | `List<Address> addreses;` | `import 'address.dart'` |
-| generics support (template) | {`data`:`"@template"`} | `{"data":"@template"}` | `T data;` | |
+| generics support (template) | {`...`:`"@template"`} | `{"data":"@template"}` | `T data;` | |
 | hand-select native type | {`...`:`"#int"`} | `{"addreses":"#int"}` | `int addreses;` | |
 | import other library(input value can be array) | {`"@import"`:`...`} | `{"@import":"package:otherlibrary/otherlibrary.dart"}` | | `import 'package:otherlibrary/otherlibrary.dart'` |
 | Datetime type | {`...`:`"@datetime"`} | `{"createdAt": "@datetime:2020-02-15T15:47:51.742Z"}` | `DateTime createdAt;` | |
