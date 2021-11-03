@@ -26,6 +26,8 @@ class FakerMaker {
       return 'faker.randomGenerator.integer(100)';
     } else if (type == 'String') {
       return _guessString(declaration.jsonValue as String?);
+    } else if (type == 'T') {
+      return _guessString(declaration.jsonValue as String?);
     } else if (type == 'bool') {
       return 'faker.randomGenerator.boolean()';
     } else if (type == 'double') {
@@ -36,7 +38,7 @@ class FakerMaker {
       return '{}';
     }
 
-    return 'Cannot determine faker for type `$type`';
+    throw 'Cannot determine faker for type `$type`';
   }
 
   String _interpretFaker(String input) {

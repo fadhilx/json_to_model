@@ -380,7 +380,80 @@ class Point {
 }
 ```
 
+```json
+{
+  "status": "success",
+  "code": 200,
+  "message?": "",
+  "data?": "@template"
+}
+```
 
+
+```dart
+import 'package:flutter/foundation.dart';
+import 'package:quiver/core.dart';
+import '../index.dart';
+
+
+@immutable
+class OffersListResponse<T> {
+
+  const OffersListResponse({
+    required this.status,
+    required this.code,
+    this.message,
+    this.data,
+  });
+
+  final String status;
+  final int code;
+  final String? message;
+  final T? data;
+
+  factory OffersListResponse.fromJson(Map<String,dynamic> json, Function fromJsonModel) => OffersListResponse(
+    status: json['status'] as String,
+    code: json['code'] as int,
+    message: json['message'] != null ? json['message'] as String : null,
+    data: json['data'] != null ? fromJsonModel(json['data']) as T : null
+  );
+  
+  Map<String, dynamic> toJson(Map<String, dynamic> Function() toJsonModel) => {
+    'status': status,
+    'code': code,
+    'message': message,
+    'data': toJsonModel()
+  };
+
+  OffersListResponse clone() => OffersListResponse(
+    status: status,
+    code: code,
+    message: message,
+    data: data
+  );
+
+
+  OffersListResponse copyWith({
+    String? status,
+    int? code,
+    Optional<String?>? message,
+    Optional<T?>? data
+  }) => OffersListResponse(
+    status: status ?? this.status,
+    code: code ?? this.code,
+    message: checkOptional(message, this.message),
+    data: checkOptional(data, this.data),
+  );
+
+  @override
+  bool operator ==(Object other) => identical(this, other)
+    || other is OffersListResponse && status == other.status && code == other.code && message == other.message && data == other.data;
+
+  @override
+  int get hashCode => status.hashCode ^ code.hashCode ^ message.hashCode ^ data.hashCode;
+
+}
+```
 
 ## Getting started
 
