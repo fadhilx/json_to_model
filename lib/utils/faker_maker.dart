@@ -29,7 +29,7 @@ class FakerMaker {
     } else if (type == 'bool') {
       return 'faker.randomGenerator.boolean()';
     } else if (type == 'double') {
-      return 'faker.randomGenerator.numbers(100)';    
+      return 'faker.randomGenerator.decimal()';
     } else if (type == 'DateTime') {
       return 'faker.date.dateTime(minYear: 1900, maxYear: 2025)';
     } else if (type.startsWith('Map')) {
