@@ -1,3 +1,7 @@
+## 3.0.3
+
+- Fix bug in double faker in test factories
+
 ## 3.0.2
 
 - Add double support in factories (Thanks to @saad4software) (#23)
