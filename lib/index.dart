@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:path/path.dart' as path;
-
 import 'package:json_to_model/config/options.dart';
 import 'package:json_to_model/core/factory_template.dart';
-import 'package:json_to_model/core/model_template.dart';
 import 'package:json_to_model/core/json_model.dart';
+import 'package:json_to_model/core/model_template.dart';
+import 'package:path/path.dart' as path;
+
 
 class JsonModelRunner {
   final Options _options;
