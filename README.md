@@ -399,5 +399,6 @@ this package will read `.json` file, and generate `.dart` file, asign the `type 
 | asign list of type and import (can also be recursive) | {`...`:`"$[]value"`} | `{"addreses":"$[]address"}` | `List<Address> addreses;` | `import 'address.dart'` |
 | import other library(input value can be array) | {`"@import"`:`...`} | `{"@import":"package:otherlibrary/otherlibrary.dart"}` | | `import 'package:otherlibrary/otherlibrary.dart'` |
 | Datetime type | {`...`:`"@datetime"`} | `{"createdAt": "@datetime:2020-02-15T15:47:51.742Z"}` | `DateTime createdAt;` | |
-| Enum type | {`...`:`"@enum:(folowed by enum separated by ',')"`} | `{"@import":"@enum:admin,app_user,normal"}` | `enum UserTypeEnum { Admin, AppUser, Normal }` |
-| Enum type with values  {`...`:`"@enum:(folowed by enum separated by ',')"`} | `{"@import":"@enum:admin(0),app_user(1),normal(2)"}`                            | `enum UserTypeEnum { Admin, AppUser, Normal }`| |
+| Enum type | {`...`:`"@enum:(folowed by enum separated by ',')"`} | `{"@import":"@enum:admin,app_user,normal"}` | `enum UserTypeEnum { Admin, AppUser, Normal }` ||
+| Enum type with values  {`...`:`"@enum:(folowed by enum separated by ',')"`} | `{"@import":"@enum:admin(0),app_user(1),normal(2)"}`                            | `enum UserTypeEnum { Admin, AppUser, Normal }`| ||
+| Custom class key (support private key, such as _InfoModel. By the way, not only in array, but also in normal object.) | {"$key": "CustomClassName"} | {"info":{"$key": "InfoModel", "name?":"Nick"}} | class InfoModel{final String? name; ...} ||

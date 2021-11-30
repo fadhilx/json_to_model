@@ -5,6 +5,9 @@ import 'package:json_to_model/core/model_template.dart';
 extension StringExtension on String {
   String toTitleCase() {
     final firstWord = toCamelCase();
+    if (firstWord.startsWith(RegExp('_'))) {
+      return '_${firstWord.substring(1, 2).toUpperCase()}${firstWord.substring(2)}';
+    }
     return '${firstWord.substring(0, 1).toUpperCase()}${firstWord.substring(1)}';
   }
 
@@ -32,12 +35,14 @@ extension StringExtension on String {
 
   List<String> getWords() {
     List<String> value;
-
+    bool isPrivate = false;
+    if (startsWith(RegExp('_'))) {
+      isPrivate = true;
+    }
     value = trim().split(RegExp(r'[_\W]'));
     value = value.where((element) => element.isNotEmpty).toList();
     value = value.expand((e) => e.split(RegExp('(?=[A-Z])'))).where((element) => element.isNotEmpty).toList();
-
-    return value;
+    return isPrivate ? ['_', ...value] : value;
   }
 
   bool isTitleCase() {
