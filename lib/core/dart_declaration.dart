@@ -201,7 +201,12 @@ class DartDeclaration {
       List.filled(matches, (i) => i).forEach(addPrefix);
     }
 
-    return imports.where((element) => element.isNotEmpty).map((e) => "import '$prefix$e.dart';").toList();
+    return imports.where((element) => element.isNotEmpty).map((e) {
+      if (e.startsWith('package')) {
+        return "import '$e';";
+      }
+      return "import '$e.dart';";
+    }).toList();
   }
 
   static String? getTypeFromJsonKey(String theString) {
