@@ -161,7 +161,19 @@ $constructorDeclarations,
         .fold<List<String>>(<String>[], (prev, current) => prev..addAll(current));
 
     imports.addAll(nestedImports);
-
+    //remove the file that has been imported by @import
+    final RegExp packageImportReg = RegExp("import 'package.*/(.+.dart)';");
+    imports
+        .map((e) {
+          List<RegExpMatch> matches = packageImportReg.allMatches(e).toList();
+          if (matches.isEmpty) return null;
+          return matches[0].group(1);
+        })
+        .where((element) => element != null)
+        .toList()
+        .forEach((element) {
+          imports.removeWhere((item) => !packageImportReg.hasMatch(item) && item.contains(element!));
+        });
     return imports.join('\n');
   }
 
