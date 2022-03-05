@@ -1,3 +1,7 @@
+## 3.1.3
+
+- Make checkOptional default value a builder, so we can avoid infinite recursion in fake models.
+
 ## 3.0.3
 
 - Fix bug in double faker in test factories

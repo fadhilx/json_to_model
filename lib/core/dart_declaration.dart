@@ -49,7 +49,7 @@ class DartDeclaration {
     });
 
     if (isNullable) {
-      return '$name: checkOptional($name, $value)'.trim().indented();
+      return '$name: checkOptional($name, () => $value)'.trim().indented();
     } else {
       return '$name: $name ?? $value'.trim().indented();
     }
@@ -134,7 +134,7 @@ class DartDeclaration {
 
   String copyWithBodyDeclaration() {
     if (isNullable) {
-      return '$name: checkOptional($name, this.$name)';
+      return '$name: checkOptional($name, () => this.$name)';
     } else {
       return '$name: $name ?? this.$name';
     }
