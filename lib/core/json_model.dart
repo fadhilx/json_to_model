@@ -1,6 +1,5 @@
 import 'package:json_to_model/core/dart_declaration.dart';
-
-import '../utils/extensions.dart';
+import 'package:json_to_model/utils/extensions.dart';
 
 class JsonModel {
   late String fileName;

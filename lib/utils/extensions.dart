@@ -165,7 +165,7 @@ $constructorDeclarations,
     final RegExp packageImportReg = RegExp("import 'package.*/(.+.dart)';");
     imports
         .map((e) {
-          List<RegExpMatch> matches = packageImportReg.allMatches(e).toList();
+          final List<RegExpMatch> matches = packageImportReg.allMatches(e).toList();
           if (matches.isEmpty) return null;
           return matches[0].group(1);
         })
@@ -190,7 +190,7 @@ $constructorDeclarations,
               (jsonModel) {
                 return modelFromJsonModel(jsonModel, isNested: true);
               },
-            ).join('\n\n'))
+            ).join('\n\n'),)
         .join('\n');
   }
 
@@ -203,7 +203,7 @@ $constructorDeclarations,
                   isNested: true,
                 );
               },
-            ).join('\n\n'))
+            ).join('\n\n'),)
         .join('\n');
   }
 }

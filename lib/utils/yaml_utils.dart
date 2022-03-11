@@ -9,7 +9,7 @@ List<Object> yamlListToDartList(YamlList map) {
 }
 
 Map<String, Object> yamlMapToDartMap(YamlMap yaml) {
-  bool isString(key) => key.value is String;
+  bool isString(YamlScalar key) => key.value is String;
   MapEntry<String, Object> toEntry(YamlScalar key) => MapEntry(
         key.value as String,
         yamlNodeToDartObject(yaml.nodes[key]),

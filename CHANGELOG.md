@@ -1,3 +1,8 @@
+## 3.1.4
+
+- Convert string to with toString instead of `as String` for better conversion if value is accidentally an int.
+- Fix lint warnings
+
 ## 3.1.3
 
 - Make checkOptional default value a builder, so we can avoid infinite recursion in fake models.

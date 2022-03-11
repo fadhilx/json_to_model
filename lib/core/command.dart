@@ -1,10 +1,13 @@
+import 'package:json_to_model/core/dart_declaration.dart';
 import 'package:json_to_model/core/json_model.dart';
+import 'package:json_to_model/utils/extensions.dart';
 
-import '../utils/extensions.dart';
-import 'dart_declaration.dart';
-
-typedef Callback = DartDeclaration Function(DartDeclaration self, dynamic testSubject,
-    {required String key, dynamic value});
+typedef Callback = DartDeclaration Function(
+  DartDeclaration self,
+  dynamic testSubject, {
+  required String key,
+  dynamic value,
+});
 
 class Command {
   final Type? type;
@@ -27,8 +30,12 @@ class Command {
   }
 }
 
-DartDeclaration defaultCommandCallback(DartDeclaration self, dynamic testSubject,
-    {required String key, dynamic value}) {
+DartDeclaration defaultCommandCallback(
+  DartDeclaration self,
+  dynamic testSubject, {
+  required String key,
+  dynamic value,
+}) {
   self.isNullable = testSubject.toString().endsWith('?');
 
   self.setName(key);
@@ -158,7 +165,7 @@ final List<Command> keyComands = [
 ];
 
 final List<Command> valueCommands = [
-   Command(
+  Command(
     prefix: '#',
     callback: (DartDeclaration self, dynamic testSubject, {required String key, dynamic value}) {
       final subject = testSubject as String;

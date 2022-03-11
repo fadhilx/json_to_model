@@ -2,9 +2,8 @@ import 'dart:collection';
 
 import 'package:json_to_model/core/command.dart';
 import 'package:json_to_model/core/json_model.dart';
+import 'package:json_to_model/utils/extensions.dart';
 import 'package:json_to_model/utils/faker_maker.dart';
-
-import '../utils/extensions.dart';
 
 class DartDeclaration {
   List<String> imports = [];
@@ -88,11 +87,13 @@ class DartDeclaration {
         conversion = modelFromJson(jsonVar);
       } else if (isDatetime) {
         conversion = 'DateTime.parse($jsonVar as String)';
+      } else if (type == 'String') {
+        conversion = '$jsonVar$isNullableString.toString()';
       } else {
         conversion = '$jsonVar as $type';
       }
 
-      if (isNullable) {
+      if (isNullable && type != 'String') {
         return '$name: $jsonVar != null ? $conversion : null';
       } else {
         return '$name: $conversion';
