@@ -1,3 +1,7 @@
+## 3.1.5
+
+- Add support for #num
+
 ## 3.1.4
 
 - Convert string to with toString instead of `as String` for better conversion if value is accidentally an int.

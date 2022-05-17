@@ -28,7 +28,7 @@ class FakerMaker {
       return _guessString(declaration.jsonValue as String?);
     } else if (type == 'bool') {
       return 'faker.randomGenerator.boolean()';
-    } else if (type == 'double') {
+    } else if (type == 'double' || type == 'num') {
       return 'faker.randomGenerator.decimal()';
     } else if (type == 'DateTime') {
       return 'faker.date.dateTime(minYear: 1900, maxYear: 2025)';
