@@ -46,8 +46,13 @@ DartDeclaration defaultCommandCallback(
   }
 
   if (value is Map) {
-    self.type = key.toTitleCase();
-    self.nestedClasses.add(JsonModel.fromMap(key, value as Map<String, dynamic>));
+    String customKey = key;
+    if (value['\$key'] != null && value['\$key'] != '') {
+      customKey = value['\$key'] as String;
+    }
+    value.remove('\$key');
+    self.type = customKey.toTitleCase();
+    self.nestedClasses.add(JsonModel.fromMap(customKey, value as Map<String, dynamic>));
     return self;
   }
 
@@ -56,16 +61,16 @@ DartDeclaration defaultCommandCallback(
     if (firstListValue is List) {
       final nestedFirst = firstListValue.first;
       if (nestedFirst is Map) {
-        final key = nestedFirst['\$key'];
+        final key = nestedFirst['\$key'] as String;
         nestedFirst.remove('\$key');
-        self.type = 'List<List<$key>>';
-        self.nestedClasses.add(JsonModel.fromMap(key as String, nestedFirst as Map<String, dynamic>));
+        self.type = 'List<List<${key.toTitleCase()}>>';
+        self.nestedClasses.add(JsonModel.fromMap(key, nestedFirst as Map<String, dynamic>));
       }
     } else if (firstListValue is Map) {
-      final key = firstListValue['\$key'];
+      final key = firstListValue['\$key'] as String;
       firstListValue.remove('\$key');
-      self.type = 'List<$key>';
-      self.nestedClasses.add(JsonModel.fromMap(key as String, firstListValue as Map<String, dynamic>));
+      self.type = 'List<${key.toTitleCase()}>';
+      self.nestedClasses.add(JsonModel.fromMap(key, firstListValue as Map<String, dynamic>));
     } else {
       final listValueType = firstListValue.runtimeType.toString();
       self.type = 'List<$listValueType>';
