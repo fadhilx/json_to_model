@@ -11,6 +11,6 @@ build/
 # Directory created by dartdoc
 doc/api/
 
-jsons/
 lib/models/
 .test.dart
+test/tmp/

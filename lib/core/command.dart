@@ -1,6 +1,7 @@
 import 'package:json_to_model/core/dart_declaration.dart';
 import 'package:json_to_model/core/json_model.dart';
 import 'package:json_to_model/utils/extensions.dart';
+import 'package:json_to_model/utils/singular/singular.dart';
 
 typedef Callback = DartDeclaration Function(
   DartDeclaration self,
@@ -62,10 +63,11 @@ DartDeclaration defaultCommandCallback(
         self.nestedClasses.add(JsonModel.fromMap(key as String, nestedFirst as Map<String, dynamic>));
       }
     } else if (firstListValue is Map) {
-      final key = firstListValue['\$key'];
+      final childKey = (firstListValue['\$key'] as String? ?? singular.convert(key)).toTitleCase();
+
       firstListValue.remove('\$key');
-      self.type = 'List<$key>';
-      self.nestedClasses.add(JsonModel.fromMap(key as String, firstListValue as Map<String, dynamic>));
+      self.type = 'List<$childKey>';
+      self.nestedClasses.add(JsonModel.fromMap(childKey, firstListValue as Map<String, dynamic>));
     } else {
       final listValueType = firstListValue.runtimeType.toString();
       self.type = 'List<$listValueType>';

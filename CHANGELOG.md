@@ -1,3 +1,7 @@
+## 3.1.6
+
+- Guess model name of list objects by their parent key (genres: [{}, {}] will singularize genres and create a subclass called Genre)
+
 ## 3.1.5
 
 - Add support for #num
