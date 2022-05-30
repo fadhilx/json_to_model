@@ -1,3 +1,7 @@
+## 3.1.7
+
+- Add support for @timestamp to convert unix timestamps automatically from int to DateTime and back
+
 ## 3.1.6
 
 - Guess model name of list objects by their parent key (genres: [{}, {}] will singularize genres and create a subclass called Genre)

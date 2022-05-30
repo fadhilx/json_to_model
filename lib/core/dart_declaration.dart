@@ -23,6 +23,7 @@ class DartDeclaration {
 
   bool get isEnum => enumValues.isNotEmpty;
   bool get isDatetime => type == 'DateTime';
+  bool get isTimeStamp => jsonValue == '@timestamp';
 
   String get isNullableString => isNullable ? '?' : '';
 
@@ -85,8 +86,10 @@ class DartDeclaration {
         }
       } else if (isModel) {
         conversion = modelFromJson(jsonVar);
-      } else if (isDatetime) {
+      } else if (isDatetime && !isTimeStamp) {
         conversion = 'DateTime.parse($jsonVar as String)';
+      } else if (isTimeStamp) {
+        conversion = 'DateTime.fromMillisecondsSinceEpoch($jsonVar as int)';
       } else if (type == 'String') {
         conversion = '$jsonVar$isNullableString.toString()';
       } else {
@@ -115,8 +118,10 @@ class DartDeclaration {
         }
       } else if (isModel) {
         conversion = '$name$isNullableString.toJson()';
-      } else if (isDatetime) {
+      } else if (isDatetime && !isTimeStamp) {
         conversion = '$name$isNullableString.toIso8601String()';
+      }  else if (isTimeStamp) {
+        conversion = '$name$isNullableString.millisecondsSinceEpoch';
       } else {
         conversion = name ?? '';
       }
@@ -162,12 +167,12 @@ class DartDeclaration {
   String checkNestedTypes(String type, NestedCallbackFunction callback) {
     var cleanType = type;
 
-    final isList = type.startsWith('List') == true;
+    final isList = type.startsWith('List<') == true;
     var isListInList = false;
 
     if (isList) {
       cleanType = type.substring(5, type.length - 1);
-      isListInList = cleanType.startsWith('List') == true;
+      isListInList = cleanType.startsWith('List<') == true;
 
       if (isListInList) {
         cleanType = cleanType.substring(5, cleanType.length - 1);

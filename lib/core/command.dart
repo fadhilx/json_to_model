@@ -214,6 +214,16 @@ final List<Command> valueCommands = [
       return self;
     },
   ),
+    Command(
+    prefix: '@',
+    command: 'timestamp',
+    notprefix: '\$[]',
+    callback: (DartDeclaration self, dynamic testSubject, {required String key, dynamic value}) {
+      self.setName(key);
+      self.type = 'DateTime';
+      return self;
+    },
+  ),
   Command(
     prefix: '@',
     command: 'enum',

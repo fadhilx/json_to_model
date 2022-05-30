@@ -1,0 +1,7 @@
+{
+    "name": "Mark",
+    "age": 25,
+    "city": "New York",
+    "birthdate": "@datetime",
+    "timeStamp": "@timestamp"
+}
