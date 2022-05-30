@@ -4,7 +4,6 @@ import 'dart:convert';
 
 import 'package:json_to_model/utils/singular/irregular_plural_nouns.dart';
 import 'package:json_to_model/utils/singular/uncountable_nouns.dart';
-import 'package:json_to_model/utils/singular/util.dart';
 
 class SingularEncoder extends Converter<String, String> {
   final List<List> _inflectionRules = [];
@@ -94,3 +93,5 @@ class SingularEncoder extends Converter<String, String> {
 }
 
 final Converter<String, String> singular = SingularEncoder();
+
+typedef MatchToString = String Function(Match m);

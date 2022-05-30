@@ -2,7 +2,7 @@ library inflection.uncountable;
 
 /// Uncountable nouns are substances, concepts etc that we cannot divide into
 /// separate elements. We cannot "count" them.
-final Set<String> uncountableNouns = new Set.from(const [
+const uncountableNouns = <String>[
   "equipment",
   "information",
   "rice",
@@ -13,4 +13,4 @@ final Set<String> uncountableNouns = new Set.from(const [
   "sheep",
   "jeans",
   "police"
-]);
+];
