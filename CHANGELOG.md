@@ -1,3 +1,7 @@
+## 3.1.8
+
+- Improve 'Unable to infer type' error when adding a `null` value in a json.
+
 ## 3.1.7
 
 - Add support for @timestamp to convert unix timestamps automatically from int to DateTime and back

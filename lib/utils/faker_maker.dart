@@ -34,7 +34,10 @@ class FakerMaker {
       return 'faker.date.dateTime(minYear: 1900, maxYear: 2025)';
     } else if (type.startsWith('Map')) {
       return '{}';
+    } else if (type == 'dynamic') {
+      throw 'Cannot infer type of key "${declaration.name}" in class "$className". Could it be `null`? If so try adding a value to the key.';
     }
+
 
     throw 'Cannot determine faker for type `$type`';
   }
