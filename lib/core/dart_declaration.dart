@@ -20,6 +20,7 @@ class DartDeclaration {
   bool isNullable = false;
   bool overrideEnabled = false;
   bool ignored = false;
+  bool isModel = false;
 
   bool get isEnum => enumValues.isNotEmpty;
   bool get isDatetime => type == 'DateTime';
@@ -181,7 +182,7 @@ class DartDeclaration {
 
     final importExists = imports.indexWhere((element) => element.contains(cleanType.toSnakeCase())) != -1;
     final nestedClassExists = nestedClasses.indexWhere((element) => element.className == cleanType) != -1;
-    final isModel = !isEnum && (importExists || nestedClassExists);
+    final isModel = !isEnum && (importExists || nestedClassExists || this.isModel);
 
     return callback(cleanType, isList, isListInList, isModel);
   }

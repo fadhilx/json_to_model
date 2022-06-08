@@ -57,10 +57,11 @@ DartDeclaration defaultCommandCallback(
     if (firstListValue is List) {
       final nestedFirst = firstListValue.first;
       if (nestedFirst is Map) {
-        final key = nestedFirst['\$key'];
+        final childKey = (nestedFirst['\$key'] as String? ?? singular.convert(key)).toTitleCase();
+
         nestedFirst.remove('\$key');
-        self.type = 'List<List<$key>>';
-        self.nestedClasses.add(JsonModel.fromMap(key as String, nestedFirst as Map<String, dynamic>));
+        self.type = 'List<List<$childKey>>';
+        self.nestedClasses.add(JsonModel.fromMap(childKey, nestedFirst as Map<String, dynamic>));
       }
     } else if (firstListValue is Map) {
       final childKey = (firstListValue['\$key'] as String? ?? singular.convert(key)).toTitleCase();
@@ -180,11 +181,10 @@ final List<Command> valueCommands = [
     command: '[]',
     callback: (DartDeclaration self, dynamic testSubject, {required String key, dynamic value}) {
       final subject = testSubject as String;
-
       final typeName = subject.substring(3).split('/').last.split('\\').last.toCamelCase();
-      final toImport = subject.substring(3);
-      self.addImport(toImport);
+
       self.type = 'List<${typeName.toTitleCase()}>';
+      self.isModel = true;
       return self;
     },
   ),
@@ -194,12 +194,12 @@ final List<Command> valueCommands = [
     callback: (DartDeclaration self, dynamic testSubject, {required String key, dynamic value}) {
       final subject = testSubject as String;
       self.setName(key);
-      self.addImport(subject.substring(1));
 
       final typeName = subject.substring(1).split('/').last.split('\\').last.toCamelCase();
       final type = typeName.toTitleCase();
 
       self.type = type;
+      self.isModel = true;
 
       return self;
     },
@@ -214,7 +214,7 @@ final List<Command> valueCommands = [
       return self;
     },
   ),
-    Command(
+  Command(
     prefix: '@',
     command: 'timestamp',
     notprefix: '\$[]',

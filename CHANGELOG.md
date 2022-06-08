@@ -1,3 +1,7 @@
+## 3.1.8+beta
+
+- Fix bug in imports of nested models
+
 ## 3.1.8
 
 - Improve 'Unable to infer type' error when adding a `null` value in a json.

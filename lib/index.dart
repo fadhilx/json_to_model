@@ -7,7 +7,6 @@ import 'package:json_to_model/core/json_model.dart';
 import 'package:json_to_model/core/model_template.dart';
 import 'package:path/path.dart' as path;
 
-
 class JsonModelRunner {
   final Options _options;
 
@@ -40,16 +39,9 @@ class JsonModelRunner {
         const fileExtension = '.json';
         if (f.path.endsWith(fileExtension)) {
           final file = File(f.path);
-          final dartPath = f.path.replaceFirst(_srcDir, _distDir).replaceFirst(
-                fileExtension,
-                '.dart',
-                f.path.length - fileExtension.length - 1,
-              );
-          final factoryPath = f.path.replaceFirst(_srcDir, _factoryOutput).replaceFirst(
-                fileExtension,
-                '.dart',
-                f.path.length - fileExtension.length - 1,
-              );
+          final dartPath = f.path.replaceFirst(_srcDir, _distDir).replaceAll(fileExtension, '.dart');
+          final factoryPath = f.path.replaceFirst(_srcDir, _factoryOutput).replaceAll(fileExtension, '.dart');
+
           final basenameString = path.basename(f.path).split('.');
           final fileName = basenameString.first;
           final jsonMap = json.decode(file.readAsStringSync()) as Map<String, dynamic>;
