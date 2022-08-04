@@ -93,6 +93,8 @@ class DartDeclaration {
         conversion = 'DateTime.fromMillisecondsSinceEpoch($jsonVar as int)';
       } else if (type == 'String') {
         conversion = '$jsonVar$isNullableString.toString()';
+      } else if (type == 'double') {
+        conversion = '($jsonVar as num).toDouble()';
       } else {
         conversion = '$jsonVar as $type';
       }
@@ -121,7 +123,7 @@ class DartDeclaration {
         conversion = '$name$isNullableString.toJson()';
       } else if (isDatetime && !isTimeStamp) {
         conversion = '$name$isNullableString.toIso8601String()';
-      }  else if (isTimeStamp) {
+      } else if (isTimeStamp) {
         conversion = '$name$isNullableString.millisecondsSinceEpoch';
       } else {
         conversion = name ?? '';

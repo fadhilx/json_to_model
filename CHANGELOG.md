@@ -1,3 +1,8 @@
+## 3.2.0
+
+- Promote beta
+- Fix double fromJson convertion when the input is an int
+
 ## 3.1.8+beta
 
 - Fix bug in imports of nested models

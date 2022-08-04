@@ -10,7 +10,9 @@ void main() {
       "age?": 25,
       "city?": "New York",
       "birthdate": "@datetime",
-      "timeStamp": "@timestamp"
+      "timeStamp": "@timestamp",
+      "doubleValue": 0.0,
+      "nullableDoubleValue?": 0.0,
     };
 
     final jsonModel = JsonModel.fromMap(
@@ -28,5 +30,15 @@ void main() {
     expect(output, contains('final String? city;'));
     expect(output, contains('final DateTime birthdate;'));
     expect(output, contains('final DateTime timeStamp;'));
+    expect(output, contains('final double doubleValue;'));
+    expect(output, contains('final double? nullableDoubleValue;'));
+
+    expect(output, contains("doubleValue: (json['doubleValue'] as num).toDouble()"));
+    expect(
+      output,
+      contains(
+        "nullableDoubleValue: json['nullableDoubleValue'] != null ? (json['nullableDoubleValue'] as num).toDouble() : null",
+      ),
+    );
   });
 }
