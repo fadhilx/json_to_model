@@ -23,6 +23,7 @@ void main() {
     print(output);
 
     expect(output, contains("class AddMixin with HasFormValue {"));
+    expect(output, contains("  AddMixin({")); // double space indicates no const
     expect(output, contains("import 'package:project/mixins/has_form_value.dart';"));
   });
 }

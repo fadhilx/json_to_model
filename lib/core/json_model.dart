@@ -31,15 +31,21 @@ class JsonModel {
     this.relativePath,
   }) {
     final extendsClass = dartDeclarations.where((element) => element.extendsClass != null).toList();
-
-    className = fileName.toTitleCase();
-    constructor = dartDeclarations.toConstructor(className, hasExtends: extendsClass.isNotEmpty);
     mixinClass = dartDeclarations
         .where(
           (element) => element.mixinClass != null,
         )
         .map((element) => element.mixinClass)
         .join(', ');
+
+    className = fileName.toTitleCase();
+
+    constructor = dartDeclarations.toConstructor(
+      className,
+      hasExtends: extendsClass.isNotEmpty,
+      hasMixin: mixinClass.isNotEmpty,
+    );
+
     declaration = dartDeclarations.toDeclarationStrings(className);
     mockDeclaration = dartDeclarations.toMockDeclarationStrings(className);
     copyWith = dartDeclarations.toCopyWith(className);

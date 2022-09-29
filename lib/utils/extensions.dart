@@ -72,9 +72,9 @@ extension StringExtension on String {
 }
 
 extension JsonKeyModels on List<DartDeclaration> {
-  String toConstructor(String className, {required bool hasExtends}) {
+  String toConstructor(String className, {required bool hasExtends, required bool hasMixin}) {
     final declarations = where((e) => e.name != null).map((e) => e.toConstructor()).join('\n').trim();
-    final isConst = !hasExtends ? 'const ' : '';
+    final isConst = (!hasExtends && !hasMixin) ? 'const ' : '';
     return '$isConst$className({\n  $declarations\n});'.indented();
   }
 
