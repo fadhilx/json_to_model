@@ -23,9 +23,11 @@ void main() {
     print(output);
 
     expect(output, contains("class ExtendsTest extends PageResponse<CategoryItem>  {"));
-    expect(output, contains("import 'package:apn_http/apn_http';"));
+    expect(output, contains("import 'package:apn_http/apn_http.dart';"));
 
     expect(output, contains("@override final PaginationInfo meta;"));
     expect(output, contains("@override final List<CategoryItem> data;"));
+
+    expect(output, contains("meta: PaginationInfo.fromJson(json['meta'] as Map<String, dynamic>),"));
   });
 }

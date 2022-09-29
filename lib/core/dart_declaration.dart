@@ -8,6 +8,7 @@ import 'package:json_to_model/utils/faker_maker.dart';
 class DartDeclaration {
   List<String> imports = [];
   String? type;
+  bool explicitTypeOverride = false;
   dynamic jsonValue;
   String? originalName;
   String? name;
@@ -95,6 +96,11 @@ class DartDeclaration {
         conversion = '$jsonVar$isNullableString.toString()';
       } else if (type == 'double') {
         conversion = '($jsonVar as num).toDouble()';
+      } else if (explicitTypeOverride &&
+          type?.startsWith('Map') != true &&
+          type?.startsWith("List") != true &&
+          type != 'dynamic') {
+        conversion = modelFromJson(jsonVar);
       } else {
         conversion = '$jsonVar as $type';
       }

@@ -1,0 +1,10 @@
+
+{
+    "@import": "package:project/mixins/has_form_value.dart",
+    "@mixin": "HasFormValue",
+    "id": 0,
+    "title": "string",
+    "type": "@enum:text,singleselect,multiselect,file-select,image-select,projectselect,datetime,signature",
+    "is_required": true,
+    "metadata?": "#Map<String,dynamic>"
+}

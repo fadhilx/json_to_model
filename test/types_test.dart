@@ -26,6 +26,7 @@ void main() {
 
     final output = modelFromJsonModel(jsonModel);
 
+    expect(output, contains('const Types({'));
     expect(output, contains('final String name;'));
     expect(output, contains('final int? age;'));
     expect(output, contains('final String? city;'));
@@ -42,5 +43,10 @@ void main() {
         "nullableDoubleValue: json['nullableDoubleValue'] != null ? (json['nullableDoubleValue'] as num).toDouble() : null",
       ),
     );
+
+    expect(output, contains("value: json['value'] as dynamic"));
+    expect(output, contains("'value': value"));
+
+    print(output);
   });
 }

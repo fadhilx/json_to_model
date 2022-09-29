@@ -30,8 +30,10 @@ class JsonModel {
     this.indexPath,
     this.relativePath,
   }) {
+    final extendsClass = dartDeclarations.where((element) => element.extendsClass != null).toList();
+
     className = fileName.toTitleCase();
-    constructor = dartDeclarations.toConstructor(className);
+    constructor = dartDeclarations.toConstructor(className, hasExtends: extendsClass.isNotEmpty);
     mixinClass = dartDeclarations
         .where(
           (element) => element.mixinClass != null,
@@ -50,7 +52,6 @@ class JsonModel {
     nestedClasses = dartDeclarations.getNestedModelClasses();
     nestedFactoryClasses = dartDeclarations.getNestedFactoryClasses();
 
-    final extendsClass = dartDeclarations.where((element) => element.extendsClass != null).toList();
     if (extendsClass.isNotEmpty) {
       this.extendsClass = extendsClass[0].extendsClass;
     }

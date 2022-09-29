@@ -1,6 +1,6 @@
 {
     "@import": [
-      "package:apn_http/apn_http"
+      "package:apn_http/apn_http.dart"
     ],
     "@extends": "PageResponse<CategoryItem>",
     "@override meta": "#PaginationInfo",

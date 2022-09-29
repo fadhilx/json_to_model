@@ -173,6 +173,7 @@ final List<Command> valueCommands = [
     callback: (DartDeclaration self, dynamic testSubject, {required String key, dynamic value}) {
       final subject = testSubject as String;
       self.type = subject.substring(1);
+      self.explicitTypeOverride = true;
       return self;
     },
   ),

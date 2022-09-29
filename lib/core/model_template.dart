@@ -56,8 +56,8 @@ String _defaultJsonTemplate({
 import 'package:flutter/foundation.dart';
 import 'package:quiver/core.dart';
 $imports
-
 import '${indexPathPrefix}index.dart';
+
 ''';
   }
 

@@ -72,9 +72,10 @@ extension StringExtension on String {
 }
 
 extension JsonKeyModels on List<DartDeclaration> {
-  String toConstructor(String className) {
+  String toConstructor(String className, {required bool hasExtends}) {
     final declarations = where((e) => e.name != null).map((e) => e.toConstructor()).join('\n').trim();
-    return 'const $className({\n  $declarations\n});'.indented();
+    final isConst = !hasExtends ? 'const ' : '';
+    return '$isConst$className({\n  $declarations\n});'.indented();
   }
 
   String toDeclarationStrings(String className) {
@@ -187,24 +188,28 @@ $constructorDeclarations,
 
   String getNestedModelClasses() {
     return where((element) => element.nestedClasses.isNotEmpty)
-        .map((e) => e.nestedClasses.map(
-              (jsonModel) {
-                return modelFromJsonModel(jsonModel, isNested: true);
-              },
-            ).join('\n\n'),)
+        .map(
+          (e) => e.nestedClasses.map(
+            (jsonModel) {
+              return modelFromJsonModel(jsonModel, isNested: true);
+            },
+          ).join('\n\n'),
+        )
         .join('\n');
   }
 
   String getNestedFactoryClasses() {
     return where((element) => element.nestedClasses.isNotEmpty)
-        .map((e) => e.nestedClasses.map(
-              (jsonModel) {
-                return factoryFromJsonModel(
-                  jsonModel,
-                  isNested: true,
-                );
-              },
-            ).join('\n\n'),)
+        .map(
+          (e) => e.nestedClasses.map(
+            (jsonModel) {
+              return factoryFromJsonModel(
+                jsonModel,
+                isNested: true,
+              );
+            },
+          ).join('\n\n'),
+        )
         .join('\n');
   }
 }
