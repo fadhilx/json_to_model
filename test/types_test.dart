@@ -13,6 +13,7 @@ void main() {
       "timeStamp": "@timestamp",
       "doubleValue": 0.0,
       "nullableDoubleValue?": 0.0,
+      "value": "#dynamic",
     };
 
     final jsonModel = JsonModel.fromMap(
@@ -32,6 +33,7 @@ void main() {
     expect(output, contains('final DateTime timeStamp;'));
     expect(output, contains('final double doubleValue;'));
     expect(output, contains('final double? nullableDoubleValue;'));
+    expect(output, contains('final dynamic value;'));
 
     expect(output, contains("doubleValue: (json['doubleValue'] as num).toDouble()"));
     expect(

@@ -1,3 +1,9 @@
+## 3.2.1
+
+- Loosen factory type requirements. If type is not found the factory will return a `null` value
+- Fixed a bug in the @import declaration
+- Added test for @extends, @import and @override
+
 ## 3.2.0
 
 - Promote beta

@@ -252,7 +252,7 @@ class DartDeclaration {
     if (import == null) {
       return;
     }
-    if (import is List && !import.isNotEmpty) {
+    if (import is List && import.isNotEmpty) {
       imports.addAll(import.map((e) => e as String));
     } else if (import != null && import is String) {
       imports.add(import);

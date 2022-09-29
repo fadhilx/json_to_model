@@ -1,0 +1,35 @@
+{
+    "@import": [
+      "package:apn_http/apn_http"
+    ],
+    "@extends": "PageResponse<CategoryItem>",
+    "@override meta": "#PaginationInfo",
+    "@override data": [
+      {
+        "$key": "CategoryItem",
+        "entity": "@enum:form_response,document",
+        "form_response": {
+            "id": "123",
+            "response": "123"
+        },
+        "document": {
+            "id": "123",
+            "documentId": "123"
+        }
+      }
+    ],
+    "extra": {
+        "forms":  [
+            {
+                "$key": "SimpleForm",
+                "id": "123"
+            }
+        ],
+        "projects":  [
+            {
+                "$key": "Project",
+                "id": "123"
+            }
+        ]
+    }
+  }

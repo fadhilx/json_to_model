@@ -34,12 +34,9 @@ class FakerMaker {
       return 'faker.date.dateTime(minYear: 1900, maxYear: 2025)';
     } else if (type.startsWith('Map')) {
       return '{}';
-    } else if (type == 'dynamic') {
-      throw 'Cannot infer type of key "${declaration.name}" in class "$className". Could it be `null`? If so try adding a value to the key.';
+    } else {
+      return 'null';
     }
-
-
-    throw 'Cannot determine faker for type `$type`';
   }
 
   String _interpretFaker(String input) {
@@ -94,7 +91,6 @@ class FakerMaker {
   }
 
   String createForString(List<String> options) {
-
     // Handle person case
     if (options.hasStartsWith('person')) {
       return _personFaker(options);
