@@ -1,8 +1,10 @@
-## 3.2.1
+## 3.2.2
 
 - Loosen factory type requirements. If type is not found the factory will return a `null` value
 - Fixed a bug in the @import declaration
 - Added test for @extends, @import and @override
+- Fix fromJson generation on type override
+- Add test for @mixin 
 
 ## 3.2.0
 
