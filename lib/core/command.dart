@@ -174,6 +174,10 @@ final List<Command> valueCommands = [
       final subject = testSubject as String;
       self.type = subject.substring(1);
       self.explicitTypeOverride = true;
+      self.isJsonable = self.type?.startsWith('Map') != true &&
+          self.type?.startsWith("List") != true &&
+          self.type != 'dynamic' &&
+          self.type != 'num';
       return self;
     },
   ),

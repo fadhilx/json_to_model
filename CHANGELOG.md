@@ -1,3 +1,6 @@
+## 3.2.4
+
+- Added isJsonable property to dart time to fix .toJson/.fromJson generation on unsupported types
 ## 3.2.3
 
 - Loosen factory type requirements. If type is not found the factory will return a `null` value

@@ -1,0 +1,7 @@
+{
+    "num" : "#num", 
+    "map" : "#Map<String,dynamic>",
+    "class" : {
+        "int" : 0
+    }
+}
