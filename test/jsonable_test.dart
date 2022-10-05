@@ -20,10 +20,8 @@ void main() {
 
     final output = modelFromJsonModel(jsonModel);
 
-    print(output);
-
     expect(output, isNot(contains("num.fromJson")));
-    expect(output, isNot(contains("Map<String,dynamic.fromJson")));
+    expect(output, isNot(contains("Map<String,dynamic>.fromJson")));
     expect(output, contains("Class.fromJson"));
   });
 }

@@ -20,8 +20,6 @@ void main() {
 
     final output = modelFromJsonModel(jsonModel);
 
-    print(output);
-
     expect(output, contains("class ExtendsTest extends PageResponse<CategoryItem>  {"));
     expect(output, contains("import 'package:apn_http/apn_http.dart';"));
     expect(output, contains("  ExtendsTest({")); // double space indicates no const

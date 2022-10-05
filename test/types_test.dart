@@ -46,7 +46,5 @@ void main() {
 
     expect(output, contains("value: json['value'] as dynamic"));
     expect(output, contains("'value': value"));
-
-    print(output);
   });
 }
