@@ -1,6 +1,6 @@
 {
-    "num" : "#num", 
-    "map" : "#Map<String,dynamic>",
+    "numValue" : "#num", 
+    "mapValue" : "#Map<String,dynamic>",
     "class" : {
         "int" : 0
     }

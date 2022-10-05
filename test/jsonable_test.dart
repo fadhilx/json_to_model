@@ -23,5 +23,6 @@ void main() {
     expect(output, isNot(contains("num.fromJson")));
     expect(output, isNot(contains("Map<String,dynamic>.fromJson")));
     expect(output, contains("Class.fromJson"));
+    expect(output, contains("json['numValue'] as num"));
   });
 }
